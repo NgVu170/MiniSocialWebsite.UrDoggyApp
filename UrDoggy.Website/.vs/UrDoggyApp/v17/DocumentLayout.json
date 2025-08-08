@@ -1,0 +1,83 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|solutionrelative:urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Services\\Class1.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
+              "RelativeToolTip": "UrDoggy.Services\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T14:11:50.461Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Class1.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Data\\Class1.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Class1.cs",
+              "RelativeToolTip": "UrDoggy.Data\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T14:11:24.917Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Class1.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Class1.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Core\\Class1.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Class1.cs",
+              "RelativeToolTip": "UrDoggy.Core\\Class1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-08T14:10:53.473Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
