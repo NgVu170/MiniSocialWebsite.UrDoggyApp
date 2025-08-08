@@ -3,10 +3,6 @@
   "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\urdoggy.website.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\urdoggy.website.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|solutionrelative:urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -26,21 +22,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UrDoggy.Website",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeDocumentMoniker": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeToolTip": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-08T14:13:03.065Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -55,7 +38,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
               "RelativeDocumentMoniker": "UrDoggy.Services\\Class1.cs",
@@ -68,7 +51,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Class1.cs",
               "RelativeDocumentMoniker": "UrDoggy.Data\\Class1.cs",
@@ -81,7 +64,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 2,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Class1.cs",
               "RelativeDocumentMoniker": "UrDoggy.Core\\Class1.cs",
