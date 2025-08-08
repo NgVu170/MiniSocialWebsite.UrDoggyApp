@@ -26,21 +26,8 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 3,
           "Children": [
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "UrDoggy.Website",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeDocumentMoniker": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeToolTip": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-08T14:13:03.065Z",
-              "EditorCaption": ""
-            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -55,6 +42,19 @@
             },
             {
               "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "UrDoggy.Website.csproj",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
+              "RelativeDocumentMoniker": "UrDoggyApp\\UrDoggy.Website.csproj",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
+              "RelativeToolTip": "UrDoggyApp\\UrDoggy.Website.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2025-08-08T14:13:03.065Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 1,
               "Title": "Class1.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
@@ -63,8 +63,7 @@
               "RelativeToolTip": "UrDoggy.Services\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T14:11:50.461Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-08T14:11:50.461Z"
             },
             {
               "$type": "Document",
@@ -76,8 +75,7 @@
               "RelativeToolTip": "UrDoggy.Data\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T14:11:24.917Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-08T14:11:24.917Z"
             },
             {
               "$type": "Document",
@@ -89,8 +87,7 @@
               "RelativeToolTip": "UrDoggy.Core\\Class1.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T14:10:53.473Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-08T14:10:53.473Z"
             }
           ]
         }
