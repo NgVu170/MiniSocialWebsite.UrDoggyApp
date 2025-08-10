@@ -17,4 +17,10 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UrDoggy.Core\UrDoggy.Core.csproj" />
+    <ProjectReference Include="..\UrDoggy.Data\UrDoggy.Data.csproj" />
+    <ProjectReference Include="..\UrDoggy.Services\UrDoggy.Services.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>UrDoggy.Data</id>
+    <version>1.0.0</version>
+    <authors>UrDoggy.Data</authors>
+    <description>Package Description</description>
+    <repository type="git" commit="9b391fb3ea16afa9f6ab2e4a78847b2729f7dbd0" />
+    <dependencies>
+      <group targetFramework="net8.0">
+        <dependency id="UrDoggy.Core" version="1.0.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.Identity.EntityFrameworkCore" version="8.0.19" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.AspNetCore.SignalR" version="1.2.0" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore" version="9.0.8" exclude="Build,Analyzers" />
+        <dependency id="Microsoft.EntityFrameworkCore.SqlServer" version="9.0.8" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Data\bin\Debug\net8.0\UrDoggy.Data.runtimeconfig.json" target="lib\net8.0\UrDoggy.Data.runtimeconfig.json" />
+    <file src="C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Data\bin\Debug\net8.0\UrDoggy.Data.dll" target="lib\net8.0\UrDoggy.Data.dll" />
+  </files>
+</package>

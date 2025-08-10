@@ -17,4 +17,8 @@
     </PackageReference>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\UrDoggy.Core\UrDoggy.Core.csproj" />
+  </ItemGroup>
+
 </Project>

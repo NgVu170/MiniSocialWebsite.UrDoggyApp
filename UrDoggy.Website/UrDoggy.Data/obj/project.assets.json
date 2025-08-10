@@ -2190,6 +2190,22 @@
             "rid": "win"
           }
         }
+      },
+      "UrDoggy.Core/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "8.0.19",
+          "Microsoft.AspNetCore.SignalR": "1.2.0",
+          "Microsoft.EntityFrameworkCore": "9.0.8",
+          "Microsoft.EntityFrameworkCore.SqlServer": "9.0.8"
+        },
+        "compile": {
+          "bin/placeholder/UrDoggy.Core.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/UrDoggy.Core.dll": {}
+        }
       }
     }
   },
@@ -5903,6 +5919,11 @@
         "system.windows.extensions.nuspec",
         "useSharedDesignerContext.txt"
       ]
+    },
+    "UrDoggy.Core/1.0.0": {
+      "type": "project",
+      "path": "../UrDoggy.Core/UrDoggy.Core.csproj",
+      "msbuildProject": "../UrDoggy.Core/UrDoggy.Core.csproj"
     }
   },
   "projectFileDependencyGroups": {
@@ -5911,7 +5932,8 @@
       "Microsoft.AspNetCore.SignalR >= 1.2.0",
       "Microsoft.EntityFrameworkCore >= 9.0.8",
       "Microsoft.EntityFrameworkCore.SqlServer >= 9.0.8",
-      "Microsoft.EntityFrameworkCore.Tools >= 9.0.8"
+      "Microsoft.EntityFrameworkCore.Tools >= 9.0.8",
+      "UrDoggy.Core >= 1.0.0"
     ]
   },
   "packageFolders": {
@@ -5945,7 +5967,11 @@
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
-          "projectReferences": {}
+          "projectReferences": {
+            "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+              "projectPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
+            }
+          }
         }
       },
       "warningProperties": {
