@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using UrDoggy.Data.Models;
+using UrDoggy.Core.Models;
 
 namespace UrDoggy.Core.Models
 {

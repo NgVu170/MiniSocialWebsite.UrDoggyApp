@@ -2,7 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using UrDoggyApp.Models;
 
-namespace UrDoggyApp.Controllers
+namespace UrDoggy.Website.Controllers
 {
     public class HomeController : Controller
     {

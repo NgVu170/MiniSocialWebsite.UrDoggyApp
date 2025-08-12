@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UrDoggy.Data.Models
+namespace UrDoggy.Core.Models
 {
     public class Friend
     {

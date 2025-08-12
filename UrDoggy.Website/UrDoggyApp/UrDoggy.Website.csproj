@@ -27,4 +27,8 @@
     <ProjectReference Include="..\UrDoggy.Services\UrDoggy.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Upload\Images\" />
+  </ItemGroup>
+
 </Project>

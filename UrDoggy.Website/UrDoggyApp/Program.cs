@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using UrDoggy.Data.Models;
 using UrDoggy.Data;
 using UrDoggy.Website;
+using UrDoggy.Core.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using UrDoggy.Data.Models;
+using UrDoggy.Core.Models;
 
 namespace UrDoggy.Website
 {
