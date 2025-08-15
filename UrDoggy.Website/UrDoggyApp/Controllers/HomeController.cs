@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using UrDoggyApp.Models;
+using UrDoggy.Website.Models;
 
 namespace UrDoggy.Website.Controllers
 {

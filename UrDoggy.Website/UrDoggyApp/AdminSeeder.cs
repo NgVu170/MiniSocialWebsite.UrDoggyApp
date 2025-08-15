@@ -8,13 +8,13 @@ namespace UrDoggy.Website
         public static async Task SeederAdmin(IServiceProvider serviceProvider)
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<Guid>>>();
+            var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole<int>>>();
 
             string adminEmail = "admin@urdoggy.local";
             string adminPassword = "Admin123!";
 
             if (!await roleManager.RoleExistsAsync("Admin"))
-                await roleManager.CreateAsync(new IdentityRole<Guid>("Admin"));
+                await roleManager.CreateAsync(new IdentityRole<int>("Admin"));
 
             var admin = await userManager.FindByEmailAsync(adminEmail);
             if (admin == null)
@@ -23,7 +23,11 @@ namespace UrDoggy.Website
                 {
                     UserName = "admin",
                     Email = adminEmail,
-                    EmailConfirmed = true
+                    EmailConfirmed = true,
+                    // thêm 3 dòng này:
+                    DisplayName = "Admin",
+                    Bio = string.Empty,
+                    ProfilePicture = string.Empty
                 };
                 await userManager.CreateAsync(admin, adminPassword);
                 await userManager.AddToRoleAsync(admin, "Admin");

@@ -22,6 +22,8 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+builder.Services.AddSignalR();
+
 
 var app = builder.Build();
 
@@ -50,5 +52,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapHub<UrDoggy.Website.Hubs.ChatHub>("/chathub");
 
 app.Run();
