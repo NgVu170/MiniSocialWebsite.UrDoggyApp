@@ -1,0 +1,15 @@
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.deps.json
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.runtimeconfig.json
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.dll
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.pdb
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.csproj.AssemblyReference.cache
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.AssemblyInfoInputs.cache
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.AssemblyInfo.cs
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.csproj.CoreCompileInputs.cache
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.sourcelink.json
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.dll
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\refint\UrDoggy.Core.dll
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.pdb
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.genruntimeconfig.cache
+C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\ref\UrDoggy.Core.dll

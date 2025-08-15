@@ -1,4 +1,4 @@
-namespace UrDoggyApp.Models
+namespace UrDoggy.Website.Models
 {
     public class ErrorViewModel
     {
