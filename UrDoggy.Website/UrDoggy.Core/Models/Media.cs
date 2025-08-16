@@ -11,7 +11,6 @@ namespace UrDoggy.Core.Models
         public int Id { get; set; }
         public int PostId { get; set; }
         public Post Post { get; set; }
-
         public string Path { get; set; }
         public string MediaType { get; set; } // image/video
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

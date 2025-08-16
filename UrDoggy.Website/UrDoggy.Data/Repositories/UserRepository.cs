@@ -22,7 +22,7 @@ namespace UrDoggy.Data.Repositories
             _userManager = userManager;
         }
 
-        public async Task<IdentityResult> RegisterUserAsync(string username, string email, string password, string? profilePicture, string? displayName, string? bio)
+        public async Task<IdentityResult> Register(string username, string email, string password, string? profilePicture, string? displayName, string? bio)
         {
             if (string.IsNullOrEmpty(profilePicture))
             {
@@ -47,22 +47,22 @@ namespace UrDoggy.Data.Repositories
             return result;
         }
 
-        public async Task<User?> GetUserByIdAsync(int id)
+        public async Task<User?> GetByI(int id)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetByUsername(string username)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserName == username);
         }
 
-        public async Task<User?> GetUserByEmailAsync(string email)
+        public async Task<User?> GetByEmail(string email)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Email == email);
         }
 
-        public async Task UpdateProfileAsync(int id, string? displayName, string? bio, string? picPath)
+        public async Task UpdateProfile(int id, string? displayName, string? bio, string? picPath)
         {
             var u = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (u == null) return;
@@ -74,23 +74,22 @@ namespace UrDoggy.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public Task<List<User>> GetAllUsersAsync()
+        public Task<List<User>> GetAllUsers()
         {
             return _context.Users.AsNoTracking()
                 .OrderByDescending(u => u.CreatedAt)
                 .ToListAsync();
         }
 
-        public async Task DeleteUserAsync(int id)
+        public async Task DeleteUser(int id)
         {
             var u = await _context.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (u == null) return;
-            // Nếu dùng Identity, nên xóa qua UserManager để dọn claims/roles/logins
+            // dùng Identity, xóa qua UserManager để dọn claims/roles/logins
             await _userManager.DeleteAsync(u);
-            // Nếu không muốn dùng UserManager: _db.Users.Remove(u); await _db.SaveChangesAsync();
         }
 
-        public Task<List<User>> SearchAsync(string q)
+        public Task<List<User>> Search(string q)
         {
             q ??= string.Empty;
             return _context.Users.AsNoTracking()
