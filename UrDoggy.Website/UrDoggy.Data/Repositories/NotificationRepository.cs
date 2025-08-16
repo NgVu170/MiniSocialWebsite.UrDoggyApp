@@ -65,6 +65,11 @@ namespace UrDoggy.Data.Repositories
                 .ExecuteDeleteAsync();
         }
 
-        public async Task DeleteByType
+        public async Task DeleteByTypeAndTrigger(int userId, int type, int triggerId)
+        {
+            await _context.Notifications
+                .Where(n => n.UserId == userId && n.Type == type && n.TriggerId == triggerId)
+                .ExecuteDeleteAsync();
+        }
     }
 }

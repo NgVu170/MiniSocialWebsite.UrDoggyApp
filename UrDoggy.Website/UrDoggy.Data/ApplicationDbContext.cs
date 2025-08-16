@@ -45,8 +45,6 @@ namespace UrDoggy.Data
                 e.HasKey(x => x.Id);
 
                 e.Property(x => x.Content).HasMaxLength(5000);
-                e.Property(x => x.MediaPath).HasMaxLength(512);
-                e.Property(x => x.MediaType).HasMaxLength(64);
 
                 // FK tới User: RESTRICT để tránh multiple cascade paths
                 e.HasOne<User>()

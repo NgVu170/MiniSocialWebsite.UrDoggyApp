@@ -3,112 +3,24 @@
   "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\messagerepositpry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\messagerepositpry.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\friendrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\friendrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\notificationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\hubs\\chathub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\adminseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\adminseeder.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|solutionrelative:urdoggy.services\\class1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\views\\_viewimports.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\conversationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\conversationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.services\\urdoggy.services.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{2B461164-6F21-402D-9A91-269D6B407064}|UrDoggy.Services\\UrDoggy.Services.csproj|solutionrelative:urdoggy.services\\urdoggy.services.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\urdoggy.website.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\urdoggy.website.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\report.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\report.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\migrations\\20250811091935_initialrelational.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\migrations\\20250811091935_initialrelational.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\tag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\postvote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\postvote.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\posttag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\posttag.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\post.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\notification.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\message.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\conversation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\conversation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\comment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\comment.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggyapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.core\\models\\media.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{8D311967-954B-41F7-B9E8-563B4DA498E1}|UrDoggy.Core\\UrDoggy.Core.csproj|solutionrelative:urdoggy.core\\models\\media.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -118,8 +30,74 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "PostRepository.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\PostRepository.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\PostRepository.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\PostRepository.cs",
+              "RelativeToolTip": "UrDoggy.Data\\Repositories\\PostRepository.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAAzwPQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-16T13:38:22.586Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "20250816145354_DeleteBehaviorInPostTable.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
+              "RelativeToolTip": "UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAgwBUAAAARAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-16T14:53:54.716Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ApplicationDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\ApplicationDbContext.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Data\\ApplicationDbContext.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\ApplicationDbContext.cs",
+              "RelativeToolTip": "UrDoggy.Data\\ApplicationDbContext.cs",
+              "ViewState": "AgIAALsAAAAAAAAAAAAmwOIAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-16T14:18:50.197Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Media.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Media.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Media.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Media.cs",
+              "RelativeToolTip": "UrDoggy.Core\\Models\\Media.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-16T14:01:09.125Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Post.cs",
+              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Post.cs",
+              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Post.cs",
+              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Post.cs",
+              "RelativeToolTip": "UrDoggy.Core\\Models\\Post.cs",
+              "ViewState": "AgIAAAUAAAAAAAAAAAAQwA8AAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-08-16T14:01:00.565Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
@@ -131,331 +109,6 @@
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MessageRepositpry.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\MessageRepositpry.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\MessageRepositpry.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\MessageRepositpry.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Repositories\\MessageRepositpry.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAABIAAAAHAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-15T11:17:55.136Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "NotificationRepository.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\NotificationRepository.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\NotificationRepository.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\NotificationRepository.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Repositories\\NotificationRepository.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAAAqwEMAAAAmAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-15T06:41:32.623Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "FriendRepository.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\FriendRepository.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\FriendRepository.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\FriendRepository.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Repositories\\FriendRepository.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAswFcAAAAiAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-15T06:00:43.633Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "UserRepository.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\UserRepository.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\UserRepository.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\UserRepository.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Repositories\\UserRepository.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAwwFgAAAAuAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T15:39:36.631Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "ApplicationDbContext.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\ApplicationDbContext.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\ApplicationDbContext.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\ApplicationDbContext.cs",
-              "RelativeToolTip": "UrDoggy.Data\\ApplicationDbContext.cs",
-              "ViewState": "AgIAABUAAAAAAAAAAAA3wAcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-11T08:38:52.617Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "User.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\User.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\User.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\User.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\User.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAzwBsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:50:25.717Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "ChatHub.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Hubs\\ChatHub.cs",
-              "RelativeDocumentMoniker": "UrDoggyApp\\Hubs\\ChatHub.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Hubs\\ChatHub.cs",
-              "RelativeToolTip": "UrDoggyApp\\Hubs\\ChatHub.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-13T10:31:17.336Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Program.cs",
-              "RelativeDocumentMoniker": "UrDoggyApp\\Program.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Program.cs",
-              "RelativeToolTip": "UrDoggyApp\\Program.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAcwDYAAAA1AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-11T08:37:42.753Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "Class1.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Services\\Class1.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\Class1.cs",
-              "RelativeToolTip": "UrDoggy.Services\\Class1.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-08T14:11:50.461Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "HomeController.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Controllers\\HomeController.cs",
-              "RelativeDocumentMoniker": "UrDoggyApp\\Controllers\\HomeController.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Controllers\\HomeController.cs",
-              "RelativeToolTip": "UrDoggyApp\\Controllers\\HomeController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-12T16:03:20.178Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "UrDoggy.Website.csproj",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeDocumentMoniker": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
-              "RelativeToolTip": "UrDoggyApp\\UrDoggy.Website.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAKAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-08T14:13:03.065Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
-              "Title": "20250811091935_InitialRelational.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250811091935_InitialRelational.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Migrations\\20250811091935_InitialRelational.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250811091935_InitialRelational.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Migrations\\20250811091935_InitialRelational.cs",
-              "ViewState": "AgIAAIsAAAAAAAAAAAAgwB0AAAAeAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-11T09:19:35.884Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Report.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Report.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Report.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Report.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Report.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:23:10.917Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "Tag.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Tag.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Tag.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Tag.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Tag.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T06:02:25.955Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "AdminSeeder.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\AdminSeeder.cs",
-              "RelativeDocumentMoniker": "UrDoggyApp\\AdminSeeder.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\AdminSeeder.cs",
-              "RelativeToolTip": "UrDoggyApp\\AdminSeeder.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAQAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-11T08:44:16.402Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "UrDoggy.Services.csproj",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
-              "RelativeDocumentMoniker": "UrDoggy.Services\\UrDoggy.Services.csproj",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
-              "RelativeToolTip": "UrDoggy.Services\\UrDoggy.Services.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-08-10T05:15:25.732Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "_ViewImports.cshtml",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Views\\_ViewImports.cshtml",
-              "RelativeDocumentMoniker": "UrDoggyApp\\Views\\_ViewImports.cshtml",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\Views\\_ViewImports.cshtml",
-              "RelativeToolTip": "UrDoggyApp\\Views\\_ViewImports.cshtml",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
-              "WhenOpened": "2025-08-12T16:03:00.971Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "ConversationDto.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\ConversationDto.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\ConversationDto.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\ConversationDto.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\ConversationDto.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T06:14:27.116Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "PostVote.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\PostVote.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\PostVote.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\PostVote.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\PostVote.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABMAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:24:30.635Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "PostTag.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\PostTag.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\PostTag.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\PostTag.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\PostTag.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T06:02:52.522Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "Post.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Post.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Post.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Post.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Post.cs",
-              "ViewState": "AgIAAAcAAAAAAAAAAAAkwBoAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:58:04.165Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
-              "Title": "Notification.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Notification.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Notification.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Notification.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Notification.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:22:45.822Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 23,
-              "Title": "Message.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Message.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Message.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Message.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Message.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:22:10.719Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 17,
-              "Title": "20250811090902_InitialCreate.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Migrations\\20250811090902_InitialCreate.cs",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-11T09:09:03.417Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "Conversation.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Conversation.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Conversation.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Conversation.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Conversation.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T06:13:10.907Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "Comment.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Comment.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Core\\Models\\Comment.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\Models\\Comment.cs",
-              "RelativeToolTip": "UrDoggy.Core\\Models\\Comment.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-10T05:21:31.68Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
-              "Title": "appsettings.json",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\appsettings.json",
-              "RelativeDocumentMoniker": "UrDoggyApp\\appsettings.json",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggyApp\\appsettings.json",
-              "RelativeToolTip": "UrDoggyApp\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
-              "WhenOpened": "2025-08-11T08:35:52.035Z"
             }
           ]
         }

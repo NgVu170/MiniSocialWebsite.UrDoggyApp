@@ -29,7 +29,7 @@ namespace UrDoggy.Data.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task RespondToRequest (int requestId, bool accept)
+        public async Task RespondToRequest(int requestId, bool accept)
         {
             var friendRequest = await _context.Friends.FindAsync(requestId);
             if (friendRequest != null)
@@ -63,16 +63,16 @@ namespace UrDoggy.Data.Repositories
             return await friendsList.AsNoTracking().Distinct().ToListAsync();
         }
 
-        public async Task<List<(int RequestId, int RequesterId, string UserName)>> GetPendingRequest (int CurrentUserId)
+        public async Task<List<(int RequestId, int RequesterId, string UserName)>> GetPendingRequest(int CurrentUserId)
         {
             return await _context.Friends
                 .Where(f => f.FriendId == CurrentUserId && f.Status == "Pending")
-                .Join(_context.Users, f => f.UserId, u => u.Id, (f,u) => new { f.Id, f.UserId, u.UserName})
+                .Join(_context.Users, f => f.UserId, u => u.Id, (f, u) => new { f.Id, f.UserId, u.UserName })
                 .Select(x => new ValueTuple<int, int, string>(x.Id, x.UserId, x.UserName!))
                 .ToListAsync();
         }
 
-        public async Task<bool> HasPendingRequest (int currentUserId, int friendId)
+        public async Task<bool> HasPendingRequest(int currentUserId, int friendId)
         {
             return await _context.Friends.AnyAsync(f =>
                 f.UserId == currentUserId && f.FriendId == friendId && f.Status == "Pending");

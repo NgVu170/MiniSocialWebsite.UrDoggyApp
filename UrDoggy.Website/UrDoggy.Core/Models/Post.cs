@@ -14,8 +14,6 @@ namespace UrDoggy.Core.Models
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public int UpVotes { get; set; } = 0;
         public int DownVotes { get; set; } = 0;
-        public string MediaPath { get; set; }
-        public string MediaType { get; set; }
 
         // Navigation
         public ICollection<Comment> Comments { get; set; }
