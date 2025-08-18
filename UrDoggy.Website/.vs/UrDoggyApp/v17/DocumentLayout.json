@@ -3,12 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\postrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\migrations\\20250816145354_deletebehaviorinposttable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\migrations\\20250816145354_deletebehaviorinposttable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\applicationdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -30,25 +30,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "PostRepository.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\PostRepository.cs",
               "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\PostRepository.cs",
               "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\PostRepository.cs",
               "RelativeToolTip": "UrDoggy.Data\\Repositories\\PostRepository.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAzwPQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAPQAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-08-16T13:38:22.586Z",
               "IsPinned": true,
               "EditorCaption": ""
             },
             {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "20250816145354_DeleteBehaviorInPostTable.cs",
               "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
               "RelativeDocumentMoniker": "UrDoggy.Data\\Migrations\\20250816145354_DeleteBehaviorInPostTable.cs",
@@ -69,8 +81,7 @@
               "RelativeToolTip": "UrDoggy.Data\\ApplicationDbContext.cs",
               "ViewState": "AgIAALsAAAAAAAAAAAAmwOIAAAAiAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-16T14:18:50.197Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-16T14:18:50.197Z"
             },
             {
               "$type": "Document",
@@ -82,8 +93,7 @@
               "RelativeToolTip": "UrDoggy.Core\\Models\\Media.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-16T14:01:09.125Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-16T14:01:09.125Z"
             },
             {
               "$type": "Document",
@@ -95,20 +105,7 @@
               "RelativeToolTip": "UrDoggy.Core\\Models\\Post.cs",
               "ViewState": "AgIAAAUAAAAAAAAAAAAQwA8AAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-16T14:01:00.565Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{b1e99781-ab81-11d0-b683-00aa00a3ee26}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "WhenOpened": "2025-08-16T14:01:00.565Z"
             }
           ]
         }
