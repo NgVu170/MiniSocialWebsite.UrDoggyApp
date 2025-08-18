@@ -28,3 +28,6 @@ x86/
 *.cs
 *.vsidx
 *.cs
+/UrDoggy.Website/UrDoggy.Services/obj/Debug/net8.0
+*.cs
+*.cs
