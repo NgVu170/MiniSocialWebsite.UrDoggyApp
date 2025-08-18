@@ -4,6 +4,8 @@
 *.user
 *.userosscache
 *.sln.docstates
+bin/
+obj/
 
 # Build results
 [Bb]in/
