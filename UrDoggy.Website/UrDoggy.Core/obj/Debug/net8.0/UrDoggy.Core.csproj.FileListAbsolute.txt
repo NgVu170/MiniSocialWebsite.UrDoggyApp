@@ -13,3 +13,18 @@ C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\refint
 C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.pdb
 C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.genruntimeconfig.cache
 C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\ref\UrDoggy.Core.dll
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.deps.json
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.runtimeconfig.json
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.dll
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\bin\Debug\net8.0\UrDoggy.Core.pdb
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.csproj.AssemblyReference.cache
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.AssemblyInfoInputs.cache
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.AssemblyInfo.cs
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.csproj.CoreCompileInputs.cache
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.sourcelink.json
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.dll
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\refint\UrDoggy.Core.dll
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.pdb
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\UrDoggy.Core.genruntimeconfig.cache
+D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggy.Core\obj\Debug\net8.0\ref\UrDoggy.Core.dll

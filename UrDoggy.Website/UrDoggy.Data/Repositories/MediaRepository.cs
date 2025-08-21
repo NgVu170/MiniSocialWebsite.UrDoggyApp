@@ -8,7 +8,7 @@ using UrDoggy.Core.Models; // Meida
 
 namespace UrDoggy.Data.Repositories
 {
-    internal class MediaRepository
+    public class MediaRepository
     {
         private readonly ApplicationDbContext _context;
         public MediaRepository(ApplicationDbContext context)

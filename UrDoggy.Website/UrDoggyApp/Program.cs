@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using UrDoggy.Data;
 using UrDoggy.Website;
 using UrDoggy.Core.Models;
+using UrDoggy.Data.Repositories;
+using UrDoggy.Services.Interfaces;
+using UrDoggy.Services.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +26,20 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddDefaultTokenProviders();
 
 builder.Services.AddSignalR();
+// In Program.cs
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<PostRepository>();
+builder.Services.AddScoped<CommentRepository>();
+builder.Services.AddScoped<FriendRepository>();
+builder.Services.AddScoped<MessageRepositpry>();
+builder.Services.AddScoped<MediaRepository>();
+builder.Services.AddScoped<NotificationRepository>();
+builder.Services.AddScoped<ReportRepository>();
+
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 
 var app = builder.Build();
