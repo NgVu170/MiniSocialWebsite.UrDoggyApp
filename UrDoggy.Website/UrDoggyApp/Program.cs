@@ -35,11 +35,19 @@ builder.Services.AddScoped<MessageRepositpry>();
 builder.Services.AddScoped<MediaRepository>();
 builder.Services.AddScoped<NotificationRepository>();
 builder.Services.AddScoped<ReportRepository>();
+builder.Services.AddScoped<ReportRepository>();
+builder.Services.AddScoped<NotificationRepository>();
+builder.Services.AddScoped<FriendRepository>();
+builder.Services.AddScoped<CommentRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IReportService, ReportService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IFriendService, FriendService>();
+builder.Services.AddScoped<ICommentService, CommentService>();
 
 
 var app = builder.Build();

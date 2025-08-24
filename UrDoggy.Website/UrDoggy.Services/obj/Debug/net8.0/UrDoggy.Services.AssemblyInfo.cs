@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("UrDoggy.Services")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+4aa8aa3a1c97736e4c3c1d42107990f31e8d1a7a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7876c514a45f9ec339b714cdac44e36feb8088de")]
 [assembly: System.Reflection.AssemblyProductAttribute("UrDoggy.Services")]
 [assembly: System.Reflection.AssemblyTitleAttribute("UrDoggy.Services")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
