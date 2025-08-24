@@ -27,12 +27,4 @@ x86/
 *.cache
 *.cs
 *.vsidx
-*.cs
-/UrDoggy.Website/UrDoggy.Services/obj/Debug/net8.0
-*.cs
-*.cs
-/UrDoggy.Website/UrDoggy.Services/obj/Debug
-/UrDoggy.Website/UrDoggy.Services/obj
-/UrDoggy.Website/UrDoggy.Services
-/UrDoggy.Website/UrDoggy.Services/obj
 *.cache
