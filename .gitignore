@@ -25,4 +25,6 @@ x86/
 *.ldf
 *.mdf
 *.cache
+*.cs
 *.vsidx
+*.cache
