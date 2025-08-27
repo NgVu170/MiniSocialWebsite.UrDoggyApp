@@ -6,6 +6,7 @@ using UrDoggy.Core.Models;
 using UrDoggy.Data.Repositories;
 using UrDoggy.Services.Interfaces;
 using UrDoggy.Services.Service;
+using UrDoggy.Website.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -77,6 +78,6 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapHub<UrDoggy.Website.Hubs.ChatHub>("/chathub");
+app.MapHub<ChatHub>("/chathub");
 
 app.Run();
