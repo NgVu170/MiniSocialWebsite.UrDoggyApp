@@ -55,6 +55,7 @@ builder.Services.AddScoped<ReportRepository>();
 builder.Services.AddScoped<NotificationRepository>();
 builder.Services.AddScoped<FriendRepository>();
 builder.Services.AddScoped<CommentRepository>();
+builder.Services.AddScoped<MediaRepository>();
 //Interface
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
@@ -64,6 +65,7 @@ builder.Services.AddScoped<IReportService, ReportService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
+builder.Services.AddScoped<IMediaService, MediaService>();
 
 
 var app = builder.Build();

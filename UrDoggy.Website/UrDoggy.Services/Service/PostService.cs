@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,14 +16,17 @@ namespace UrDoggy.Services.Service
         private readonly MediaRepository _mediaRepository;
         private readonly UserRepository _userRepository;
         private readonly FriendRepository _friendRepository;
+        private readonly IMediaService _mediaService;
 
         public PostService(PostRepository postRepository, MediaRepository mediaRepository,
-                          UserRepository userRepository, FriendRepository friendRepository)
+                          UserRepository userRepository, FriendRepository friendRepository,
+                          IMediaService mediaService)
         {
             _postRepository = postRepository;
             _mediaRepository = mediaRepository;
             _userRepository = userRepository;
             _friendRepository = friendRepository;
+            _mediaService = mediaService;
         }
 
         public async Task<List<Post>> GetNewsfeed(int userId, int pageNumber = 1, int pageSize = 10)
