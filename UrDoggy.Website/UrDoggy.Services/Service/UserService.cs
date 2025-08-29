@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +39,11 @@ namespace UrDoggy.Services.Service
         public async Task<User> GetById(int userId)
         {
             return await _userRepository.GetByI(userId);
+        }
+
+        public async Task<User> GetByUsername(string username)
+        {
+            return await _userRepository.GetByUsername(username);
         }
 
         public async Task<List<User>> GetAllUsers()
