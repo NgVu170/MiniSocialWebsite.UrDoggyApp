@@ -1,0 +1,123 @@
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using UrDoggy.Core.Models;
+using UrDoggy.Services.Interfaces;
+
+namespace UrDoggy.Website.Controllers
+{
+    [Authorize(Roles = "Admin")]
+    public class AdminController : Controller
+    {
+        private readonly IUserService _userService;
+        private readonly IPostService _postService;
+        private readonly IReportService _reportService;
+        private readonly INotificationService _notificationService;
+
+        public AdminController(
+            IUserService userService,
+            IPostService postService,
+            IReportService reportService,
+            INotificationService notificationService)
+        {
+            _userService = userService;
+            _postService = postService;
+            _reportService = reportService;
+            _notificationService = notificationService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Dashboard()
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            var me = await _userService.GetById(userId);
+            if (me == null || !me.IsAdmin)
+                return Forbid();
+
+            var allUsers = await _userService.GetAllUsers();
+            var normalUsers = allUsers.Where(u => !u.IsAdmin).ToList();
+            var allPosts = await _postService.GetNewsfeed(userId, 1, 1000); // Lấy nhiều posts cho admin
+            var reports = await _reportService.GetAllReports();
+
+            ViewBag.UserCount = normalUsers.Count;
+            ViewBag.Users = normalUsers;
+            ViewBag.PostCount = allPosts.Count();
+            ViewBag.Posts = allPosts;
+            ViewBag.ReportCount = reports.Count;
+            ViewBag.Reports = reports;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            var me = await _userService.GetById(userId);
+            if (me == null || !me.IsAdmin)
+                return Forbid();
+
+            var target = await _userService.GetById(id);
+            if (target != null && !target.IsAdmin)
+                await _userService.DeleteUser(id);
+
+            return RedirectToAction("Dashboard");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePost(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            var me = await _userService.GetById(userId);
+            if (me == null || !me.IsAdmin)
+                return Forbid();
+
+            var post = await _postService.GetById(id);
+            if (post != null)
+            {
+                await _postService.DeletePost(id);
+                await _reportService.DeleteReportsForPost(id);
+                await _notificationService.AdminDeletedPost(post.UserId, post.Id, me.UserName);
+            }
+
+            return RedirectToAction("Dashboard");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteReport(int id)
+        {
+            var userId = GetCurrentUserId();
+            if (userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            var me = await _userService.GetById(userId);
+            if (me == null || !me.IsAdmin)
+                return Forbid();
+
+            await _reportService.DeleteReport(id);
+            return RedirectToAction("Dashboard");
+        }
+
+        private int GetCurrentUserId()
+        {
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (int.TryParse(userIdClaim, out int userId))
+            {
+                return userId;
+            }
+            return 0;
+        }
+    }
+}

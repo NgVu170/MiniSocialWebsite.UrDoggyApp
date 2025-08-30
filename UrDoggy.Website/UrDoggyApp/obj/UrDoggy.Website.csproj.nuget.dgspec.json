@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj": {}
+    "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj": {}
   },
   "projects": {
-    "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+    "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+        "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
         "projectName": "UrDoggy.Core",
-        "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+        "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
+        "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -107,14 +107,14 @@
         }
       }
     },
-    "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
+    "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj",
+        "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj",
         "projectName": "UrDoggy.Data",
-        "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj",
+        "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\obj\\",
+        "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -135,8 +135,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
               }
             }
           }
@@ -214,14 +214,14 @@
         }
       }
     },
-    "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj": {
+    "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
+        "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
         "projectName": "UrDoggy.Services",
-        "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
+        "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\obj\\",
+        "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -242,11 +242,11 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
               },
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
               }
             }
           }
@@ -324,14 +324,14 @@
         }
       }
     },
-    "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj": {
+    "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
+        "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
         "projectName": "UrDoggy.Website",
-        "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
+        "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\UrDoggy.Website.csproj",
         "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-        "outputPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\obj\\",
+        "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -352,14 +352,14 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
               },
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
               },
-              "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj": {
-                "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj"
+              "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj": {
+                "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj"
               }
             }
           }

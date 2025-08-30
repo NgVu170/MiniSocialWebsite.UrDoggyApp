@@ -6186,11 +6186,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+      "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
       "projectName": "UrDoggy.Core",
-      "projectPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+      "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
       "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
+      "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

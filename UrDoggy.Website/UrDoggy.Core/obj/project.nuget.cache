@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "sRWvvTspid8=",
+  "dgSpecHash": "zhK2/w3BGOY=",
   "success": true,
-  "projectFilePath": "D:\\Đồ án cơ sở\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+  "projectFilePath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\DELL\\.nuget\\packages\\azure.core\\1.38.0\\azure.core.1.38.0.nupkg.sha512",
     "C:\\Users\\DELL\\.nuget\\packages\\azure.identity\\1.11.4\\azure.identity.1.11.4.nupkg.sha512",
