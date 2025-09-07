@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using System.Security.Claims;
+using UrDoggy.Core.Models;
 using UrDoggy.Services.Interfaces;
+using UrDoggy.Services.Service;
 using UrDoggy.Website.Hubs;
 
 namespace UrDoggy.Website.Controllers
@@ -12,16 +15,18 @@ namespace UrDoggy.Website.Controllers
     {
         private readonly INotificationService _notificationService;
         private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly IUserService _userService;
 
-        public NotificationsController(INotificationService notificationService, IHubContext<NotificationHub> hubContext)
+        public NotificationsController(INotificationService notificationService, IHubContext<NotificationHub> hubContext, IUserService userService)
         {
             _notificationService = notificationService;
             _hubContext = hubContext;
+            _userService = userService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -38,7 +43,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNotifications()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
@@ -51,7 +56,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUnreadCount()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
@@ -64,7 +69,7 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAsRead(int notificationId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
@@ -89,7 +94,7 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAllAsRead()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
@@ -106,21 +111,19 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         public async Task<IActionResult> DeleteNotification(int notificationId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
             }
-
-            // Ở đây cần thêm method DeleteNotification trong service
-            // Tạm thời redirect về index
+            await _notificationService.DeleteNotificationsForPost(notificationId);
             return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<IActionResult> ClearAll()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return Unauthorized();
@@ -131,16 +134,6 @@ namespace UrDoggy.Website.Controllers
             await _notificationService.MarkAllRead(userId);
 
             return RedirectToAction("Index");
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
         }
     }
 }

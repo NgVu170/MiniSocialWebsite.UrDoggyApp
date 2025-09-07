@@ -22,7 +22,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string tab = "all")
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -58,7 +58,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendRequest(int friendId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -79,7 +79,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Respond(int requestId, bool accept)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -100,7 +100,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Unfriend(int friendId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -120,7 +120,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> SearchFriends(string query)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return Unauthorized();
 
@@ -142,16 +142,6 @@ namespace UrDoggy.Website.Controllers
                 .ToList();
 
             return Ok(results);
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
         }
     }
 }

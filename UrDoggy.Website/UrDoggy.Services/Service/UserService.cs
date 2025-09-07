@@ -1,12 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using UrDoggy.Core.Models;
 using UrDoggy.Data.Repositories;
 using UrDoggy.Services.Interfaces;
+using UrDoggy.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace UrDoggy.Services.Service
 {
@@ -14,11 +18,13 @@ namespace UrDoggy.Services.Service
     {
         private readonly UserRepository _userRepository;
         private readonly FriendRepository _friendRepository;
+        private readonly UserManager<User> _userManager;
 
-        public UserService(UserRepository userRepository, FriendRepository friendRepository)
+        public UserService(UserRepository userRepository, FriendRepository friendRepository, UserManager<User> userManager)
         {
             _userRepository = userRepository;
             _friendRepository = friendRepository;
+            _userManager = userManager;
         }
 
         public async Task<User> GetProfile(int userId)
@@ -72,6 +78,17 @@ namespace UrDoggy.Services.Service
         {
             var user = await _userRepository.GetByEmail(email);
             return user != null;
+        }
+
+        public async Task<int> GetCurrentUserId(ClaimsPrincipal user)
+        {
+            var currentUser = await _userManager.GetUserAsync(user);
+            return currentUser?.Id ?? 0;
+        }
+
+        public async Task<User> GetCurrentUser(ClaimsPrincipal user)
+        {
+            return await _userManager.GetUserAsync(user);
         }
     }
 }

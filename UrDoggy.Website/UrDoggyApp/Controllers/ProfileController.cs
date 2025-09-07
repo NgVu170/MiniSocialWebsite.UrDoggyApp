@@ -33,7 +33,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/{id:int?}")]
         public async Task<IActionResult> Index(int? id)
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -73,7 +73,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/Detail/{id:int}")]
         public async Task<IActionResult> Detail(int id)
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -120,7 +120,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/Edit")]
         public async Task<IActionResult> Edit()
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -137,7 +137,7 @@ namespace UrDoggy.Website.Controllers
             string displayName,
             string bio)
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -181,7 +181,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Search(string q)
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -218,7 +218,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/Friends/{id:int}")]
         public async Task<IActionResult> Friends(int id)
         {
-            var sessionUserId = GetCurrentUserId();
+            var sessionUserId = await _userService.GetCurrentUserId(User);
             if (sessionUserId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -238,16 +238,6 @@ namespace UrDoggy.Website.Controllers
             ViewBag.FriendCount = friends.Count;
 
             return View("FriendsList", friends);
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
         }
     }
 }

@@ -34,7 +34,7 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/Index")]
         public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -68,7 +68,7 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/Details/{id:int}")]
         public async Task<IActionResult> Details(int id)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -85,7 +85,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -134,7 +134,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int postId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -163,7 +163,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Vote(int postId, bool isUpvote)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -198,9 +198,9 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Hide")]
         [ValidateAntiForgeryToken]
-        public IActionResult Hide(int postId)
+        public async Task<IActionResult> Hide(int postId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -219,9 +219,9 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Unhide")]
         [ValidateAntiForgeryToken]
-        public IActionResult Unhide(int postId)
+        public async Task<IActionResult> Unhide(int postId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -242,7 +242,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(int postId, string content)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -280,7 +280,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -309,7 +309,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditComment(int commentId, string content)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -363,7 +363,7 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/HasVoted/{postId:int}")]
         public async Task<IActionResult> HasVoted(int postId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return Unauthorized();
 
@@ -382,7 +382,7 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/UploadMedia")]
         public async Task<IActionResult> UploadMedia(IFormFile file)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
                 return Unauthorized();
 
@@ -400,16 +400,6 @@ namespace UrDoggy.Website.Controllers
             {
                 return StatusCode(500, new { success = false, error = ex.Message });
             }
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
         }
 
         private List<int> GetHiddenPostIdsFromCookie(string cookieValue)

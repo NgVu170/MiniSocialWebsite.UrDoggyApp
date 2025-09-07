@@ -24,7 +24,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Report/Create/{postId:int}")]
         public async Task<IActionResult> Create(int postId)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -47,7 +47,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(int postId, string reason)
         {
-            var reporterId = GetCurrentUserId();
+            var reporterId = await _userService.GetCurrentUserId(User);
             if (reporterId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -84,7 +84,7 @@ namespace UrDoggy.Website.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> List()
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -105,7 +105,7 @@ namespace UrDoggy.Website.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
-            var userId = GetCurrentUserId();
+            var userId = await _userService.GetCurrentUserId(User);
             if (userId == 0)
             {
                 return RedirectToAction("Login", "Auth");
@@ -128,16 +128,6 @@ namespace UrDoggy.Website.Controllers
             }
 
             return RedirectToAction("List");
-        }
-
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
         }
     }
 }

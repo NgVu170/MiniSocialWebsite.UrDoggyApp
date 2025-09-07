@@ -31,7 +31,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? otherUserId)
         {
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -108,7 +108,7 @@ namespace UrDoggy.Website.Controllers
                 return RedirectToAction("Index", new { otherUserId = toUserId });
             }
 
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -134,7 +134,7 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int messageId, int? otherUserId)
         {
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -154,7 +154,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> GetConversations()
         {
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return Unauthorized();
 
@@ -165,7 +165,7 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         public async Task<IActionResult> MarkAsRead(int otherUserId)
         {
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return Unauthorized();
 
@@ -176,7 +176,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> GetUnreadCount()
         {
-            var meId = GetCurrentUserId();
+            var meId = await _userService.GetCurrentUserId(User);
             if (meId == 0)
                 return Unauthorized();
 
@@ -192,14 +192,5 @@ namespace UrDoggy.Website.Controllers
             return Ok(totalUnread);
         }
 
-        private int GetCurrentUserId()
-        {
-            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (int.TryParse(userIdClaim, out int userId))
-            {
-                return userId;
-            }
-            return 0;
-        }
     }
 }
