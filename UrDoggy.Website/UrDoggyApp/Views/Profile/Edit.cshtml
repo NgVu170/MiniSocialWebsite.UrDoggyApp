@@ -1,0 +1,54 @@
+﻿@model UrDoggy.Core.Models.User
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var defaultAvatar = Url.Content("~/images/default-avatar.png");
+    string avatarUrl = string.IsNullOrWhiteSpace(Model.ProfilePicture)
+        ? defaultAvatar
+        : Url.Content(Model.ProfilePicture);
+}
+
+<h2>Edit Profile</h2>
+
+<form asp-action="Edit"
+      method="post"
+      enctype="multipart/form-data">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label class="form-label">Current Avatar</label><br />
+        <img src="@avatarUrl"
+             alt="Avatar"
+             class="rounded-circle"
+             style="width:100px;height:100px;" />
+    </div>
+
+    <div class="mb-3">
+        <label for="avatar" class="form-label">Upload New Avatar</label>
+        <input type="file"
+               name="avatar"
+               id="avatar"
+               accept="image/*"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="displayName" class="form-label">Display Name</label>
+        <input type="text"
+               name="displayName"
+               id="displayName"
+               value="@Model.DisplayName"
+               class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label for="bio" class="form-label">Bio</label>
+        <textarea name="bio"
+                  id="bio"
+                  class="form-control"
+                  rows="3">@Model.Bio</textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancel</a>
+</form>

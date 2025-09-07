@@ -1,0 +1,259 @@
+﻿@model UrDoggy.Core.Models.Post
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int? sessionUserId = Context.Session.GetInt32("UserId");
+    int currentUserId = sessionUserId ?? 0;
+    bool isMine = sessionUserId.HasValue && sessionUserId.Value == Model.UserId;
+    var defaultAvatar = Url.Content("~/images/default-avatar.png");
+    var postAuthor = UserService.GetById(Model.UserId);
+    string postAuthorAvatar = string.IsNullOrWhiteSpace(postAuthor?.ProfilePicture)
+        ? defaultAvatar
+        : Url.Content(postAuthor.ProfilePicture);
+    var userForComment = UserService.GetById(currentUserId);
+    string createCommentAvatar = string.IsNullOrWhiteSpace(userForComment?.ProfilePicture)
+        ? defaultAvatar
+        : Url.Content(userForComment.ProfilePicture);
+}
+
+<div class="post-card p-4 bg-white rounded shadow-sm">
+
+    <div class="d-flex justify-content-between mb-3">
+        <div class="d-flex align-items-center">
+            <img src="@postAuthorAvatar"
+                 class="rounded-circle me-2"
+                 style="width:48px;height:48px;" />
+            <div>
+                <a asp-controller="Profile"
+                   asp-action="Index"
+                   asp-route-id="@Model.UserId"
+                   class="text-dark">
+                    <strong>@Model.Username</strong>
+                </a>
+                <small class="text-muted ms-2">@Model.CreatedAt:g</small>
+            </div>
+        </div>
+        @if (isMine)
+        {
+            <div class="d-flex">
+                <button type="button"
+                        class="btn btn-sm btn-outline-primary me-2"
+                        onclick="startPostEdit(@Model.Id)">
+                    Edit
+                </button>
+                <form method="post"
+                      asp-controller="Newsfeed"
+                      asp-action="Delete">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="postId" value="@Model.Id" />
+                    <button class="btn btn-sm btn-light text-danger">Delete</button>
+                </form>
+            </div>
+        }
+    </div>
+
+    <div id="editPostBox@Model.Id" class="d-none mb-3">
+        <form method="post"
+              asp-controller="Newsfeed"
+              asp-action="Edit"
+              enctype="multipart/form-data">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <textarea name="content"
+                      class="form-control mb-2"
+                      rows="3">@Model.Content</textarea>
+            <input type="file"
+                   name="mediaFile"
+                   accept="image/*,video/*"
+                   class="form-control mb-2" />
+            <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
+            <button type="button"
+                    class="btn btn-secondary btn-sm"
+                    onclick="cancelPostEdit(@Model.Id)">
+                Cancel
+            </button>
+        </form>
+    </div>
+
+    <p>@Model.Content</p>
+
+    @if (!string.IsNullOrEmpty(Model.MediaPath))
+    {
+        if (Model.MediaType == "image")
+        {
+            <img src="@Model.MediaPath"
+                 class="img-fluid rounded mb-3"
+                 alt="Post image" />
+        }
+        else
+        {
+            <video controls class="w-100 rounded mb-3">
+                <source src="@Model.MediaPath" type="video/mp4" />
+                Your browser does not support video.
+            </video>
+        }
+    }
+
+    <div class="d-flex align-items-center gap-3 mb-4">
+        <form asp-controller="Newsfeed"
+              asp-action="Vote"
+              method="post"
+              class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <button name="isUpvote"
+                    value="true"
+                    class="btn btn-sm btn-outline-success">
+                ⬆️ @Model.UpVotes
+            </button>
+        </form>
+
+        <form asp-controller="Newsfeed"
+              asp-action="Vote"
+              method="post"
+              class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <button name="isUpvote"
+                    value="false"
+                    class="btn btn-sm btn-outline-danger">
+                ⬇️ @Model.DownVotes
+            </button>
+        </form>
+
+        <button type="button"
+                class="btn btn-sm btn-outline-secondary"
+                onclick="copyShareLink(@Model.Id)">
+            🔗 Share
+        </button>
+
+        <form asp-controller="Newsfeed"
+              asp-action="Hide"
+              method="post"
+              class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@Model.Id" />
+            <button class="btn btn-sm btn-outline-secondary">Hide</button>
+        </form>
+
+        @if (!isMine)
+        {
+            <a asp-controller="Report"
+               asp-action="Create"
+               asp-route-postId="@Model.Id"
+               class="btn btn-sm btn-outline-warning">🚩 Report</a>
+        }
+    </div>
+
+    <form method="post"
+          asp-controller="Newsfeed"
+          asp-action="AddComment"
+          class="mb-4">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="postId" value="@Model.Id" />
+        <div class="d-flex">
+            <img src="@createCommentAvatar"
+                 class="rounded-circle"
+                 style="width:48px;height:48px;" />
+            <textarea name="content"
+                      class="form-control ms-2"
+                      rows="2"
+                      placeholder="Write a comment..."
+                      required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-sm mt-2">Comment</button>
+    </form>
+
+    @foreach (var c in Model.Comments)
+    {
+        bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == c.UserId;
+        var commenter = UserService.GetById(c.UserId);
+        string commenterAvatarUrl = string.IsNullOrWhiteSpace(commenter?.ProfilePicture)
+        ? defaultAvatar
+        : Url.Content(commenter.ProfilePicture);
+        string editCommentDivId = "edit-comment-" + c.Id;
+
+        <div class="ms-5 mt-3">
+            <div class="d-flex justify-content-between">
+                <div class="d-flex align-items-start">
+                    <img src="@commenterAvatarUrl"
+                         class="rounded-circle me-2"
+                         style="width:40px;height:40px;" />
+                    <div>
+                        <strong>@c.Username</strong>
+                        <small class="text-muted ms-2">@c.CreatedAt:g</small>
+                        <div>@c.Content</div>
+                    </div>
+                </div>
+                @if (isOwnComment)
+                {
+                    <div>
+                        <button type="button"
+                                class="btn btn-sm btn-link text-primary p-0 me-2"
+                                onclick="startCommentEdit(@c.Id)">
+                            Edit
+                        </button>
+                        <form asp-controller="Newsfeed"
+                              asp-action="DeleteComment"
+                              method="post"
+                              class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="commentId" value="@c.Id" />
+                            <input type="hidden" name="postId" value="@Model.Id" />
+                            <button type="submit"
+                                    class="btn btn-sm btn-link text-danger p-0">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                }
+            </div>
+
+            <div id="@editCommentDivId" class="mt-2" style="display:none;">
+                <form asp-controller="Newsfeed"
+                      asp-action="EditComment"
+                      method="post"
+                      class="d-flex">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="commentId" value="@c.Id" />
+                    <input type="hidden" name="postId" value="@Model.Id" />
+                    <textarea name="content"
+                              class="form-control me-2"
+                              rows="1"
+                              required>@c.Content</textarea>
+                    <button type="submit" class="btn btn-sm btn-primary me-1">Save</button>
+                    <button type="button" class="btn btn-sm btn-secondary"
+                            onclick="cancelCommentEdit(@c.Id)">
+                        Cancel
+                    </button>
+                </form>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function copyShareLink(postId) {
+            const url = `${window.location.origin}/Newsfeed/Details/${postId}`;
+            navigator.clipboard.writeText(url).catch(console.error);
+        }
+        function startPostEdit(postId) {
+            document.getElementById(`editPostBox${postId}`)
+                    .classList.remove("d-none");
+        }
+        function cancelPostEdit(postId) {
+            document.getElementById(`editPostBox${postId}`)
+                    .classList.add("d-none");
+        }
+        function startCommentEdit(commentId) {
+            document.getElementById(`edit-comment-${commentId}`)
+                    .style.display = "block";
+        }
+        function cancelCommentEdit(commentId) {
+            document.getElementById(`edit-comment-${commentId}`)
+                    .style.display = "none";
+        }
+    </script>
+}

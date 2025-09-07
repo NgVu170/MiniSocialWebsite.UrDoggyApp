@@ -1,0 +1,175 @@
+﻿@using Microsoft.AspNetCore.Mvc
+@inject UrDoggy.Services.Interfaces.IFriendService FriendService
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+
+@{
+    Layout = "_Layout";
+    string active = (ViewBag.ActiveTab as string) ?? "all";
+
+    var friends = ViewBag.Friends as List<UrDoggy.Core.Models.User> ?? new List<UrDoggy.Core.Models.User>();
+    var requestsRaw = ViewBag.Requests as List<(int RequestId, int RequesterId, string Username)>
+                        ?? new List<(int, int, string)>();
+    var newFriends = ViewBag.NewFriends as List<UrDoggy.Core.Models.User>
+                        ?? new List<UrDoggy.Core.Models.User>();
+    var incoming = ViewBag.IncomingIds as HashSet<int>
+                        ?? new HashSet<int>();
+    var requestMap = ViewBag.RequestMap as Dictionary<int, int>
+                        ?? new Dictionary<int, int>();
+    int? sessionUserId = Context.Session.GetInt32("UserId");
+    var defaultAvatar = Url.Content("~/images/default-avatar.png");
+}
+
+@section LeftSidebar {
+    <ul class="list-group">
+        <li class="list-group-item @(active=="all"      ? "active" : "")">
+            <a asp-controller="Friends"
+               asp-action="Index"
+               asp-route-tab="all"
+               class="text-decoration-none text-dark">
+                All Friends
+            </a>
+        </li>
+        <li class="list-group-item @(active=="requests" ? "active" : "")">
+            <a asp-route-tab="requests"
+               asp-action="Index"
+               asp-controller="Friends"
+               class="text-decoration-none text-dark">
+                Friend Requests
+            </a>
+        </li>
+        <li class="list-group-item @(active=="new"      ? "active" : "")">
+            <a asp-route-tab="new"
+               asp-action="Index"
+               asp-controller="Friends"
+               class="text-decoration-none text-dark">
+                New Friends
+            </a>
+        </li>
+    </ul>
+}
+
+<div>
+    @if (active == "all")
+    {
+        <h4>Your Friends</h4>
+        @if (!friends.Any())
+        {
+            <p class="text-muted">You have no friends yet.</p>
+        }
+        else
+        {
+            @foreach (var f in friends)
+            {
+                var avatarUrl = string.IsNullOrWhiteSpace(f.ProfilePicture)
+                ? defaultAvatar
+                : Url.Content(f.ProfilePicture);
+
+                <div class="card mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <img src="@avatarUrl"
+                             class="rounded-circle"
+                             style="width:64px;height:64px;" />
+                        <div class="flex-grow-1 ms-3"><strong>@f.Username</strong></div>
+                        <form asp-action="Unfriend" method="post" class="m-0">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="friendId" value="@f.Id" />
+                            <button class="btn btn-sm btn-danger">Unfriend</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    else if (active == "requests")
+    {
+        <h4>Pending Friend Requests</h4>
+        @if (!requestsRaw.Any())
+        {
+            <p class="text-muted">No pending requests.</p>
+        }
+        else
+        {
+            @foreach (var req in requestsRaw)
+            {
+                var avatarUrl = string.IsNullOrWhiteSpace(UserService
+                .GetById(req.RequesterId)?.ProfilePicture)
+                ? defaultAvatar
+                : Url.Content(UserService.GetById(req.RequesterId).ProfilePicture);
+
+                <div class="card mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <img src="@avatarUrl"
+                             class="rounded-circle"
+                             style="width:64px;height:64px;" />
+                        <div class="flex-grow-1 ms-3"><strong>@req.Username</strong></div>
+                        <form asp-action="Respond" method="post" class="d-inline me-1">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="requestId" value="@req.RequestId" />
+                            <input type="hidden" name="accept" value="true" />
+                            <button class="btn btn-sm btn-primary">Confirm</button>
+                        </form>
+                        <form asp-action="Respond" method="post" class="d-inline">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="requestId" value="@req.RequestId" />
+                            <input type="hidden" name="accept" value="false" />
+                            <button class="btn btn-sm btn-secondary">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            }
+        }
+    }
+
+    else
+    {
+        <h4>New Friends</h4>
+        @if (!newFriends.Any())
+        {
+            <p class="text-muted">No new users to connect with.</p>
+        }
+        else
+        {
+            @foreach (var u in newFriends)
+            {
+                var avatarUrl = string.IsNullOrWhiteSpace(u.ProfilePicture)
+                ? defaultAvatar
+                : Url.Content(u.ProfilePicture);
+
+                <div class="card mb-3">
+                    <div class="card-body d-flex align-items-center">
+                        <img src="@avatarUrl"
+                             class="rounded-circle"
+                             style="width:64px;height:64px;" />
+                        <div class="flex-grow-1 ms-3"><strong>@u.Username</strong></div>
+
+                        @if (incoming.Contains(u.Id) && requestMap.TryGetValue(u.Id, out var reqId))
+                        {
+                            <form asp-action="Respond" method="post" class="d-inline me-1">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="requestId" value="@reqId" />
+                                <input type="hidden" name="accept" value="true" />
+                                <button class="btn btn-sm btn-primary">Confirm</button>
+                            </form>
+                            <form asp-action="Respond" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="requestId" value="@reqId" />
+                                <input type="hidden" name="accept" value="false" />
+                                <button class="btn btn-sm btn-secondary">Delete</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="SendRequest" method="post" class="m-0">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="friendId" value="@u.Id" />
+                                <button class="btn btn-sm btn-primary">Add Friend</button>
+                            </form>
+                        }
+
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

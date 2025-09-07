@@ -1,0 +1,29 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var postId = ViewBag.PostId;
+}
+
+<h2>Report Post</h2>
+
+<form method="post"
+      asp-controller="Report"
+      asp-action="CreatePost">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="postId" value="@postId" />
+
+    <div class="mb-3">
+        <label for="reason" class="form-label">Select Reason</label>
+        <select id="reason" name="reason" class="form-select" required>
+            <option value="">-- Choose a reason --</option>
+            <option value="Inappropriate content">Inappropriate content</option>
+            <option value="Spam">Spam</option>
+            <option value="Harassment">Harassment</option>
+            <option value="Other">Other</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-danger">Submit Report</button>
+    <a asp-controller="Newsfeed"
+       asp-action="Index"
+       class="btn btn-secondary ms-2">Cancel</a>
+</form>
