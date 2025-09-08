@@ -1,10 +1,10 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\",
+  "WorkspaceRootPath": "D:\\\u0110\u1ED3 \u00E1n tr\u00EAn tr\u01B0\u1EDDng\\d\u1EF1 \u00E1n\\\u0110\u1ED3 \u00E1n chuy\u00EAn ng\u00E0nh\\D\u1EF1 \u00E1n\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|c:\\users\\admin\\desktop\\dacn\\urdoggy.website\\urdoggy.data\\repositories\\mediarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{90565775-5506-4C3A-9E2F-5DFBBF2A16A3}|UrDoggy.Data\\UrDoggy.Data.csproj|solutionrelative:urdoggy.data\\repositories\\mediarepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|d:\\\u0111\u1ED3 \u00E1n tr\u00EAn tr\u01B0\u1EDDng\\d\u1EF1 \u00E1n\\\u0111\u1ED3 \u00E1n chuy\u00EAn ng\u00E0nh\\d\u1EF1 \u00E1n\\minisocialwebsite.urdoggyapp\\urdoggy.website\\urdoggyapp\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{1BE8C7C7-FC38-4B09-81A5-F99C2538130E}|UrDoggyApp\\UrDoggy.Website.csproj|solutionrelative:urdoggyapp\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +14,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Bookmark",
@@ -22,24 +22,44 @@
             },
             {
               "$type": "Bookmark",
-              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
-            },
-            {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+              "Name": "ST:0:0:{aa2115a1-9712-457b-9047-dbb71ca2cdd2}"
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "MediaRepository.cs",
-              "DocumentMoniker": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\MediaRepository.cs",
-              "RelativeDocumentMoniker": "UrDoggy.Data\\Repositories\\MediaRepository.cs",
-              "ToolTip": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\Repositories\\MediaRepository.cs",
-              "RelativeToolTip": "UrDoggy.Data\\Repositories\\MediaRepository.cs",
-              "ViewState": "AgIAAD4AAAAAAAAAAAAIwG8AAAAVAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-08-18T07:02:57.334Z",
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "D:\\\u0110\u1ED3 \u00E1n tr\u00EAn tr\u01B0\u1EDDng\\d\u1EF1 \u00E1n\\\u0110\u1ED3 \u00E1n chuy\u00EAn ng\u00E0nh\\D\u1EF1 \u00E1n\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "UrDoggyApp\\Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "D:\\\u0110\u1ED3 \u00E1n tr\u00EAn tr\u01B0\u1EDDng\\d\u1EF1 \u00E1n\\\u0110\u1ED3 \u00E1n chuy\u00EAn ng\u00E0nh\\D\u1EF1 \u00E1n\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggyApp\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "UrDoggyApp\\Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-09-08T14:04:53.131Z",
               "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 168,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 641,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             }
           ]
         }
