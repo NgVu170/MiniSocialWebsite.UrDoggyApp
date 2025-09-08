@@ -93,16 +93,16 @@
                 <div class="card-footer">
                     @foreach (var c in Model.CommentsMap[post.Id])
                     {
-                        var commenterAvatar = string.IsNullOrWhiteSpace(c.ProfilePicture)
+                        var commenterAvatar = string.IsNullOrWhiteSpace(c.User.ProfilePicture)
                         ? defaultAvatar
-                        : Url.Content(c.ProfilePicture);
+                        : Url.Content(c.User.ProfilePicture);
 
                         <div class="d-flex align-items-start mb-2">
                             <img src="@commenterAvatar"
                                  class="rounded-circle me-2"
                                  width="32" height="32" />
                             <div>
-                                <strong>@c.Username</strong> @c.Content
+                                <strong>@c.User.UserName</strong> @c.Content
                                 <div class="text-muted small">
                                     @c.CreatedAt.ToString("t")
                                 </div>

@@ -24,10 +24,12 @@ namespace UrDoggy.Website
                     UserName = "admin",
                     Email = adminEmail,
                     EmailConfirmed = true,
+                    PasswordHash = userManager.PasswordHasher.HashPassword(null, adminPassword),
                     // thêm 3 dòng này:
                     DisplayName = "Admin",
                     Bio = string.Empty,
-                    ProfilePicture = string.Empty
+                    ProfilePicture = string.Empty,
+                    IsAdmin = true
                 };
                 await userManager.CreateAsync(admin, adminPassword);
                 await userManager.AddToRoleAsync(admin, "Admin");

@@ -29,7 +29,17 @@
                    asp-action="Index"
                    asp-route-id="@Model.UserId"
                    class="text-dark">
-                    <strong>@Model.UserName</strong>
+                    @{
+						var authorName = await UserService.GetById(Model.UserId);
+						if (authorName != null)
+						{
+							@authorName.DisplayName
+						}
+						else
+						{
+							@:"Unknown User"
+						}
+                    }
                 </a>
                 <small class="text-muted ms-2">@Model.CreatedAt:g</small>
             </div>
@@ -77,23 +87,22 @@
     </div>
 
     <p>@Model.Content</p>
-
-    @if (!string.IsNullOrEmpty(Model.MediaPath))
-    {
-        if (Model.MediaType == "image")
-        {
-            <img src="@Model.MediaPath"
-                 class="img-fluid rounded mb-3"
-                 alt="Post image" />
-        }
-        else
-        {
-            <video controls class="w-100 rounded mb-3">
-                <source src="@Model.MediaPath" type="video/mp4" />
-                Your browser does not support video.
-            </video>
-        }
-    }
+	@foreach (var item in Model.MediaItems)
+	{
+		if (item.MediaType == "image")
+		{
+			<img src="@item.Path"
+				 class="img-fluid rounded mb-3"
+				 alt="Post image" />
+		}
+		else if (item.MediaType == "video")
+		{
+			<video controls class="w-100 rounded mb-3">
+				<source src="@item.=Path" type="video/mp4" />
+				Your browser does not support video.
+			</video>
+		}
+	})
 
     <div class="d-flex align-items-center gap-3 mb-4">
         <form asp-controller="Newsfeed"
@@ -168,7 +177,7 @@
     @foreach (var c in Model.Comments)
     {
         bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == c.UserId;
-        var commenter = UserService.GetById(c.UserId);
+        var commenter = await UserService.GetById(c.UserId);
         string commenterAvatarUrl = string.IsNullOrWhiteSpace(commenter?.ProfilePicture)
         ? defaultAvatar
         : Url.Content(commenter.ProfilePicture);
@@ -181,7 +190,7 @@
                          class="rounded-circle me-2"
                          style="width:40px;height:40px;" />
                     <div>
-                        <strong>@c.Username</strong>
+                        <strong>@c.User.UserName</strong>
                         <small class="text-muted ms-2">@c.CreatedAt:g</small>
                         <div>@c.Content</div>
                     </div>

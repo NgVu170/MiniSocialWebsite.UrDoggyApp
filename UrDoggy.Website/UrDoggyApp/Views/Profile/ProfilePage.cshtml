@@ -31,23 +31,23 @@
 
 <div class="text-center mb-4">
     <img src="@profileUserAvatarUrl"
-         class="rounded-circle"
-         style="width:240px;height:240px;" />
+    class="rounded-circle"
+    style="width:240px;height:240px;" />
     <h2 class="mt-2">@Model.DisplayName</h2>
     <p class="text-muted">@Model.Bio</p>
 
     @if (isOwnProfile)
     {
         <a asp-controller="Profile"
-           asp-action="Edit"
-           class="btn btn-secondary">Edit Profile</a>
+        asp-action="Edit"
+        class="btn btn-secondary">Edit Profile</a>
     }
     else if (isFriend)
     {
         <form asp-controller="Friends"
-              asp-action="Unfriend"
-              method="post"
-              class="d-inline">
+        asp-action="Unfriend"
+        method="post"
+        class="d-inline">
             @Html.AntiForgeryToken()
             <input type="hidden" name="friendId" value="@Model.Id" />
             <button type="submit" class="btn btn-outline-danger">Unfriend</button>
@@ -60,9 +60,9 @@
     else if (hasReceived)
     {
         <form asp-controller="Friends"
-              asp-action="Respond"
-              method="post"
-              class="d-inline">
+        asp-action="Respond"
+        method="post"
+        class="d-inline">
             @Html.AntiForgeryToken()
             <input type="hidden" name="requestId" value="@(ViewBag.RequestId)" />
             <button name="accept" value="true" class="btn btn-sm btn-success">Accept</button>
@@ -72,9 +72,9 @@
     else if (canSendRequest)
     {
         <form asp-controller="Friends"
-              asp-action="SendRequest"
-              method="post"
-              class="d-inline">
+        asp-action="SendRequest"
+        method="post"
+        class="d-inline">
             @Html.AntiForgeryToken()
             <input type="hidden" name="friendId" value="@Model.Id" />
             <button type="submit" class="btn btn-primary">Add Friend</button>
@@ -84,9 +84,9 @@
     @if (!isOwnProfile)
     {
         <a asp-controller="Messages"
-           asp-action="Index"
-           asp-route-otherUserId="@Model.Id"
-           class="btn btn-primary ms-2">
+        asp-action="Index"
+        asp-route-otherUserId="@Model.Id"
+        class="btn btn-primary ms-2">
             <i class="fas fa-comment-dots"></i> Message
         </a>
     }
@@ -109,10 +109,16 @@ else
             <div class="d-flex justify-content-between mb-2">
                 <div>
                     <a asp-controller="Profile"
-                       asp-action="Index"
-                       asp-route-id="@post.UserId"
-                       class="text-dark">
-                        <strong>@post.UserName</strong>
+                    asp-action="Index"
+                    asp-route-id="@post.UserId"
+                    class="text-dark">
+                        @{
+                            var userFind = await UserService.GetById(post.UserId);
+                            if (userFind != null)
+                            {
+                                <strong>@userFind.UserName</strong>
+                            }
+                        }
                     </a>
                     <small class="text-muted ms-2">@post.CreatedAt:g</small>
                 </div>
@@ -208,9 +214,9 @@ else
             @foreach (var comment in post.Comments)
             {
                 bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
-                string commenterAvatarUrl = string.IsNullOrWhiteSpace(comment.ProfilePicture)
+                string commenterAvatarUrl = string.IsNullOrWhiteSpace(comment.User.ProfilePicture)
                 ? Url.Content("~/images/default-avatar.png")
-                : Url.Content(comment.ProfilePicture);
+                : Url.Content(comment.User.ProfilePicture);
 
                 <div class="d-flex mb-2 ms-4">
                     <img src="@commenterAvatarUrl"
@@ -222,7 +228,13 @@ else
                                 <a asp-controller="Profile"
                                    asp-action="Index"
                                    asp-route-id="@comment.UserId">
-                                    <strong>@comment.Username</strong>
+                                    @{
+                                        var userFind = await UserService.GetById(post.UserId);
+                                        if (userFind != null)
+                                        {
+                                            <strong>@userFind.UserName</strong>
+                                        }
+                                    }
                                 </a>
                                 <span class="ms-1">@comment.Content</span>
                             </div>

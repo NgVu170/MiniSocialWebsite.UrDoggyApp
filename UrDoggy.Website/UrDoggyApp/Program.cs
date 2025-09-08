@@ -94,7 +94,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Authu}/{action=Login}/{id?}");
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<NotificationHub>("/notificationhub");
