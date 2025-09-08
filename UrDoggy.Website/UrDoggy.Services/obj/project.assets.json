@@ -6229,23 +6229,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DELL\\.nuget\\packages\\": {},
+    "C:\\Users\\admin\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
+      "projectUniqueName": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
       "projectName": "UrDoggy.Services",
-      "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
-      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Services\\obj\\",
+      "projectPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\UrDoggy.Services.csproj",
+      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Services\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -6260,11 +6260,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
-              "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
+            "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj": {
+              "projectPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj"
             },
-            "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
-              "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
+            "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj": {
+              "projectPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Data\\UrDoggy.Data.csproj"
             }
           }
         }
@@ -6338,7 +6338,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

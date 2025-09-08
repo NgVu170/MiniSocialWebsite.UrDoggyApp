@@ -16,19 +16,19 @@
 else
 {
     <ul class="list-group">
-        @foreach (var u in Model)
+        @foreach (var user in Model)
         {
-            string avatarUrl = string.IsNullOrWhiteSpace(
-            UserService.GetById(u.Id)?.ProfilePicture)
+            var u = await UserService.GetById(user.Id);
+            var avatarUrl = string.IsNullOrWhiteSpace(u?.ProfilePicture)
             ? defaultAvatar
-            : Url.Content(UserService.GetById(u.Id).ProfilePicture);
+            : Url.Content(u.ProfilePicture);
 
             <li class="list-group-item d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <img src="@avatarUrl"
                          class="rounded-circle me-3"
                          style="width:40px;height:40px;" />
-                    <a href="/Profile/@u.Id">@u.Username</a>
+                    <a href="/Profile/@u.Id">@u.UserName</a>
                 </div>
 
                 @if (me.HasValue && me.Value != u.Id)

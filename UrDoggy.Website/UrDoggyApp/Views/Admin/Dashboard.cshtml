@@ -72,14 +72,14 @@
                         <td>@u.Id</td>
                         <td>
                             <a asp-controller="Profile" asp-action="Index" asp-route-id="@u.Id">
-                                @u.Username
+                                @u.UserName
                             </a>
                         </td>
                         <td>@u.Email</td>
                         <td>@u.CreatedAt:yyyy-MM-dd</td>
                         <td>
                             <form asp-controller="Admin" asp-action="DeleteUser" method="post"
-                                  onsubmit="return confirm('Delete user @u.Username?');">
+                                  onsubmit="return confirm('Delete user @u.UserName?');">
                                 <input name="id" type="hidden" value="@u.Id" />
                                 <button class="btn btn-sm btn-danger">Delete</button>
                             </form>
@@ -103,7 +103,7 @@
             <tbody>
                 @foreach (var p in posts)
                 {
-                    var author = UserService.GetById(p.UserId);
+                    var author = await UserService.GetById(p.UserId);
                     bool exists = PostService.GetById(p.Id) != null;
                     <tr>
                         <td>@p.Id</td>
@@ -111,7 +111,7 @@
                             @if (author != null)
                             {
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@author.Id">
-                                    @author.Username
+                                   @author.UserName
                                 </a>
                             }
                             else
@@ -164,7 +164,7 @@
             <tbody>
                 @foreach (var r in reports)
                 {
-                    var reporter = UserService.GetById(r.ReporterId);
+                    var reporter = await UserService.GetById(r.ReporterId);
                     bool postExists = PostService.GetById(r.PostId) != null;
                     <tr>
                         <td>@r.Id</td>
@@ -184,7 +184,7 @@
                             @if (reporter != null)
                             {
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@reporter.Id">
-                                    @reporter.Username
+                                    @reporter.UserName
                                 </a>
                             }
                             else

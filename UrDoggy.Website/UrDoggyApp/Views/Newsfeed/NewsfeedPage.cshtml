@@ -6,7 +6,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     int? sessionUserId = Context.Session.GetInt32("UserId");
     var currentUser = sessionUserId.HasValue
-        ? UserService.GetById(sessionUserId.Value)
+        ? await UserService.GetById(sessionUserId.Value)
         : null;
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
@@ -32,7 +32,7 @@
 {
     bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
     string editPostDivId = "edit-post-" + post.Id;
-    var postAuthor = UserService.GetById(post.UserId);
+    var postAuthor = await UserService.GetById(post.UserId);
     string postAuthorAvatarUrl = string.IsNullOrWhiteSpace(postAuthor?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(postAuthor.ProfilePicture);
@@ -43,7 +43,7 @@
                 <img src="@postAuthorAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
                 <div class="ms-2">
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId" class="text-dark">
-                        <strong>@post.Username</strong>
+                        <strong>@post.UserName</strong>
                     </a>
                     <small class="text-muted ms-1">@post.CreatedAt:g</small>
                 </div>

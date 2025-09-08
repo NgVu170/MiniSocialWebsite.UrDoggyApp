@@ -7,11 +7,11 @@
     int currentUserId = sessionUserId ?? 0;
     bool isMine = sessionUserId.HasValue && sessionUserId.Value == Model.UserId;
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
-    var postAuthor = UserService.GetById(Model.UserId);
+    var postAuthor = await UserService.GetById(Model.UserId);
     string postAuthorAvatar = string.IsNullOrWhiteSpace(postAuthor?.ProfilePicture)
         ? defaultAvatar
         : Url.Content(postAuthor.ProfilePicture);
-    var userForComment = UserService.GetById(currentUserId);
+    var userForComment = await UserService.GetById(currentUserId);
     string createCommentAvatar = string.IsNullOrWhiteSpace(userForComment?.ProfilePicture)
         ? defaultAvatar
         : Url.Content(userForComment.ProfilePicture);
@@ -29,7 +29,7 @@
                    asp-action="Index"
                    asp-route-id="@Model.UserId"
                    class="text-dark">
-                    <strong>@Model.Username</strong>
+                    <strong>@Model.UserName</strong>
                 </a>
                 <small class="text-muted ms-2">@Model.CreatedAt:g</small>
             </div>

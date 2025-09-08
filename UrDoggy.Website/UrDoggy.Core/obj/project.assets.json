@@ -6180,23 +6180,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\DELL\\.nuget\\packages\\": {},
+    "C:\\Users\\admin\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+      "projectUniqueName": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
       "projectName": "UrDoggy.Core",
-      "projectPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
-      "packagesPath": "C:\\Users\\DELL\\.nuget\\packages\\",
-      "outputPath": "D:\\Đồ án trên trường\\dự án\\Đồ án chuyên ngành\\Dự án\\MiniSocialWebsite.UrDoggyApp\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
+      "projectPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\UrDoggy.Core.csproj",
+      "packagesPath": "C:\\Users\\admin\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\admin\\Desktop\\DACN\\UrDoggy.Website\\UrDoggy.Core\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\DELL\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -6282,7 +6282,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.203/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -8,7 +8,7 @@
 
     int? sessionUserId = Context.Session.GetInt32("UserId");
     var currentUser = sessionUserId.HasValue
-        ? UserService.GetById(sessionUserId.Value)
+        ? await UserService.GetById(sessionUserId.Value)
         : null;
 
     bool isOwnProfile = (bool)ViewBag.IsOwn;
@@ -92,7 +92,7 @@
     }
 </div>
 
-<h4>@Model.Username’s Posts</h4>
+<h4>@Model.UserName’s Posts</h4>
 
 @if (!posts.Any())
 {
@@ -112,7 +112,7 @@ else
                        asp-action="Index"
                        asp-route-id="@post.UserId"
                        class="text-dark">
-                        <strong>@post.Username</strong>
+                        <strong>@post.UserName</strong>
                     </a>
                     <small class="text-muted ms-2">@post.CreatedAt:g</small>
                 </div>

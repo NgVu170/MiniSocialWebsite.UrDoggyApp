@@ -69,7 +69,7 @@
                         <img src="@avatarUrl"
                              class="rounded-circle"
                              style="width:64px;height:64px;" />
-                        <div class="flex-grow-1 ms-3"><strong>@f.Username</strong></div>
+                        <div class="flex-grow-1 ms-3"><strong>@f.UserName</strong></div>
                         <form asp-action="Unfriend" method="post" class="m-0">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="friendId" value="@f.Id" />
@@ -92,10 +92,10 @@
         {
             @foreach (var req in requestsRaw)
             {
-                var avatarUrl = string.IsNullOrWhiteSpace(UserService
-                .GetById(req.RequesterId)?.ProfilePicture)
+                var currentUser = await UserService.GetById(req.RequesterId);
+                var avatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
                 ? defaultAvatar
-                : Url.Content(UserService.GetById(req.RequesterId).ProfilePicture);
+                : Url.Content(currentUser.ProfilePicture);
 
                 <div class="card mb-3">
                     <div class="card-body d-flex align-items-center">
@@ -141,7 +141,7 @@
                         <img src="@avatarUrl"
                              class="rounded-circle"
                              style="width:64px;height:64px;" />
-                        <div class="flex-grow-1 ms-3"><strong>@u.Username</strong></div>
+                        <div class="flex-grow-1 ms-3"><strong>@u.UserName</strong></div>
 
                         @if (incoming.Contains(u.Id) && requestMap.TryGetValue(u.Id, out var reqId))
                         {

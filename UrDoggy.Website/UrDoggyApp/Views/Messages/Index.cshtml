@@ -21,7 +21,7 @@
             @foreach (var c in chats)
             {
                 bool isActive = c.OtherId == activeId;
-                var user = UserService.GetById(c.OtherId);
+                var user = await UserService.GetById(c.OtherId);
                 string avatarUrl = string.IsNullOrWhiteSpace(user?.ProfilePicture)
                 ? defaultAvatar
                 : Url.Content(user.ProfilePicture);
@@ -61,7 +61,7 @@
 @section RightSidebar {
     @if (partner != null)
     {
-        var user = UserService.GetById(partner.OtherId);
+        var user = await UserService.GetById(partner.OtherId);
         string avatarUrl = string.IsNullOrWhiteSpace(user?.ProfilePicture)
             ? defaultAvatar
             : Url.Content(user.ProfilePicture);
@@ -119,7 +119,7 @@
                 }
                 @m.Content
                 <div class="small text-muted mt-1 text-end">
-                    @(mine ? "You" : m.SenderName) @m.SentAt.ToString("g")
+                    @(mine ? "You" : m.Sender.UserName) @m.SentAt.ToString("g")
                 </div>
             </div>
         </div>
