@@ -17,85 +17,85 @@ build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = UrDoggy.Website
 build_property.RootNamespace = UrDoggy.Website
-build_property.ProjectDir = C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggyApp\
+build_property.ProjectDir = D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggyApp\
 build_property.EnableComHosting = 
 build_property.EnableGeneratedComInterfaceComImportInterop = 
 build_property.RazorLangVersion = 8.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\admin\Desktop\DACN\UrDoggy.Website\UrDoggyApp
+build_property.MSBuildProjectDirectory = D:\Đồ án trên trường\dự án\Đồ án chuyên ngành\Dự án\MiniSocialWebsite.UrDoggyApp\UrDoggy.Website\UrDoggyApp
 build_property._RazorSourceGeneratorDebug = 
 build_property.EffectiveAnalysisLevelStyle = 8.0
 build_property.EnableCodeStyleSeverity = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Admin/Dashboard.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Admin/Dashboard.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQWRtaW5cRGFzaGJvYXJkLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Auth/Login.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Auth/Login.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxMb2dpbi5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Auth/Register.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Auth/Register.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQXV0aFxSZWdpc3Rlci5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Friends/Index.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Friends/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRnJpZW5kc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Messages/Index.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Messages/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTWVzc2FnZXNcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Newsfeed/NewsfeedDetailPage.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Newsfeed/NewsfeedDetailPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3c2ZlZWRcTmV3c2ZlZWREZXRhaWxQYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Newsfeed/NewsfeedPage.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Newsfeed/NewsfeedPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmV3c2ZlZWRcTmV3c2ZlZWRQYWdlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Notifications/Index.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Notifications/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTm90aWZpY2F0aW9uc1xJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Profile/Edit.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Profile/Edit.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxFZGl0LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Profile/ProfileDetailPage.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Profile/ProfileDetailPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxQcm9maWxlRGV0YWlsUGFnZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Profile/ProfilePage.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Profile/ProfilePage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxQcm9maWxlUGFnZS5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Profile/SearchResults.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Profile/SearchResults.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUHJvZmlsZVxTZWFyY2hSZXN1bHRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Report/ReportPage.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Report/ReportPage.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUmVwb3J0XFJlcG9ydFBhZ2UuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Shared/Error.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Shared/_ValidationScriptsPartial.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/_ViewImports.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/_ViewStart.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/admin/Desktop/DACN/UrDoggy.Website/UrDoggyApp/Views/Shared/_Layout.cshtml]
+[D:/Đồ án trên trường/dự án/Đồ án chuyên ngành/Dự án/MiniSocialWebsite.UrDoggyApp/UrDoggy.Website/UrDoggyApp/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-mawps0b7jb

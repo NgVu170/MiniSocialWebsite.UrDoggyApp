@@ -156,7 +156,7 @@ namespace UrDoggy.Website.Controllers
 
                 try
                 {
-                    newAvatarPath = await _mediaService.SaveMediaAsync(avatar);
+                    newAvatarPath = await _mediaService.SaveMedia(avatar);
                 }
                 catch (Exception ex)
                 {

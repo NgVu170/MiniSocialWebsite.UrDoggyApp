@@ -75,20 +75,16 @@ namespace UrDoggy.Website.Controllers
                 return Unauthorized();
             }
 
-            // Lấy tất cả notifications và tìm cái cần mark as read
-            var notifications = await _notificationService.GetNotifications(userId);
-            var notification = notifications.FirstOrDefault(n => n.Id == notificationId);
+            var success = await _notificationService.MarkAsRead(notificationId, userId);
 
-            if (notification != null)
+            if (success)
             {
-                notification.IsRead = true;
-                // Ở đây cần thêm method UpdateNotification trong service nếu muốn update individual
+                // Gửi real-time update
+                await _hubContext.Clients.User(userId.ToString())
+                    .SendAsync("NotificationMarkedAsRead", notificationId);
             }
 
-            // Hiện tại chỉ có MarkAllRead, nên có thể cần thêm method mới trong service
-            await _notificationService.MarkAllRead(userId);
-
-            return Ok();
+            return Ok(new { success });
         }
 
         [HttpPost]
@@ -129,9 +125,10 @@ namespace UrDoggy.Website.Controllers
                 return Unauthorized();
             }
 
-            // Ở đây cần thêm method ClearAllNotifications trong service
-            // Tạm thời sử dụng MarkAllRead
-            await _notificationService.MarkAllRead(userId);
+            await _notificationService.ClearAllNotifications(userId);
+
+            // Gửi real-time update
+            await _hubContext.Clients.User(userId.ToString()).SendAsync("AllNotificationsCleared");
 
             return RedirectToAction("Index");
         }

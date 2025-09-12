@@ -76,10 +76,11 @@
                             </a>
                         </td>
                         <td>@u.Email</td>
-                        <td>@u.CreatedAt:yyyy-MM-dd</td>
+                        <td>@u.CreatedAt.ToString("yyyy-MM-dd")</td>
                         <td>
                             <form asp-controller="Admin" asp-action="DeleteUser" method="post"
                                   onsubmit="return confirm('Delete user @u.UserName?');">
+                                @Html.AntiForgeryToken()
                                 <input name="id" type="hidden" value="@u.Id" />
                                 <button class="btn btn-sm btn-danger">Delete</button>
                             </form>
@@ -103,11 +104,13 @@
             <tbody>
                 @foreach (var p in posts)
                 {
-                    var author = await UserService.GetById(p.UserId);
-                    bool exists = PostService.GetById(p.Id) != null;
                     <tr>
                         <td>@p.Id</td>
                         <td>
+                            @{
+                                var author = await UserService.GetById(p.UserId);
+                                var postExists = await PostService.GetById(p.Id) != null;
+                            }
                             @if (author != null)
                             {
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@author.Id">
@@ -120,7 +123,7 @@
                             }
                         </td>
                         <td>
-                            @if (exists)
+                            @if (postExists)
                             {
                                 <a asp-controller="Newsfeed" asp-action="Details" asp-route-id="@p.Id">
                                     @(p.Content.Length > 50
@@ -165,7 +168,7 @@
                 @foreach (var r in reports)
                 {
                     var reporter = await UserService.GetById(r.ReporterId);
-                    bool postExists = PostService.GetById(r.PostId) != null;
+                    var postExists = await PostService.GetById(r.PostId) != null;
                     <tr>
                         <td>@r.Id</td>
                         <td>

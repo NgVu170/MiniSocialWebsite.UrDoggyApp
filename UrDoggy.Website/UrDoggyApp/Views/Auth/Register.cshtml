@@ -102,6 +102,7 @@
         <p class="text-success">Enter your email to sign up for this app</p>
 
         <form method="post">
+            @Html.AntiForgeryToken()
             <input type="text"
                    name="username"
                    class="form-control mb-3"

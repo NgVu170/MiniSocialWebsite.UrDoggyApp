@@ -22,5 +22,6 @@ namespace UrDoggy.Services.Interfaces
         Task SharePost(int postId, int userId);
         Task<List<Post>> GetUserPosts(int userId, int pageNumber = 1, int pageSize = 10);
         Task<int> GetPostCount(int userId);
+        Task<int> GetTotalPostCount(int userId);
     }
 }

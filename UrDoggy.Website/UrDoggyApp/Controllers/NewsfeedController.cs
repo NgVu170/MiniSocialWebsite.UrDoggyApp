@@ -58,7 +58,7 @@ namespace UrDoggy.Website.Controllers
 
             ViewBag.CurrentPage = page;
             ViewBag.PageSize = pageSize;
-            ViewBag.TotalPosts = (await _postService.GetNewsfeed(userId, 1, 1000)).Count();
+            ViewBag.TotalPosts = await _postService.GetTotalPostCount(userId); // Sử dụng phương thức mới
             ViewBag.HiddenPostIds = hiddenIds;
 
             return View("NewsfeedPage", visiblePosts);
@@ -97,23 +97,11 @@ namespace UrDoggy.Website.Controllers
                 {
                     foreach (var mediaFile in mediaFiles)
                     {
-                        if (mediaFile.Length > 0)
+                        if (mediaFile.Length > 0 && await _mediaService.IsValidMediaFile(mediaFile))
                         {
-                            var uploads = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-                            Directory.CreateDirectory(uploads);
-
-                            var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(mediaFile.FileName)}";
-                            var filePath = Path.Combine(uploads, fileName);
-
-                            using (var stream = new FileStream(filePath, FileMode.Create))
-                            {
-                                await mediaFile.CopyToAsync(stream);
-                            }
-
-                            var mediaPath = $"/uploads/{fileName}";
-                            var mediaType = mediaFile.ContentType.StartsWith("image/") ? "image" : "video";
-
-                            mediaItems.Add((mediaPath, mediaType));
+                            var filePath = await _mediaService.SaveMedia(mediaFile);
+                            var mediaType = await _mediaService.GetMediaType(mediaFile);
+                            mediaItems.Add((filePath, mediaType));
                         }
                     }
                 }
@@ -393,7 +381,7 @@ namespace UrDoggy.Website.Controllers
                     return BadRequest(new { success = false, error = "File không hợp lệ" });
                 }
 
-                var filePath = await _mediaService.SaveMediaAsync(file);
+                var filePath = await _mediaService.SaveMedia(file);
                 return Ok(new { success = true, path = filePath });
             }
             catch (Exception ex)

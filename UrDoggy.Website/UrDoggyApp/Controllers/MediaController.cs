@@ -19,7 +19,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("post/{postId}")]
         public async Task<IActionResult> GetPostMedia(int postId)
         {
-            var media = await _mediaService.GetMediaByPostIdAsync(postId);
+            var media = await _mediaService.GetMediaByPostId(postId);
             return Ok(media);
         }
 
@@ -33,7 +33,7 @@ namespace UrDoggy.Website.Controllers
 
             try
             {
-                var filePath = await _mediaService.SaveMediaAsync(file);
+                var filePath = await _mediaService.SaveMedia(file);
                 return Ok(new { Path = filePath });
             }
             catch (Exception ex)
@@ -42,22 +42,23 @@ namespace UrDoggy.Website.Controllers
             }
         }
 
+        
         [HttpDelete("{mediaId}")]
         public async Task<IActionResult> DeleteMedia(int mediaId, int postId)
         {
             try
             {
-                var media = (await _mediaService.GetMediaByPostIdAsync(postId))
+                var media = (await _mediaService.GetMediaByPostId(postId))
                     .FirstOrDefault(m => m.Id == mediaId);
 
                 if (media == null)
                     return NotFound();
 
                 // Xóa file vật lý
-                await _mediaService.DeleteMediaFileAsync(media.Path);
+                await _mediaService.DeleteMediaFile(media.Path);
 
                 // Xóa record trong database
-                await _mediaService.DeleteMediaByIdAsync(postId, mediaId);
+                await _mediaService.DeleteMediaById(postId, mediaId);
 
                 return Ok("Media deleted successfully");
             }

@@ -31,9 +31,9 @@ namespace UrDoggy.Data
             // ======================
             model.Entity<User>(e =>
             {
-                e.Property(x => x.DisplayName).HasMaxLength(128);
-                e.Property(x => x.ProfilePicture).HasMaxLength(512);
-                e.Property(x => x.Bio).HasMaxLength(2000);
+                e.Property(x => x.DisplayName).HasMaxLength(128).IsRequired(false);
+                e.Property(x => x.ProfilePicture).HasMaxLength(512).IsRequired(false);
+                e.Property(x => x.Bio).HasMaxLength(2000).IsRequired(false);
             });
 
             // ======================

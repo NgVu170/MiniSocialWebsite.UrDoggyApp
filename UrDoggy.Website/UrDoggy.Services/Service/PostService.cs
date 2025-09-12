@@ -119,5 +119,14 @@ namespace UrDoggy.Services.Service
             var allPosts = await _postRepository.GetAllPost();
             return allPosts.Count(p => p.UserId == userId);
         }
+
+        public async Task<int> GetTotalPostCount(int userId)
+        {
+            var friends = await _friendRepository.GetFriends(userId);
+            var friendIds = friends.Select(f => f.Id).ToList();
+            friendIds.Add(userId);
+
+            return await _postRepository.GetTotalPostCount(friendIds);
+        }
     }
 }

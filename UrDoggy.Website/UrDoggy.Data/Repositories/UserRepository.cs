@@ -39,7 +39,7 @@ namespace UrDoggy.Data.Repositories
                 EmailConfirmed = false,
                 LockoutEnabled = true,
             };
-            var result = _userManager.CreateAsync(user, password).Result;
+            var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
             {
                 throw new Exception($"User registration failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");

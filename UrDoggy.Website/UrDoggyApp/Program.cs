@@ -13,6 +13,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 //Database
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
@@ -23,9 +24,15 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     options.Password.RequireDigit = true;
     options.Password.RequireUppercase = false;
     options.Password.RequiredLength = 6;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = false;
+    options.SignIn.RequireConfirmedAccount = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
-.AddDefaultTokenProviders();
+.AddDefaultTokenProviders()
+.AddUserManager<UserManager<User>>()
+.AddRoleManager<RoleManager<IdentityRole<int>>>();
+
 
 //Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -51,11 +58,6 @@ builder.Services.AddScoped<MessageRepositpry>();
 builder.Services.AddScoped<MediaRepository>();
 builder.Services.AddScoped<NotificationRepository>();
 builder.Services.AddScoped<ReportRepository>();
-builder.Services.AddScoped<ReportRepository>();
-builder.Services.AddScoped<NotificationRepository>();
-builder.Services.AddScoped<FriendRepository>();
-builder.Services.AddScoped<CommentRepository>();
-builder.Services.AddScoped<MediaRepository>();
 //Interface
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
@@ -70,18 +72,30 @@ builder.Services.AddScoped<IMediaService, MediaService>();
 
 var app = builder.Build();
 
-//Adnin Seeder
+//Admin Seeder
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await AdminSeeder.SeederAdmin(services);
+    try
+    {
+        await AdminSeeder.SeederAdmin(services);
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding admin user. Error: {ErrorMessage}", ex.Message);
+
+        if (ex.InnerException != null)
+        {
+            logger.LogError("Inner exception: {InnerException}", ex.InnerException.Message);
+        }
+    }
 }
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -90,11 +104,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Authu}/{action=Login}/{id?}");
+    pattern: "{controller=Auth}/{action=Login}/{id?}");
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<NotificationHub>("/notificationhub");
