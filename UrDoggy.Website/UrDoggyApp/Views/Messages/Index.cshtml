@@ -6,7 +6,7 @@
 
 @{
     Layout = "_Layout";
-    int me = Context.Session.GetInt32("UserId") ?? 0;
+    int me = ViewBag.CurrentUserId;
     var chats = ((IEnumerable)ViewBag.Chats).Cast<ConversationDto>().ToList();
     int activeId = (int)ViewBag.ActiveUser;
     var thread = (List<Message>)ViewBag.Thread;
@@ -119,7 +119,7 @@
                 }
                 @m.Content
                 <div class="small text-muted mt-1 text-end">
-                    @(mine ? "You" : m.Sender.UserName) @m.SentAt.ToString("g")
+                    @(mine ? "You" : (m.Sender?.UserName ?? "Unknown")) @m.SentAt.ToString("g")
                 </div>
             </div>
         </div>

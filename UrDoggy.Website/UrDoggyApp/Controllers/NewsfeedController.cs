@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using UrDoggy.Core.Models;
 using UrDoggy.Services.Interfaces;
+using UrDoggy.Services.Service;
 
 namespace UrDoggy.Website.Controllers
 {
@@ -141,6 +143,65 @@ namespace UrDoggy.Website.Controllers
             catch (Exception ex)
             {
                 TempData["Error"] = "Xóa bài viết thất bại: " + ex.Message;
+            }
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Route("/Newsfeed/Edit")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int postId, string content, List<IFormFile> mediaFiles)
+        {
+            var userId = await _userService.GetCurrentUserId(User);
+            if (userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            try
+            {
+                // Lấy post hiện tại để kiểm tra quyền sở hữu
+                var existingPost = await _postService.GetById(postId);
+                if (existingPost == null || existingPost.UserId != userId)
+                {
+                    TempData["Error"] = "Bạn không có quyền sửa bài viết này";
+                    return RedirectToAction("Index");
+                }
+
+                // Xử lý media files nếu có
+                var mediaItems = new List<(string path, string mediaType)>();
+                if (mediaFiles != null && mediaFiles.Count > 0)
+                {
+                    foreach (var mediaFile in mediaFiles)
+                    {
+                        if (mediaFile.Length > 0 && await _mediaService.IsValidMediaFile(mediaFile))
+                        {
+                            var filePath = await _mediaService.SaveMedia(mediaFile);
+                            var mediaType = await _mediaService.GetMediaType(mediaFile);
+                            mediaItems.Add((filePath, mediaType));
+                        }
+                    }
+                }
+
+                // Tạo post object mới với dữ liệu updated
+                var updatedPost = new Post
+                {
+                    Id = postId,
+                    Content = content,
+                    UserId = userId,
+                    MediaItems = mediaItems.Select(m => new Media
+                    {
+                        Path = m.path,
+                        MediaType = m.mediaType
+                    }).ToList()
+                };
+
+                // Gọi service để update
+                await _postService.EditPost(updatedPost);
+                TempData["Success"] = "Đã sửa bài viết thành công";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "Sửa bài viết thất bại: " + ex.Message;
             }
 
             return RedirectToAction("Index");

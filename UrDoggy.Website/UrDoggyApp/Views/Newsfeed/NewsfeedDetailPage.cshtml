@@ -3,7 +3,8 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int? sessionUserId = Context.Session.GetInt32("UserId");
+    // int? sessionUserId = Context.Session.GetInt32("UserId");
+    int? sessionUserId = await UserService.GetCurrentUserId(User);
     int currentUserId = sessionUserId ?? 0;
     bool isMine = sessionUserId.HasValue && sessionUserId.Value == Model.UserId;
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
@@ -74,7 +75,8 @@
                       class="form-control mb-2"
                       rows="3">@Model.Content</textarea>
             <input type="file"
-                   name="mediaFile"
+                   name="mediaFiles"
+                   multiple
                    accept="image/*,video/*"
                    class="form-control mb-2" />
             <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
@@ -98,7 +100,7 @@
 		else if (item.MediaType == "video")
 		{
 			<video controls class="w-100 rounded mb-3">
-				<source src="@item.=Path" type="video/mp4" />
+				<source src="@item=Path" type="video/mp4" />
 				Your browser does not support video.
 			</video>
 		}
@@ -114,7 +116,7 @@
             <button name="isUpvote"
                     value="true"
                     class="btn btn-sm btn-outline-success">
-                ⬆️ @Model.UpVotes
+                @Model.UpVotes
             </button>
         </form>
 
@@ -127,14 +129,14 @@
             <button name="isUpvote"
                     value="false"
                     class="btn btn-sm btn-outline-danger">
-                ⬇️ @Model.DownVotes
+                @Model.DownVotes
             </button>
         </form>
 
         <button type="button"
                 class="btn btn-sm btn-outline-secondary"
                 onclick="copyShareLink(@Model.Id)">
-            🔗 Share
+            Share
         </button>
 
         <form asp-controller="Newsfeed"
@@ -151,7 +153,7 @@
             <a asp-controller="Report"
                asp-action="Create"
                asp-route-postId="@Model.Id"
-               class="btn btn-sm btn-outline-warning">🚩 Report</a>
+               class="btn btn-sm btn-outline-warning">Report</a>
         }
     </div>
 

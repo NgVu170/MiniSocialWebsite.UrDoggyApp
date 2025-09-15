@@ -3,7 +3,8 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var me = Context.Session.GetInt32("UserId");
+    // var me = Context.Session.GetInt32("UserId");
+    var me = ViewBag.CurrentUserId;
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
 }
 

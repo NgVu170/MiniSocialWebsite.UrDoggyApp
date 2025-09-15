@@ -15,7 +15,7 @@
                         ?? new HashSet<int>();
     var requestMap = ViewBag.RequestMap as Dictionary<int, int>
                         ?? new Dictionary<int, int>();
-    int? sessionUserId = Context.Session.GetInt32("UserId");
+    int? sessionUserId = ViewBag.CurrentUserId ?? 0;
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
 }
 

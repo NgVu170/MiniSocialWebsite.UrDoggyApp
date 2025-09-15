@@ -4,7 +4,8 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    int? sessionUserId = Context.Session.GetInt32("UserId");
+    // int? sessionUserId = Context.Session.GetInt32("UserId");
+    int? sessionUserId = ViewBag.CurrentUserId;
     var currentUser = sessionUserId.HasValue
         ? await UserService.GetById(sessionUserId.Value)
         : null;
@@ -22,7 +23,7 @@
             placeholder="What's on your mind?" required></textarea>
         </div>
         <div class="mb-2">
-            <input type="file" name="mediaFile" accept="image/*,video/*" class="form-control" />
+            <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
         <button type="submit" class="btn btn-success">Post</button>
     </form>
@@ -79,7 +80,7 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <textarea name="content" class="form-control mb-2" rows="3">@post.Content</textarea>
-                <input type="file" name="mediaFile" accept="image/*,video/*" class="form-control mb-2" />
+                <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control mb-2" />
                 <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
                 <button type="button" class="btn btn-secondary btn-sm" onclick="cancelPostEdit(@post.Id)">
                     Cancel
@@ -103,37 +104,40 @@
         @*     } *@
         @* } *@
 
-		@foreach (var item in post.MediaItems)
-		{
-			if (item.MediaType == "image")
-			{
-				<img src="@item.Path" class="img-fluid rounded mb-3" alt="Post image" />
-			}
-			else if (item.MediaType == "video")
-			{
-				<video controls class="w-100 rounded mb-3">
-					<source src="@item.Path" type="video/mp4" />
-				</video>
-			}
-		})
+        @if (post.MediaItems != null && post.MediaItems.Any())
+        {
+            @foreach (var item in post.MediaItems)
+		    {
+			    if (item.MediaType == "image")
+			    {
+				    <img src="@item.Path" class="img-fluid rounded mb-3" alt="Post image" />
+			    }
+			    else if (item.MediaType == "video")
+			    {
+				    <video controls class="w-100 rounded mb-3">
+					    <source src="@item.Path" type="video/mp4" />
+				    </video>
+			    }
+		    }
+        }
 
         <div class="d-flex align-items-center gap-2 mb-3">
             <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <button name="isUpvote" value="true" class="btn btn-sm btn-outline-success">
-                    ⬆️ @post.UpVotes
+                    @post.UpVotes
                 </button>
             </form>
             <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <button name="isUpvote" value="false" class="btn btn-sm btn-outline-danger">
-                    ⬇️ @post.DownVotes
+                    @post.DownVotes
                 </button>
             </form>
             <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyShareLink(@post.Id)">
-                🔗 Share
+                Share
             </button>
             <form asp-controller="Newsfeed" asp-action="Hide" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
@@ -148,7 +152,7 @@
             @if (!isOwnPost)
             {
                 <a asp-controller="Report" asp-action="Create" asp-route-postId="@post.Id"
-                   class="btn btn-sm btn-outline-warning">🚩 Report</a>
+                   class="btn btn-sm btn-outline-warning">Report</a>
             }
         </div>
 
