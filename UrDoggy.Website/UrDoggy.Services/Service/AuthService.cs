@@ -59,7 +59,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<User> GetUserById(int userId)
         {
-            return await _userRepository.GetByI(userId);
+            return await _userRepository.GetById(userId);
         }
 
         public async Task<bool> IsEmailConfirmed(User user)

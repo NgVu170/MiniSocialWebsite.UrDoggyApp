@@ -33,8 +33,9 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/{id:int?}")]
         public async Task<IActionResult> Index(int? id)
         {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
+            var uId = HttpContext.Session.GetInt32("UserId");
+            var sessionUserId = uId.Value;
+            if (sessionUserId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -46,7 +47,7 @@ namespace UrDoggy.Website.Controllers
                 return NotFound();
             }
 
-            var userPosts = await _postService.GetUserPosts(profileUserId, 1, 20);
+            var userPosts = await _postService.GetUserPosts(profileUserId);
 
             foreach (var post in userPosts)
             {
@@ -73,8 +74,9 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/Detail/{id:int}")]
         public async Task<IActionResult> Detail(int id)
         {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
+            var uId = HttpContext.Session.GetInt32("UserId");
+            var sessionUserId = uId.Value;
+            if (sessionUserId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -85,7 +87,7 @@ namespace UrDoggy.Website.Controllers
                 return NotFound();
             }
 
-            var userPosts = await _postService.GetUserPosts(id, 1, 20);
+            var userPosts = await _postService.GetUserPosts(id);
 
             var commentsMap = new Dictionary<int, List<Comment>>();
             foreach (var post in userPosts)
@@ -120,13 +122,13 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Profile/Edit")]
         public async Task<IActionResult> Edit()
         {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
+            var sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (sessionUserId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            var profileUser = await _userService.GetById(sessionUserId);
+            var profileUser = await _userService.GetById(sessionUserId.Value);
             return View("Edit", profileUser);
         }
 
@@ -137,8 +139,8 @@ namespace UrDoggy.Website.Controllers
             string displayName,
             string bio)
         {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
+            var sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (sessionUserId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -147,7 +149,6 @@ namespace UrDoggy.Website.Controllers
 
             if (avatar != null && avatar.Length > 0)
             {
-                // Validate avatar file
                 if (!await _mediaService.IsValidMediaFile(avatar))
                 {
                     TempData["Error"] = "Ảnh đại diện không hợp lệ. Chỉ chấp nhận ảnh dưới 10MB";
@@ -167,7 +168,7 @@ namespace UrDoggy.Website.Controllers
 
             try
             {
-                await _userService.UpdateProfile(sessionUserId, displayName, bio, newAvatarPath);
+                await _userService.UpdateProfile(sessionUserId.Value, displayName, bio, newAvatarPath);
                 TempData["Success"] = "Cập nhật hồ sơ thành công";
             }
             catch (Exception ex)
@@ -175,69 +176,23 @@ namespace UrDoggy.Website.Controllers
                 TempData["Error"] = "Cập nhật hồ sơ thất bại: " + ex.Message;
             }
 
-            return RedirectToAction("Index", new { id = sessionUserId });
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
         public async Task<IActionResult> Search(string q)
         {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
+            var sessionUserId = HttpContext.Session.GetInt32("UserId");
+            if (sessionUserId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
             var searchResults = await _userService.Search(q ?? string.Empty);
 
-            // Get friend status for each user
-            var resultsWithStatus = new List<object>();
-            foreach (var user in searchResults)
-            {
-                var isFriend = await _friendService.AreFriends(sessionUserId, user.Id);
-                var hasSentRequest = await _friendService.HasPendingRequest(sessionUserId, user.Id);
-                var hasReceivedRequest = await _friendService.HasPendingRequest(user.Id, sessionUserId);
-
-                resultsWithStatus.Add(new
-                {
-                    user.Id,
-                    user.UserName,
-                    user.DisplayName,
-                    user.ProfilePicture,
-                    user.Bio,
-                    IsFriend = isFriend,
-                    HasSentRequest = hasSentRequest,
-                    HasReceivedRequest = hasReceivedRequest,
-                    CanSendRequest = !(user.Id == sessionUserId || isFriend || hasSentRequest || hasReceivedRequest)
-                });
-            }
-
             ViewBag.SearchQuery = q;
-            return View("~/Views/Profile/SearchResults.cshtml", resultsWithStatus);
+            return View("~/Views/Profile/SearchResults.cshtml", searchResults);
         }
 
-        [HttpGet("/Profile/Friends/{id:int}")]
-        public async Task<IActionResult> Friends(int id)
-        {
-            var sessionUserId = await _userService.GetCurrentUserId(User);
-            if (sessionUserId == 0)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            var profileUser = await _userService.GetById(id);
-            if (profileUser == null)
-            {
-                return NotFound();
-            }
-
-            var friends = await _friendService.GetFriends(id);
-            var isOwnProfile = (sessionUserId == id);
-
-            ViewBag.ProfileUser = profileUser;
-            ViewBag.IsOwnProfile = isOwnProfile;
-            ViewBag.FriendCount = friends.Count;
-
-            return View("FriendsList", friends);
-        }
     }
 }

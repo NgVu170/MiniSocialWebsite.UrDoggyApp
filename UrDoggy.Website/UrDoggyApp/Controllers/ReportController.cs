@@ -24,8 +24,8 @@ namespace UrDoggy.Website.Controllers
         [HttpGet("/Report/Create/{postId:int}")]
         public async Task<IActionResult> Create(int postId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -38,7 +38,6 @@ namespace UrDoggy.Website.Controllers
             }
 
             ViewBag.PostId = postId;
-            ViewBag.PostContent = post.Content.Length > 50 ? post.Content.Substring(0, 50) + "..." : post.Content;
 
             return View("ReportPage");
         }
@@ -47,8 +46,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(int postId, string reason)
         {
-            var reporterId = await _userService.GetCurrentUserId(User);
-            if (reporterId == 0)
+            var reporterId = HttpContext.Session.GetInt32("UserId");
+            if (reporterId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
@@ -64,7 +63,7 @@ namespace UrDoggy.Website.Controllers
                 var report = new Report
                 {
                     PostId = postId,
-                    ReporterId = reporterId,
+                    ReporterId = reporterId.Value,
                     Reason = reason,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -78,56 +77,6 @@ namespace UrDoggy.Website.Controllers
             }
 
             return RedirectToAction("Index", "Newsfeed");
-        }
-
-        [HttpGet("/Report/List")]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> List()
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            var user = await _userService.GetById(userId);
-            if (user == null || !user.IsAdmin)
-            {
-                return Forbid();
-            }
-
-            var reports = await _reportService.GetAllReports();
-            return View("ReportList", reports);
-        }
-
-        [HttpPost("/Report/Delete/{id:int}")]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return RedirectToAction("Login", "Auth");
-            }
-
-            var user = await _userService.GetById(userId);
-            if (user == null || !user.IsAdmin)
-            {
-                return Forbid();
-            }
-
-            try
-            {
-                await _reportService.DeleteReport(id);
-                TempData["Success"] = "Đã xóa báo cáo";
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Xóa báo cáo thất bại: " + ex.Message;
-            }
-
-            return RedirectToAction("List");
         }
     }
 }

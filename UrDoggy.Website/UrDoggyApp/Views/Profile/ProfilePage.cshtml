@@ -6,8 +6,7 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    // int? sessionUserId = Context.Session.GetInt32("UserId");
-    int? sessionUserId = ViewBag.CurrentUserId;
+    int? sessionUserId = Context.Session.GetInt32("UserId");
     var currentUser = sessionUserId.HasValue
         ? await UserService.GetById(sessionUserId.Value)
         : null;

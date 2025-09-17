@@ -1,37 +1,21 @@
 ﻿@using Microsoft.AspNetCore.Mvc
+@using UrDoggy.Core.Models
 @inject UrDoggy.Services.Interfaces.IFriendService FriendService
 @inject UrDoggy.Services.Interfaces.INotificationService NotificationService
 @inject UrDoggy.Services.Interfaces.IUserService UserService
-@using System.Security.Claims
 
 @{
     bool isMessages = ViewContext.RouteData.Values["controller"]?.ToString() == "Messages";
+    int? sessionUserId = Context.Session.GetInt32("UserId");
 
-    // Lấy userId từ Claims thay vì Session
-    var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
-    int sessionUserId = 0;
-    int.TryParse(userIdClaim, out sessionUserId);
-
-    // Sử dụng phương thức đúng từ service
-    var currentUser = sessionUserId != 0
-        ? await UserService.GetById(sessionUserId)
-        : null;
-
-    int unreadCount = sessionUserId != 0
-        ? await NotificationService.GetUnreadCount(sessionUserId)
-        : 0;
+    var currentUser = ViewBag.CurrentUser as User;
+    int unreadCount = ViewBag.UnreadCount ?? 0;
+    var friends = ViewBag.Friends as List<User> ?? new List<User>();
 
     bool isAdmin = currentUser?.IsAdmin ?? false;
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
-
-    // Lấy danh sách bạn bè
-    List<UrDoggy.Core.Models.User> friends = new List<UrDoggy.Core.Models.User>();
-    if (sessionUserId != 0)
-    {
-        friends = await FriendService.GetFriends(sessionUserId);
-    }
 }
 
 <!DOCTYPE html>
@@ -178,6 +162,7 @@
                 }
                 else
                 {
+
                     string profileAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
                     ? Url.Content("~/images/default-avatar.png")
                     : Url.Content(currentUser.ProfilePicture);
@@ -220,6 +205,7 @@
                 {
                     <div class="contacts border rounded bg-white p-3">
                         <h6>Contacts</h6>
+                        
                         @if (!friends.Any())
                         {
                             <div class="text-center">
@@ -242,7 +228,7 @@
                                                  class="rounded-circle"
                                                  style="width:64px;height:64px;" />
                                         </a>
-                                        <a href="/Profile/@friend.Id" class="text-dark ms-2 text-decoration-none">
+                                        <a href="/Profile/@friend.Id" class="text-dark ms-2">
                                             @friend.UserName
                                         </a>
                                     </li>

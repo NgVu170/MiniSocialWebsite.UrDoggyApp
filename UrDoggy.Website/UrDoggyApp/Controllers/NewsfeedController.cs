@@ -15,6 +15,7 @@ namespace UrDoggy.Website.Controllers
         private readonly IUserService _userService;
         private readonly INotificationService _notificationService;
         private readonly IMediaService _mediaService;
+        private readonly IFriendService _friendService;
         private const string HiddenPostsCookieName = "HiddenPosts";
 
         public NewsfeedController(
@@ -22,21 +23,23 @@ namespace UrDoggy.Website.Controllers
             ICommentService commentService,
             IUserService userService,
             INotificationService notificationService,
-            IMediaService mediaService)
+            IMediaService mediaService,
+            IFriendService friendService)
         {
             _postService = postService;
             _commentService = commentService;
             _userService = userService;
             _notificationService = notificationService;
             _mediaService = mediaService;
+            _friendService = friendService;
         }
 
         [HttpGet]
         [Route("/Newsfeed")]
         [Route("/Newsfeed/Index")]
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index()
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -47,7 +50,7 @@ namespace UrDoggy.Website.Controllers
                 .Where(id => id >= 0)
                 .ToList();
 
-            var allPosts = await _postService.GetNewsfeed(userId, page, pageSize);
+            var allPosts = await _postService.GetNewsfeed();
             var visiblePosts = allPosts
                 .Where(post => !hiddenIds.Contains(post.Id))
                 .ToList();
@@ -56,11 +59,19 @@ namespace UrDoggy.Website.Controllers
             foreach (var post in visiblePosts)
             {
                 post.Comments = await _commentService.GetComments(post.Id);
+                foreach (var comment in post.Comments)
+                {
+                    comment.User = await _userService.GetById(comment.UserId);
+                }
             }
 
-            ViewBag.CurrentPage = page;
-            ViewBag.PageSize = pageSize;
-            ViewBag.TotalPosts = await _postService.GetTotalPostCount(userId); // Sử dụng phương thức mới
+            var currentUser = userId.HasValue ? await _userService.GetById(userId.Value) : null;
+            int unreadCount = await _notificationService.GetUnreadCount(userId.Value);
+            var friends = userId.HasValue ? await _friendService.GetFriends(userId.Value) : new List<User>();
+
+            ViewBag.CurrentUser = currentUser;
+            ViewBag.UnreadCount = unreadCount;
+            ViewBag.Friends = friends;
             ViewBag.HiddenPostIds = hiddenIds;
 
             return View("NewsfeedPage", visiblePosts);
@@ -70,8 +81,8 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/Details/{id:int}")]
         public async Task<IActionResult> Details(int id)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             var post = await _postService.GetById(id);
@@ -79,6 +90,10 @@ namespace UrDoggy.Website.Controllers
                 return NotFound();
 
             post.Comments = await _commentService.GetComments(id);
+            foreach (var comment in post.Comments)
+            {
+                comment.User = await _userService.GetById(comment.UserId);
+            }
             return View("NewsfeedDetailPage", post);
         }
 
@@ -87,8 +102,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -108,7 +123,7 @@ namespace UrDoggy.Website.Controllers
                     }
                 }
 
-                await _postService.CreatePost(userId, content, mediaItems);
+                await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
             }
             catch (Exception ex)
@@ -124,8 +139,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int postId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -153,8 +168,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int postId, string content, List<IFormFile> mediaFiles)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -187,7 +202,7 @@ namespace UrDoggy.Website.Controllers
                 {
                     Id = postId,
                     Content = content,
-                    UserId = userId,
+                    UserId = userId.Value,
                     MediaItems = mediaItems.Select(m => new Media
                     {
                         Path = m.path,
@@ -212,8 +227,9 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Vote(int postId, bool isUpvote)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var uId = HttpContext.Session.GetInt32("UserId");
+            var userId = uId.Value;
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -249,8 +265,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Hide(int postId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
@@ -270,8 +286,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Unhide(int postId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
@@ -291,8 +307,9 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddComment(int postId, string content)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var uId = HttpContext.Session.GetInt32("UserId");
+            var userId = uId.Value;
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             if (string.IsNullOrWhiteSpace(content))
@@ -329,13 +346,13 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
             {
-                var isOwner = await _commentService.IsCommentOwner(commentId, userId);
+                var isOwner = await _commentService.IsCommentOwner(commentId, userId.Value);
                 if (!isOwner)
                 {
                     TempData["Error"] = "Bạn không có quyền xóa bình luận này";
@@ -356,9 +373,9 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/EditComment")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditComment(int commentId, string content)
+        public async Task<IActionResult> EditComment(int commentId, int postId, string content)
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
@@ -370,7 +387,7 @@ namespace UrDoggy.Website.Controllers
 
             try
             {
-                var isOwner = await _commentService.IsCommentOwner(commentId, userId);
+                var isOwner = await _commentService.IsCommentOwner(commentId, userId.Value);
                 if (!isOwner)
                 {
                     TempData["Error"] = "Bạn không có quyền sửa bình luận này";
@@ -391,64 +408,6 @@ namespace UrDoggy.Website.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        [Route("/Newsfeed/GetVoteCount/{postId:int}")]
-        public async Task<IActionResult> GetVoteCount(int postId)
-        {
-            try
-            {
-                var voteCount = await _postService.GetVoteCount(postId);
-                return Ok(new { success = true, count = voteCount });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new { success = false, error = ex.Message });
-            }
-        }
-
-        [HttpGet]
-        [Route("/Newsfeed/HasVoted/{postId:int}")]
-        public async Task<IActionResult> HasVoted(int postId)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-                return Unauthorized();
-
-            try
-            {
-                var hasVoted = await _postService.HasVoted(postId, userId);
-                return Ok(new { success = true, hasVoted = hasVoted });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new { success = false, error = ex.Message });
-            }
-        }
-
-        [HttpPost]
-        [Route("/Newsfeed/UploadMedia")]
-        public async Task<IActionResult> UploadMedia(IFormFile file)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-                return Unauthorized();
-
-            try
-            {
-                if (!await _mediaService.IsValidMediaFile(file))
-                {
-                    return BadRequest(new { success = false, error = "File không hợp lệ" });
-                }
-
-                var filePath = await _mediaService.SaveMedia(file);
-                return Ok(new { success = true, path = filePath });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, error = ex.Message });
-            }
         }
 
         private List<int> GetHiddenPostIdsFromCookie(string cookieValue)

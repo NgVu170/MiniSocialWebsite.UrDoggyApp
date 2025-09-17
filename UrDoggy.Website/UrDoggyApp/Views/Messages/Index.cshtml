@@ -6,7 +6,7 @@
 
 @{
     Layout = "_Layout";
-    int me = ViewBag.CurrentUserId;
+    int me = Context.Session.GetInt32("UserId") ?? 0;
     var chats = ((IEnumerable)ViewBag.Chats).Cast<ConversationDto>().ToList();
     int activeId = (int)ViewBag.ActiveUser;
     var thread = (List<Message>)ViewBag.Thread;

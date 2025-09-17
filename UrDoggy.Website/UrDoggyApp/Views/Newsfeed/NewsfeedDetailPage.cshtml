@@ -179,10 +179,10 @@
     @foreach (var c in Model.Comments)
     {
         bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == c.UserId;
-        var commenter = await UserService.GetById(c.UserId);
+        var commenter = c.User;
         string commenterAvatarUrl = string.IsNullOrWhiteSpace(commenter?.ProfilePicture)
-        ? defaultAvatar
-        : Url.Content(commenter.ProfilePicture);
+            ? defaultAvatar
+            : Url.Content(commenter.ProfilePicture);
         string editCommentDivId = "edit-comment-" + c.Id;
 
         <div class="ms-5 mt-3">

@@ -47,7 +47,7 @@ namespace UrDoggy.Data.Repositories
             return result;
         }
 
-        public async Task<User?> GetByI(int id)
+        public async Task<User?> GetById(int id)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }

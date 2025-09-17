@@ -63,7 +63,7 @@ namespace UrDoggy.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string email, string password, string returnUrl = null)
+        public async Task<IActionResult> Login(string email, string password)
         {
             try
             {
@@ -78,6 +78,8 @@ namespace UrDoggy.Website.Controllers
 
                 if (result.Succeeded)
                 {
+                    HttpContext.Session.SetInt32("UserId", user.Id);
+                    HttpContext.Session.SetString("Username", user.UserName);
                     return RedirectToAction("Index", "Newsfeed");
                 }
 
@@ -91,12 +93,11 @@ namespace UrDoggy.Website.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Clear();
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
