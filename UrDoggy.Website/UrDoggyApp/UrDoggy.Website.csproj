@@ -30,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Upload\Images\" />
+    <None Include="wwwroot\images\default-avatar.jpg" />
   </ItemGroup>
 
 </Project>

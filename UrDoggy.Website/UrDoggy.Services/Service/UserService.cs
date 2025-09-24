@@ -29,7 +29,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<User> GetProfile(int userId)
         {
-            return await _userRepository.GetByI(userId);
+            return await _userRepository.GetById(userId);
         }
 
         public async Task UpdateProfile(int userId, string displayName, string bio, string profilePicture)
@@ -44,7 +44,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<User> GetById(int userId)
         {
-            return await _userRepository.GetByI(userId);
+            return await _userRepository.GetById(userId);
         }
 
         public async Task<User> GetByUsername(string username)

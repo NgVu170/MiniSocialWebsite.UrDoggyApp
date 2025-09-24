@@ -9,11 +9,11 @@ namespace UrDoggy.Core.Models
 {
     public class User : IdentityUser<int>
     {
-        public string ProfilePicture { get; set; }
+        public string ProfilePicture { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public bool IsAdmin { get; set; } = false;
-        public string DisplayName { get; set; }
-        public string Bio { get; set; }
+        public string DisplayName { get; set; } = string.Empty;
+        public string Bio { get; set; } = string.Empty;
 
         // Navigation
         public ICollection<Post> Posts { get; set; }

@@ -39,7 +39,7 @@ namespace UrDoggy.Data.Repositories
                 EmailConfirmed = false,
                 LockoutEnabled = true,
             };
-            var result = _userManager.CreateAsync(user, password).Result;
+            var result = await _userManager.CreateAsync(user, password);
             if (!result.Succeeded)
             {
                 throw new Exception($"User registration failed: {string.Join(", ", result.Errors.Select(e => e.Description))}");
@@ -47,7 +47,7 @@ namespace UrDoggy.Data.Repositories
             return result;
         }
 
-        public async Task<User?> GetByI(int id)
+        public async Task<User?> GetById(int id)
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }

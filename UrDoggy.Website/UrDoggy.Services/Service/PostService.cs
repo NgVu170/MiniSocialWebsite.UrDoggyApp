@@ -29,24 +29,7 @@ namespace UrDoggy.Services.Service
             _mediaService = mediaService;
         }
 
-        public async Task<List<Post>> GetNewsfeed(int userId, int pageNumber = 1, int pageSize = 10)
-        {
-            // Lấy danh sách bạn bè
-            var friends = await _friendRepository.GetFriends(userId);
-            var friendIds = friends.Select(f => f.Id).ToList();
-            friendIds.Add(userId); // Bao gồm cả bài viết của chính user
-
-            // Lấy tất cả bài viết và lọc theo bạn bè
-            var allPosts = await _postRepository.GetAllPost();
-            var newsfeedPosts = allPosts
-                .Where(p => friendIds.Contains(p.UserId))
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return newsfeedPosts;
-        }
+        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost();
 
         public async Task<Post> GetById(int postId)
         {
@@ -103,14 +86,12 @@ namespace UrDoggy.Services.Service
             await _postRepository.SharePost(postId, userId);
         }
 
-        public async Task<List<Post>> GetUserPosts(int userId, int pageNumber = 1, int pageSize = 10)
+        public async Task<List<Post>> GetUserPosts(int userId)
         {
             var allPosts = await _postRepository.GetAllPost();
             return allPosts
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
                 .ToList();
         }
 
@@ -118,6 +99,15 @@ namespace UrDoggy.Services.Service
         {
             var allPosts = await _postRepository.GetAllPost();
             return allPosts.Count(p => p.UserId == userId);
+        }
+
+        public async Task<int> GetTotalPostCount(int userId)
+        {
+            var friends = await _friendRepository.GetFriends(userId);
+            var friendIds = friends.Select(f => f.Id).ToList();
+            friendIds.Add(userId);
+
+            return await _postRepository.GetTotalPostCount(friendIds);
         }
     }
 }

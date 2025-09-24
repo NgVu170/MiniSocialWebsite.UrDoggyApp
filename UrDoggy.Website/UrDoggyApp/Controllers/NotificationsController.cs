@@ -26,114 +26,18 @@ namespace UrDoggy.Website.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
             {
                 return RedirectToAction("Login", "Auth");
             }
 
-            var notifications = await _notificationService.GetNotifications(userId);
+            var notifications = await _notificationService.GetNotifications(userId.Value);
 
             // Đánh dấu tất cả là đã đọc
-            await _notificationService.MarkAllRead(userId);
+            await _notificationService.MarkAllRead(userId.Value);
 
             return View(notifications);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetNotifications()
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-
-            var notifications = await _notificationService.GetNotifications(userId);
-            return Ok(notifications);
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUnreadCount()
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-
-            var unreadCount = await _notificationService.GetUnreadCount(userId);
-            return Ok(unreadCount);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MarkAsRead(int notificationId)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-
-            // Lấy tất cả notifications và tìm cái cần mark as read
-            var notifications = await _notificationService.GetNotifications(userId);
-            var notification = notifications.FirstOrDefault(n => n.Id == notificationId);
-
-            if (notification != null)
-            {
-                notification.IsRead = true;
-                // Ở đây cần thêm method UpdateNotification trong service nếu muốn update individual
-            }
-
-            // Hiện tại chỉ có MarkAllRead, nên có thể cần thêm method mới trong service
-            await _notificationService.MarkAllRead(userId);
-
-            return Ok();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MarkAllAsRead()
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-
-            await _notificationService.MarkAllRead(userId);
-
-            // Gửi real-time update
-            await _hubContext.Clients.User(userId.ToString()).SendAsync("NotificationsMarkedAsRead");
-
-            return Ok();
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteNotification(int notificationId)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-            await _notificationService.DeleteNotificationsForPost(notificationId);
-            return RedirectToAction("Index");
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> ClearAll()
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-            {
-                return Unauthorized();
-            }
-
-            // Ở đây cần thêm method ClearAllNotifications trong service
-            // Tạm thời sử dụng MarkAllRead
-            await _notificationService.MarkAllRead(userId);
-
-            return RedirectToAction("Index");
         }
     }
 }

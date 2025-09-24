@@ -20,5 +20,7 @@ namespace UrDoggy.Services.Interfaces
         Task<int> GetUnreadCount(int userId);
         Task MarkAllRead(int userId);
         Task DeleteNotificationsForPost(int postId);
+        Task<bool> MarkAsRead(int notificationId, int userId);
+        Task ClearAllNotifications(int userId);
     }
 }

@@ -73,7 +73,7 @@ namespace UrDoggy.Services.Service
             foreach (var partnerId in partnerIds)
             {
                 var lastMessage = await GetLastMessage(userId, partnerId);
-                var partner = await _userRepository.GetByI(partnerId);
+                var partner = await _userRepository.GetById(partnerId);
 
                 if (lastMessage != null && partner != null)
                 {

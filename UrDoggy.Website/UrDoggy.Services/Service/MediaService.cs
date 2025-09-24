@@ -19,37 +19,37 @@ namespace UrDoggy.Services.Service
             _mediaRepository = mediaRepository;
         }
 
-        public async Task AddMediaItemsAsync(int postId, IEnumerable<(string path, string mediaType)> mediaItems)
+        public async Task AddMediaItems(int postId, IEnumerable<(string path, string mediaType)> mediaItems)
         {
             await _mediaRepository.AddMediatems(postId, mediaItems);
         }
 
-        public async Task<List<Media>> GetMediaByPostIdAsync(int postId)
+        public async Task<List<Media>> GetMediaByPostId(int postId)
         {
             return await _mediaRepository.GetMediaByPostId(postId);
         }
 
-        public async Task DeleteMediaByPostIdAsync(int postId)
+        public async Task DeleteMediaByPostId(int postId)
         {
             await _mediaRepository.DeleteMediaByPostId(postId);
         }
 
-        public async Task DeleteMediaByIdAsync(int postId, int mediaId)
+        public async Task DeleteMediaById(int postId, int mediaId)
         {
             await _mediaRepository.DeleteMediaByPostIdAndMeidaId(postId, mediaId);
         }
 
-        public async Task<List<Media>> GetAllMediaItemsAsync()
+        public async Task<List<Media>> GetAllMediaItems()
         {
             return await _mediaRepository.GetAllMediaItems();
         }
 
-        public async Task EditMediaByPostIdAsync(int postId, IEnumerable<(int mediaId, string path, string mediaType)> mediaItems)
+        public async Task EditMediaByPostId(int postId, IEnumerable<(int mediaId, string path, string mediaType)> mediaItems)
         {
             await _mediaRepository.EditMediaByPostId(postId, mediaItems);
         }
 
-        public async Task<string> SaveMediaAsync(IFormFile file)
+        public async Task<string> SaveMedia(IFormFile file)
         {
             if (file == null || file.Length == 0)
                 throw new ArgumentException("File is empty");
@@ -74,7 +74,7 @@ namespace UrDoggy.Services.Service
             return $"/uploads/{fileName}";
         }
 
-        public async Task DeleteMediaFileAsync(string filePath)
+        public async Task DeleteMediaFile(string filePath)
         {
             if (string.IsNullOrEmpty(filePath))
                 return;
@@ -91,7 +91,7 @@ namespace UrDoggy.Services.Service
             await Task.CompletedTask;
         }
 
-        public async Task<List<string>> SaveMultipleMediaAsync(IEnumerable<IFormFile> files)
+        public async Task<List<string>> SaveMultipleMedia(IEnumerable<IFormFile> files)
         {
             var savedPaths = new List<string>();
 
@@ -99,7 +99,7 @@ namespace UrDoggy.Services.Service
             {
                 if (file.Length > 0)
                 {
-                    var path = await SaveMediaAsync(file);
+                    var path = await SaveMedia(file);
                     savedPaths.Add(path);
                 }
             }
@@ -107,7 +107,7 @@ namespace UrDoggy.Services.Service
             return savedPaths;
         }
 
-        public async Task<string> GetMediaTypeAsync(IFormFile file)
+        public async Task<string> GetMediaType(IFormFile file)
         {
             if (file == null)
                 return "unknown";

@@ -22,12 +22,12 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(string tab = "all")
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            var friends = await _friendService.GetFriends(userId);
-            var rawReqs = await _friendService.GetPendingRequests(userId);
+            var friends = await _friendService.GetFriends(userId.Value);
+            var rawReqs = await _friendService.GetPendingRequests(userId.Value);
 
             var requestMap = rawReqs
                 .GroupBy(r => r.RequesterId)
@@ -58,13 +58,13 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> SendRequest(int friendId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
             {
-                await _friendService.SendRequest(userId, friendId);
+                await _friendService.SendRequest(userId.Value, friendId);
                 TempData["Success"] = "Đã gửi lời mời kết bạn";
             }
             catch (Exception ex)
@@ -79,8 +79,8 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Respond(int requestId, bool accept)
         {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -93,20 +93,20 @@ namespace UrDoggy.Website.Controllers
                 TempData["Error"] = ex.Message;
             }
 
-            return RedirectToAction("Index", new { tab = "requests" });
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Unfriend(int friendId)
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
             try
             {
-                await _friendService.RemoveFriend(userId, friendId);
+                await _friendService.RemoveFriend(userId.Value, friendId);
                 TempData["Success"] = "Đã hủy kết bạn";
             }
             catch (Exception ex)
@@ -115,33 +115,6 @@ namespace UrDoggy.Website.Controllers
             }
 
             return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> SearchFriends(string query)
-        {
-            var userId = await _userService.GetCurrentUserId(User);
-            if (userId == 0)
-                return Unauthorized();
-
-            var users = await _userService.Search(query);
-            var friends = await _friendService.GetFriends(userId);
-            var friendIds = friends.Select(f => f.Id).ToHashSet();
-
-            var results = users
-                .Where(u => u.Id != userId)
-                .Select(u => new
-                {
-                    u.Id,
-                    u.UserName,
-                    u.DisplayName,
-                    u.ProfilePicture,
-                    IsFriend = friendIds.Contains(u.Id),
-                    CanSendRequest = !friendIds.Contains(u.Id)
-                })
-                .ToList();
-
-            return Ok(results);
         }
     }
 }

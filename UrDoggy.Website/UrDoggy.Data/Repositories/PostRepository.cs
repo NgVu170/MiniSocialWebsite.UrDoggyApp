@@ -250,5 +250,12 @@ namespace UrDoggy.Data.Repositories
                 "INSERT INTO PostShares (PostId, UserId) VALUES ({0}, {1})",
                 postId, userId);
         }
+
+        public async Task<int> GetTotalPostCount(List<int> userIds)
+        {
+            return await _context.Posts
+                .AsNoTracking()
+                .CountAsync(p => userIds.Contains(p.UserId));
+        }
     }
 }

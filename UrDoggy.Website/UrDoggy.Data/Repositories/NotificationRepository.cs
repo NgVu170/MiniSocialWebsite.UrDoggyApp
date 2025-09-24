@@ -46,10 +46,10 @@ namespace UrDoggy.Data.Repositories
                 .ToListAsync();
         }
 
-        public async Task MarkAsRead(int userId)
+        public async Task MarkAllRead(int userId)
         {
             await _context.Notifications
-                .Where(n => n.User.Id == userId && !n.IsRead)
+                .Where(n => n.UserId == userId && !n.IsRead)
                 .ExecuteUpdateAsync(n => n.SetProperty(n => n.IsRead, true));
         }
 
@@ -69,6 +69,26 @@ namespace UrDoggy.Data.Repositories
         {
             await _context.Notifications
                 .Where(n => n.UserId == userId && n.Type == type && n.TriggerId == triggerId)
+                .ExecuteDeleteAsync();
+        }
+
+        public async Task<bool> MarkAsRead(int notificationId, int userId)
+        {
+            var notification = await _context.Notifications
+                .FirstOrDefaultAsync(n => n.Id == notificationId && n.UserId == userId);
+
+            if (notification == null)
+                return false;
+
+            notification.IsRead = true;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task ClearAllNotifications(int userId)
+        {
+            await _context.Notifications
+                .Where(n => n.UserId == userId)
                 .ExecuteDeleteAsync();
         }
     }

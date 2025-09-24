@@ -29,17 +29,17 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Dashboard()
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            var me = await _userService.GetById(userId);
+            var me = await _userService.GetById(userId.Value);
             if (me == null || !me.IsAdmin)
                 return Forbid();
 
             var allUsers = await _userService.GetAllUsers();
             var normalUsers = allUsers.Where(u => !u.IsAdmin).ToList();
-            var allPosts = await _postService.GetNewsfeed(userId, 1, 1000); // Lấy nhiều posts cho admin
+            var allPosts = await _postService.GetNewsfeed();
             var reports = await _reportService.GetAllReports();
 
             ViewBag.UserCount = normalUsers.Count;
@@ -56,11 +56,11 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteUser(int id)
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            var me = await _userService.GetById(userId);
+            var me = await _userService.GetById(id);
             if (me == null || !me.IsAdmin)
                 return Forbid();
 
@@ -75,11 +75,11 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeletePost(int id)
         {
-            var userId = await _userService.GetCurrentUserId(User);
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            var me = await _userService.GetById(userId);
+            var me = await _userService.GetById(userId.Value);
             if (me == null || !me.IsAdmin)
                 return Forbid();
 

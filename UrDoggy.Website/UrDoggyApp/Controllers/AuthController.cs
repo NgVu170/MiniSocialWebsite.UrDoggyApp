@@ -63,14 +63,14 @@ namespace UrDoggy.Website.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(string username, string password, string returnUrl = null)
+        public async Task<IActionResult> Login(string email, string password)
         {
             try
             {
-                var user = await _userService.GetByUsername(username);
+                var user = await _authService.GetUserByEmail(email);
                 if (user == null)
                 {
-                    ModelState.AddModelError(string.Empty, "Tài khoản không tồn tại");
+                    ModelState.AddModelError(string.Empty, "Email không tồn tại");
                     return View();
                 }
 
@@ -78,39 +78,12 @@ namespace UrDoggy.Website.Controllers
 
                 if (result.Succeeded)
                 {
-                    // Tạo claims identity
-                    var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.UserName),
-                        new Claim(ClaimTypes.Email, user.Email)
-                    };
-
-                    if (user.IsAdmin)
-                    {
-                        claims.Add(new Claim(ClaimTypes.Role, "Admin"));
-                    }
-
-                    var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    var authProperties = new AuthenticationProperties
-                    {
-                        IsPersistent = true
-                    };
-
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(claimsIdentity),
-                        authProperties);
-
-                    if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
-                    {
-                        return Redirect(returnUrl);
-                    }
-
-                    return RedirectToAction("Index", "Home");
+                    HttpContext.Session.SetInt32("UserId", user.Id);
+                    HttpContext.Session.SetString("Username", user.UserName);
+                    return RedirectToAction("Index", "Newsfeed");
                 }
 
-                ModelState.AddModelError(string.Empty, "Sai tên đăng nhập hoặc mật khẩu");
+                ModelState.AddModelError(string.Empty, "Sai email hoặc mật khẩu");
             }
             catch (Exception ex)
             {
@@ -120,12 +93,11 @@ namespace UrDoggy.Website.Controllers
             return View();
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Logout()
         {
+            HttpContext.Session.Clear();
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Login");
         }
 
         [HttpGet]
