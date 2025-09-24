@@ -1,0 +1,45 @@
+﻿@model List<UrDoggy.Core.Models.Notification>
+@inject UrDoggy.Services.Interfaces.IPostService PostService
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container py-4">
+    <h2>Your Notifications</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-secondary mt-3">
+            You have no notifications.
+        </div>
+    }
+    else
+    {
+        <ul class="list-group mt-3">
+            @foreach (var n in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-start">
+                    <div>
+                        <small class="text-muted">@n.CreatedAt:g</small>
+                        <div class="mt-1">
+                            @if (n.PostId.HasValue
+                           && PostService.GetById(n.PostId.Value) != null)
+                            {
+                                <a asp-controller="Newsfeed"
+                                   asp-action="Details"
+                                   asp-route-id="@n.PostId">
+                                    @n.Message
+                                </a>
+                            }
+                            else
+                            {
+                                @n.Message
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    }
+</div>

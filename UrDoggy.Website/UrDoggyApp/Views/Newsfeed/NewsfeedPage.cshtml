@@ -1,0 +1,251 @@
+﻿@model List<UrDoggy.Core.Models.Post>
+@inject UrDoggy.Services.Interfaces.IPostService PostService
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int? sessionUserId = Context.Session.GetInt32("UserId");
+    var currentUser = sessionUserId.HasValue
+        ? await UserService.GetById(sessionUserId.Value)
+        : null;
+    string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(currentUser.ProfilePicture);
+}
+
+<div class="post-create mb-3">
+    <form method="post" asp-action="Create" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <div class="mb-2 d-flex">
+            <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
+            <textarea name="content" class="form-control ms-2" rows="3"
+            placeholder="What's on your mind?" required></textarea>
+        </div>
+        <div class="mb-2">
+            <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-success">Post</button>
+    </form>
+</div>
+
+@foreach (var post in Model)
+{
+    bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
+    string editPostDivId = "edit-post-" + post.Id;
+    var postAuthor = await UserService.GetById(post.UserId);
+    string postAuthorAvatarUrl = string.IsNullOrWhiteSpace(postAuthor?.ProfilePicture)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(postAuthor.ProfilePicture);
+
+    <div class="post-card mb-4 p-3 bg-white rounded shadow-sm">
+        <div class="d-flex justify-content-between mb-2">
+            <div class="d-flex align-items-center">
+                <img src="@postAuthorAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
+                <div class="ms-2">
+                    <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId" class="text-dark">
+                        @{
+                            var displayName = await UserService.GetById(post.UserId);
+                            if (displayName != null)
+                            {
+                                <strong>@displayName.UserName</strong>
+                            }
+                            else
+                            {
+                                <strong>Unknown Uso</strong>
+                            }
+                        }
+                    </a>
+                    <small class="text-muted ms-1">@post.CreatedAt:g</small>
+                </div>
+            </div>
+            @if (isOwnPost)
+            {
+                <div class="d-flex">
+                    <button type="button" class="btn btn-sm btn-outline-primary me-2"
+                    onclick="startPostEdit(@post.Id)">
+                        Edit
+                    </button>
+                    <form asp-controller="Newsfeed" asp-action="Delete" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button class="btn btn-sm btn-light text-danger">Delete</button>
+                    </form>
+                </div>
+            }
+        </div>
+
+        <div id="@editPostDivId" style="display:none; margin-bottom:1rem;">
+            <form method="post" asp-controller="Newsfeed" asp-action="Edit" enctype="multipart/form-data">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <textarea name="content" class="form-control mb-2" rows="3">@post.Content</textarea>
+                <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control mb-2" />
+                <button type="submit" class="btn btn-primary btn-sm me-2">Save</button>
+                <button type="button" class="btn btn-secondary btn-sm" onclick="cancelPostEdit(@post.Id)">
+                    Cancel
+                </button>
+            </form>
+        </div>
+
+        <p>@post.Content</p>
+
+        @* @if (!string.IsNullOrEmpty(post.MediaPath)) *@
+        @* { *@
+        @*     if (post.MediaType == "image") *@
+        @*     { *@
+        @*         <img src="@post.MediaPath" class="img-fluid rounded mb-3" alt="Post image" /> *@
+        @*     } *@
+        @*     else *@
+        @*     { *@
+        @*         <video controls class="w-100 rounded mb-3"> *@
+        @*             <source src="@post.MediaPath" type="video/mp4" /> *@
+        @*         </video> *@
+        @*     } *@
+        @* } *@
+
+        @if (post.MediaItems != null && post.MediaItems.Any())
+        {
+            @foreach (var item in post.MediaItems)
+            {
+                if (item.MediaType == "image")
+                {
+                    <img src="@item.Path" class="img-fluid rounded mb-3" alt="Post image" />
+                }
+                else if (item.MediaType == "video")
+                {
+                    <video controls class="w-100 rounded mb-3">
+                        <source src="@item.Path" type="video/mp4" />
+                    </video>
+                }
+            }
+        }
+
+        <div class="d-flex align-items-center gap-2 mb-3">
+            <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <button name="isUpvote" value="true" class="btn btn-sm btn-outline-success">
+                    @post.UpVotes
+                </button>
+            </form>
+            <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <button name="isUpvote" value="false" class="btn btn-sm btn-outline-danger">
+                    @post.DownVotes
+                </button>
+            </form>
+            <button type="button" class="btn btn-sm btn-outline-secondary" onclick="copyShareLink(@post.Id)">
+                Share
+            </button>
+            <form asp-controller="Newsfeed" asp-action="Hide" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <button class="btn btn-sm btn-outline-secondary">Hide</button>
+            </form>
+            <form asp-controller="Newsfeed" asp-action="Unhide" method="post" class="d-inline">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <button class="btn btn-sm btn-outline-success">Unhide</button>
+            </form>
+            @if (!isOwnPost)
+            {
+                <a asp-controller="Report" asp-action="Create" asp-route-postId="@post.Id"
+                class="btn btn-sm btn-outline-warning">Report</a>
+            }
+        </div>
+
+        <form asp-controller="Newsfeed" asp-action="AddComment" method="post" class="mb-3">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="postId" value="@post.Id" />
+            <div class="d-flex">
+                <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
+                <textarea name="content" class="form-control ms-2" rows="2"
+                placeholder="Write a comment..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
+        </form>
+
+
+        @foreach (var comment in post.Comments)
+        {
+            bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
+            var commenter = comment.User;
+            string commenterAvatarUrl = string.IsNullOrWhiteSpace(commenter?.ProfilePicture)
+                ? Url.Content("~/images/default-avatar.png")
+                : Url.Content(commenter.ProfilePicture);
+            string editCommentDivId = "edit-comment-" + comment.Id;
+
+            <div class="d-flex mb-2 ms-4">
+                <img src="@commenterAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
+                <div class="flex-grow-1 ms-2 bg-light rounded p-2">
+                    <div class="d-flex flex-column align-items-start">
+                        <div>
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.UserId">
+                                <strong>@comment.User.UserName</strong>
+                            </a>
+                        </div>
+                        <div>
+                            <small class="text-muted ms-2">@comment.CreatedAt:g</small>
+                        </div>
+                        <div>
+                            <span class="ms-1">@comment.Content</span>
+                        </div>
+                        @if (isOwnComment)
+                        {
+                            <div>
+                                <button type="button" class="btn btn-sm btn-link text-primary p-0 me-2"
+                                        onclick="startCommentEdit(@comment.Id)">
+                                    Edit
+                                </button>
+                                <form asp-controller="Newsfeed" asp-action="DeleteComment" method="post" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">Delete</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+
+                    <div id="@editCommentDivId" style="display:none; margin-top:0.5rem;">
+                        <form asp-controller="Newsfeed" asp-action="EditComment" method="post" class="d-flex">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="commentId" value="@comment.Id" />
+                            <input type="hidden" name="postId" value="@post.Id" />
+                            <textarea name="content" class="form-control me-2" rows="1" required>@comment.Content</textarea>
+                            <button type="submit" class="btn btn-sm btn-primary me-1">Save</button>
+                            <button type="button" class="btn btn-sm btn-secondary" onclick="cancelCommentEdit(@comment.Id)">
+                                Cancel
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            
+        }
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function copyShareLink(postId) {
+            const url = `${window.location.origin}/Newsfeed/Details/${postId}`;
+            navigator.clipboard.writeText(url)
+                .then(() => alert('Link copied to clipboard'))
+                .catch(() => alert('Failed to copy URL'));
+        }
+        function startPostEdit(postId) {
+            document.getElementById('edit-post-' + postId).style.display = 'block';
+        }
+        function cancelPostEdit(postId) {
+            document.getElementById('edit-post-' + postId).style.display = 'none';
+        }
+        function startCommentEdit(commentId) {
+            document.getElementById('edit-comment-' + commentId).style.display = 'block';
+        }
+        function cancelCommentEdit(commentId) {
+            document.getElementById('edit-comment-' + commentId).style.display = 'none';
+        }
+    </script>
+}

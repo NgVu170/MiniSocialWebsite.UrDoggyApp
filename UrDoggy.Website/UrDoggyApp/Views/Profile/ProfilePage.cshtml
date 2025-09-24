@@ -1,0 +1,271 @@
+﻿@model UrDoggy.Core.Models.User
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+@inject UrDoggy.Services.Interfaces.IPostService PostService
+@inject UrDoggy.Services.Interfaces.IFriendService FriendService
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int? sessionUserId = Context.Session.GetInt32("UserId");
+    var currentUser = sessionUserId.HasValue
+        ? await UserService.GetById(sessionUserId.Value)
+        : null;
+
+    bool isOwnProfile = (bool)ViewBag.IsOwn;
+    bool isFriend = (bool)ViewBag.IsFriend;
+    bool hasSentRequest = (bool)ViewBag.HasSent;
+    bool hasReceived = (bool)ViewBag.HasReceived;
+    bool canSendRequest = (bool)ViewBag.CanSend;
+
+    string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(currentUser.ProfilePicture);
+
+    string profileUserAvatarUrl = string.IsNullOrWhiteSpace(Model.ProfilePicture)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(Model.ProfilePicture);
+
+    var posts = ViewBag.Posts as List<UrDoggy.Core.Models.Post>
+                ?? new List<UrDoggy.Core.Models.Post>();
+}
+
+<div class="text-center mb-4">
+    <img src="@profileUserAvatarUrl"
+    class="rounded-circle"
+    style="width:240px;height:240px;" />
+    <h2 class="mt-2">@Model.DisplayName</h2>
+    <p class="text-muted">@Model.Bio</p>
+
+    @if (isOwnProfile)
+    {
+        <a asp-controller="Profile"
+        asp-action="Edit"
+        class="btn btn-secondary">Edit Profile</a>
+    }
+    else if (isFriend)
+    {
+        <form asp-controller="Friends"
+        asp-action="Unfriend"
+        method="post"
+        class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="friendId" value="@Model.Id" />
+            <button type="submit" class="btn btn-outline-danger">Unfriend</button>
+        </form>
+    }
+    else if (hasSentRequest)
+    {
+        <button class="btn btn-outline-primary" disabled>Request Sent</button>
+    }
+    else if (hasReceived)
+    {
+        <form asp-controller="Friends"
+        asp-action="Respond"
+        method="post"
+        class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="requestId" value="@(ViewBag.RequestId)" />
+            <button name="accept" value="true" class="btn btn-sm btn-success">Accept</button>
+            <button name="accept" value="false" class="btn btn-sm btn-danger">Reject</button>
+        </form>
+    }
+    else if (canSendRequest)
+    {
+        <form asp-controller="Friends"
+        asp-action="SendRequest"
+        method="post"
+        class="d-inline">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="friendId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Add Friend</button>
+        </form>
+    }
+
+    @if (!isOwnProfile)
+    {
+        <a asp-controller="Messages"
+        asp-action="Index"
+        asp-route-otherUserId="@Model.Id"
+        class="btn btn-primary ms-2">
+            <i class="fas fa-comment-dots"></i> Message
+        </a>
+    }
+</div>
+
+<h4>@Model.UserName’s Posts</h4>
+
+@if (!posts.Any())
+{
+    <p class="text-muted">No posts yet.</p>
+}
+else
+{
+    @foreach (var post in posts)
+    {
+        bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
+        string editPostDivId = "edit-post-" + post.Id;
+        <div class="post-card mb-4 p-3 bg-white rounded shadow-sm">
+
+            <div class="d-flex justify-content-between mb-2">
+                <div>
+                    <a asp-controller="Profile"
+                    asp-action="Index"
+                    asp-route-id="@post.UserId"
+                    class="text-dark">
+                        @{
+                            var userFind = await UserService.GetById(post.UserId);
+                            if (userFind != null)
+                            {
+                                <strong>@userFind.UserName</strong>
+                            }
+                        }
+                    </a>
+                    <small class="text-muted ms-2">@post.CreatedAt:g</small>
+                </div>
+
+                @if (isOwnPost)
+                {
+                    <form asp-controller="Newsfeed"
+                          asp-action="Delete"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button class="btn btn-sm btn-light text-danger">Delete</button>
+                    </form>
+                }
+                else
+                {
+                    <form asp-controller="Newsfeed"
+                          asp-action="Unhide"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button type="submit" class="btn btn-sm btn-outline-success">Unhide</button>
+                    </form>
+                }
+            </div>
+
+            <p>@post.Content</p>
+
+            <div class="d-flex align-items-center gap-2 mb-3">
+                <form asp-controller="Newsfeed"
+                      asp-action="Vote"
+                      method="post"
+                      class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="postId" value="@post.Id" />
+                    <button name="isUpvote" value="true" class="btn btn-sm btn-outline-success">
+                        ⬆️ @post.UpVotes
+                    </button>
+                </form>
+
+                <form asp-controller="Newsfeed"
+                      asp-action="Vote"
+                      method="post"
+                      class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="postId" value="@post.Id" />
+                    <button name="isUpvote" value="false" class="btn btn-sm btn-outline-danger">
+                        ⬇️ @post.DownVotes
+                    </button>
+                </form>
+
+                <button type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        onclick="copyShareLink(@post.Id)">
+                    🔗 Share
+                </button>
+
+                @if (!isOwnPost)
+                {
+                    <form asp-controller="Newsfeed"
+                          asp-action="Report"
+                          method="post"
+                          class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <input type="hidden" name="reason" value="Inappropriate content" />
+                        <button class="btn btn-sm btn-outline-warning">🚩 Report</button>
+                    </form>
+                }
+            </div>
+
+            <form asp-controller="Newsfeed"
+                  asp-action="AddComment"
+                  method="post"
+                  class="mb-3">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="postId" value="@post.Id" />
+                <div class="d-flex">
+                    <img src="@currentUserAvatarUrl"
+                         class="rounded-circle"
+                         style="width:40px;height:40px;" />
+                    <textarea name="content"
+                              class="form-control ms-2"
+                              rows="2"
+                              placeholder="Write a comment..."
+                              required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
+            </form>
+
+            @foreach (var comment in post.Comments)
+            {
+                bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
+                string commenterAvatarUrl = string.IsNullOrWhiteSpace(comment.User.ProfilePicture)
+                ? Url.Content("~/images/default-avatar.png")
+                : Url.Content(comment.User.ProfilePicture);
+
+                <div class="d-flex mb-2 ms-4">
+                    <img src="@commenterAvatarUrl"
+                         class="rounded-circle"
+                         style="width:40px;height:40px;" />
+                    <div class="flex-grow-1 ms-2 bg-light rounded p-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a asp-controller="Profile"
+                                   asp-action="Index"
+                                   asp-route-id="@comment.UserId">
+                                    @{
+                                        var userFind = await UserService.GetById(post.UserId);
+                                        if (userFind != null)
+                                        {
+                                            <strong>@userFind.UserName</strong>
+                                        }
+                                    }
+                                </a>
+                                <span class="ms-1">@comment.Content</span>
+                            </div>
+                            @if (isOwnComment)
+                            {
+                                <form asp-controller="Newsfeed"
+                                      asp-action="DeleteComment"
+                                      method="post"
+                                      class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="commentId" value="@comment.Id" />
+                                    <input type="hidden" name="postId" value="@post.Id" />
+                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                        <div class="text-muted small">@comment.CreatedAt:g</div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+}
+
+@section Scripts {
+    <script>
+        function copyShareLink(postId) {
+            const url = `${window.location.origin}/Post/Details/${postId}`;
+            navigator.clipboard.writeText(url).then(() => alert('Link copied to clipboard'));
+        }
+    </script>
+}

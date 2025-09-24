@@ -1,0 +1,175 @@
+﻿@using UrDoggy.Core.Models
+@using System.Collections
+@using System.Linq
+
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+
+@{
+    Layout = "_Layout";
+    int me = Context.Session.GetInt32("UserId") ?? 0;
+    var chats = ((IEnumerable)ViewBag.Chats).Cast<ConversationDto>().ToList();
+    int activeId = (int)ViewBag.ActiveUser;
+    var thread = (List<Message>)ViewBag.Thread;
+    var partner = chats.FirstOrDefault(c => c.OtherId == activeId);
+    var defaultAvatar = Url.Content("~/images/default-avatar.png");
+}
+
+@section LeftSidebar {
+    <div class="px-2">
+        <h6 class="px-1">Chats</h6>
+        <ul class="list-group list-group-flush">
+            @foreach (var c in chats)
+            {
+                bool isActive = c.OtherId == activeId;
+                var user = await UserService.GetById(c.OtherId);
+                string avatarUrl = string.IsNullOrWhiteSpace(user?.ProfilePicture)
+                ? defaultAvatar
+                : Url.Content(user.ProfilePicture);
+
+                <li class="list-group-item p-0 mb-2 @(isActive ? "active" : "")">
+                    <a href="@Url.Action("Index","Messages", new { otherUserId = c.OtherId })"
+                       class="d-flex align-items-start text-reset text-decoration-none p-2">
+                        <img src="@avatarUrl"
+                             class="rounded-circle me-2"
+                             style="width:48px;height:48px;" />
+                        <div class="flex-grow-1">
+                            <div class="fw-bold">@c.OtherUsername</div>
+                            <div class="small text-muted">
+                                @(!String.IsNullOrEmpty(c.Preview) ? c.Time.ToString("g") : "")
+                            </div>
+                            <div class="small text-truncate" style="max-width:100%">
+                                @if (String.IsNullOrEmpty(c.Preview))
+                                {
+                                    <em class="text-muted">No messages yet</em>
+                                }
+                                else
+                                {
+                                    <strong>
+                                        @(c.PreviewSenderId == me ? "You:" : $"{c.OtherUsername}:")
+                                    </strong>
+                                    @c.Preview
+                                }
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            }
+        </ul>
+    </div>
+}
+
+@section RightSidebar {
+    @if (partner != null)
+    {
+        var user = await UserService.GetById(partner.OtherId);
+        string avatarUrl = string.IsNullOrWhiteSpace(user?.ProfilePicture)
+            ? defaultAvatar
+            : Url.Content(user.ProfilePicture);
+
+        <div class="border rounded bg-white p-3 text-center">
+            <img src="@avatarUrl"
+                 class="rounded-circle mb-2"
+                 style="width:80px;height:80px;" />
+            <h6>@partner.OtherUsername</h6>
+            <a asp-controller="Profile"
+               asp-action="Index"
+               asp-route-id="@partner.OtherId"
+               class="btn btn-sm btn-outline-primary mt-2">
+                View Profile
+            </a>
+        </div>
+    }
+}
+
+<div class="chat-window">
+    @foreach (var m in thread)
+    {
+        bool mine = m.SenderId == me;
+        <div class="d-flex mb-2 @(mine ? "justify-content-end" : "")">
+            <div class="position-relative p-2 rounded @(mine ? "bg-success text-white" : "bg-secondary text-white")"
+                 style="max-width:70%; white-space:normal; word-break:break-word;">
+                @if (mine)
+                {
+                    <div class="dropdown position-absolute top-0 end-0">
+                        <a href="#"
+                           class="text-white text-decoration-none"
+                           role="button"
+                           id="msgMenuBtn@m.Id"
+                           data-bs-toggle="dropdown"
+                           aria-expanded="false"
+                           style="padding: 0.25rem 0.5rem; display: inline-block;">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end"
+                            aria-labelledby="msgMenuBtn@m.Id">
+                            <li>
+                                <form asp-action="Delete"
+                                      method="post"
+                                      class="m-0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="messageId" value="@m.Id" />
+                                    <input type="hidden" name="otherUserId" value="@activeId" />
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        Delete
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                }
+                @m.Content
+                <div class="small text-muted mt-1 text-end">
+                    @(mine ? "You" : (m.Sender?.UserName ?? "Unknown")) @m.SentAt.ToString("g")
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<div class="send-box">
+    @if (activeId != 0)
+    {
+        <form asp-action="Send" method="post" class="d-flex">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="toUserId" value="@activeId" />
+            <input type="text" name="content"
+                   class="form-control me-2"
+                   placeholder="Type a message…"
+                   required />
+            <button class="btn btn-success">Send</button>
+        </form>
+    }
+</div>
+
+@section Styles {
+    <style>
+        .chat-window {
+            flex: 1 1 auto;
+            overflow-y: auto;
+            background: #fff;
+            padding: 1rem;
+        }
+
+        .send-box {
+            flex: 0 0 auto;
+            position: sticky;
+            bottom: 0;
+            background: #fafafa;
+            border-top: 1px solid #ddd;
+            padding: .75rem;
+        }
+
+            .send-box .form-control {
+                height: 38px;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        window.onload = () => {
+            const wnd = document.querySelector('.chat-window');
+            if (wnd) wnd.scrollTop = wnd.scrollHeight;
+        };
+    </script>
+}

@@ -1,0 +1,61 @@
+# Visual Studio user-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio cache/options directory
+.vs/
+
+# Others
+*.cache
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.vscode/
+
+# NuGet packages
+*.nupkg
+*.snupkg
+# The packages folder can be ignored because of Package Restore
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+
+# Microsoft Azure build output
+csx/
+*.build.csdef
+
+# Publish
+*.publishsettings
+*.pubxml
+*.publishproj
+
+# Resharper/ Rider
+_ReSharper*/
+*.DotSettings.user
+.idea/
+
+# DotCover
+*.dotCover
+
+# Tye
+.tye/
+
+# Others
+*.dbmdl
+*.bak
+*.log
+*.tmp

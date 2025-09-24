@@ -1,0 +1,218 @@
+﻿@model dynamic
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+@inject UrDoggy.Services.Interfaces.IPostService PostService
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+    Layout = "_Layout";
+
+    var users = (List<UrDoggy.Core.Models.User>)ViewBag.Users;
+    var posts = (List<UrDoggy.Core.Models.Post>)ViewBag.Posts;
+    var reports = (List<UrDoggy.Core.Models.Report>)ViewBag.Reports;
+}
+
+<h2>Admin Dashboard</h2>
+<hr />
+
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card text-white bg-primary">
+            <div class="card-body">
+                <h5 class="card-title">Users</h5>
+                <p class="card-text display-4">@ViewBag.UserCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success">
+            <div class="card-body">
+                <h5 class="card-title">Posts</h5>
+                <p class="card-text display-4">@ViewBag.PostCount</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-warning">
+            <div class="card-body">
+                <h5 class="card-title">Reports</h5>
+                <p class="card-text display-4">@ViewBag.ReportCount</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ul class="nav nav-tabs mb-3" id="adminTabs" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#users">Users</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#posts">Posts</button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" data-bs-toggle="tab" data-bs-target="#reports">Reports</button>
+    </li>
+</ul>
+
+<div class="tab-content" id="adminTabsContent">
+    <div class="tab-pane fade show active" id="users">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Joined</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var u in users)
+                {
+                    <tr>
+                        <td>@u.Id</td>
+                        <td>
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@u.Id">
+                                @u.UserName
+                            </a>
+                        </td>
+                        <td>@u.Email</td>
+                        <td>@u.CreatedAt.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            <form asp-controller="Admin" asp-action="DeleteUser" method="post"
+                                  onsubmit="return confirm('Delete user @u.UserName?');">
+                                @Html.AntiForgeryToken()
+                                <input name="id" type="hidden" value="@u.Id" />
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="posts">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Author</th>
+                    <th>Content</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in posts)
+                {
+                    <tr>
+                        <td>@p.Id</td>
+                        <td>
+                            @{
+                                var author = await UserService.GetById(p.UserId);
+                                var postExists = await PostService.GetById(p.Id) != null;
+                            }
+                            @if (author != null)
+                            {
+                                <a asp-controller="Profile" asp-action="Index" asp-route-id="@author.Id">
+                                   @author.UserName
+                                </a>
+                            }
+                            else
+                            {
+                                <span>[Unknown]</span>
+                            }
+                        </td>
+                        <td>
+                            @if (postExists)
+                            {
+                                <a asp-controller="Newsfeed" asp-action="Details" asp-route-id="@p.Id">
+                                    @(p.Content.Length > 50
+                                        ? p.Content.Substring(0, 50) + "…"
+                                        : p.Content)
+                                </a>
+                            }
+                            else
+                            {
+                                <span>
+                                    @(p.Content.Length > 50
+                                        ? p.Content.Substring(0, 50) + "…"
+                                        : p.Content)
+                                </span>
+                            }
+                        </td>
+                        <td>
+                            <form asp-controller="Admin" asp-action="DeletePost" method="post"
+                                  onsubmit="return confirm('Delete post #' + @p.Id + '?');">
+                                <input name="id" type="hidden" value="@p.Id" />
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tab-pane fade" id="reports">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Post</th>
+                    <th>Reporter</th>
+                    <th>Reason</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in reports)
+                {
+                    var reporter = await UserService.GetById(r.ReporterId);
+                    var postExists = await PostService.GetById(r.PostId) != null;
+                    <tr>
+                        <td>@r.Id</td>
+                        <td>
+                            @if (postExists)
+                            {
+                                <a asp-controller="Newsfeed" asp-action="Details" asp-route-id="@r.PostId">
+                                    #@r.PostId
+                                </a>
+                            }
+                            else
+                            {
+                                <span>#@r.PostId</span>
+                            }
+                        </td>
+                        <td>
+                            @if (reporter != null)
+                            {
+                                <a asp-controller="Profile" asp-action="Index" asp-route-id="@reporter.Id">
+                                    @reporter.UserName
+                                </a>
+                            }
+                            else
+                            {
+                                <span>[Unknown]</span>
+                            }
+                        </td>
+                        <td>@r.Reason</td>
+                        <td>
+                            <form asp-controller="Admin" asp-action="DeleteReport" method="post"
+                                  onsubmit="return confirm('Remove report #' + @r.Id + '?');">
+                                <input name="id" type="hidden" value="@r.Id" />
+                                <button class="btn btn-sm btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var trigger = document.querySelector('#adminTabs button.active');
+        bootstrap.Tab.getInstance(trigger)?.show();
+    </script>
+}
