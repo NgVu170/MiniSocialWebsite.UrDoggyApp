@@ -9,7 +9,7 @@ namespace UrDoggy.Services.Interfaces
 {
     public interface IRecommendationService
     {
-        Task<float> RankCalculate(int currentUserId, Post Post);
-
+        Task<HashSet<int> GetAllRankCalculate(int currentUserId);
+        Task
     }
 }

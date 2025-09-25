@@ -35,15 +35,13 @@ namespace UrDoggy.Data.Repositories
                 }
                 else if (relationship.Status == "Rejected")
                 {
-                    result = 0; // Bị từ chối
+                    return result = float.MinValue; // Bị từ chối
                 }
-                
-                return result;
             } else
             {
                 result += 1; // Không có quan hệ
             }
-             return result += (Post.UpVotes - Post.DownVotes) * 0.01f; // Điểm từ lượt vote
+             return result += (Post.UpVotes - Post.DownVotes) * 0.1f; // Điểm từ lượt vote
         }
     }
 }
