@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UrDoggy.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialRelational : Migration
+    public partial class AddGroupAndRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -32,11 +32,11 @@ namespace UrDoggy.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    DisplayName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
-                    Bio = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: false),
+                    DisplayName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: true),
+                    Bio = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -220,6 +220,32 @@ namespace UrDoggy.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupName = table.Column<string>(type: "nvarchar(128)", maxLength: 128, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(2000)", maxLength: 2000, nullable: true),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoverImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OwnerId = table.Column<int>(type: "int", nullable: false),
+                    GroupStatus = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Messages",
                 columns: table => new
                 {
@@ -274,18 +300,48 @@ namespace UrDoggy.Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GroupDetails",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GroupId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    Role = table.Column<int>(type: "int", nullable: false),
+                    JoinedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    MemberStatus = table.Column<int>(type: "int", nullable: false),
+                    ActivtyScore = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GroupDetails", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GroupDetails_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GroupDetails_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<int>(type: "int", nullable: false),
+                    GroupId = table.Column<int>(type: "int", nullable: true),
                     Content = table.Column<string>(type: "nvarchar(max)", maxLength: 5000, nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpVotes = table.Column<int>(type: "int", nullable: false),
-                    DownVotes = table.Column<int>(type: "int", nullable: false),
-                    MediaPath = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: false),
-                    MediaType = table.Column<string>(type: "nvarchar(64)", maxLength: 64, nullable: false)
+                    DownVotes = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -296,6 +352,12 @@ namespace UrDoggy.Data.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_Groups_GroupId",
+                        column: x => x.GroupId,
+                        principalTable: "Groups",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -461,6 +523,22 @@ namespace UrDoggy.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_GroupDetails_GroupId_UserId",
+                table: "GroupDetails",
+                columns: new[] { "GroupId", "UserId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GroupDetails_UserId",
+                table: "GroupDetails",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_OwnerId",
+                table: "Groups",
+                column: "OwnerId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Media_PostId_CreatedAt",
                 table: "Media",
                 columns: new[] { "PostId", "CreatedAt" });
@@ -479,6 +557,11 @@ namespace UrDoggy.Data.Migrations
                 name: "IX_Notifications_UserId_IsRead_CreatedAt",
                 table: "Notifications",
                 columns: new[] { "UserId", "IsRead", "CreatedAt" });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_GroupId",
+                table: "Posts",
+                column: "GroupId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_UserId_CreatedAt",
@@ -538,6 +621,9 @@ namespace UrDoggy.Data.Migrations
                 name: "Friends");
 
             migrationBuilder.DropTable(
+                name: "GroupDetails");
+
+            migrationBuilder.DropTable(
                 name: "Media");
 
             migrationBuilder.DropTable(
@@ -563,6 +649,9 @@ namespace UrDoggy.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "Posts");
+
+            migrationBuilder.DropTable(
+                name: "Groups");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

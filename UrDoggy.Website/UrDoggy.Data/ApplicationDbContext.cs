@@ -45,21 +45,21 @@ namespace UrDoggy.Data
             {
                 e.ToTable("Posts");
                 e.HasKey(x => x.Id);
-
                 e.Property(x => x.Content).HasMaxLength(5000);
 
                 // FK tới User: RESTRICT để tránh multiple cascade paths
-                e.HasOne<User>()
+                e.HasOne(p => p.User)
                     .WithMany(u => u.Posts)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
-                e.HasOne<User>()
+                e.HasOne(g => g.Group)
                     .WithMany(g => g.Posts)
                     .HasForeignKey(g => g.GroupId)
                     .OnDelete(DeleteBehavior.SetNull);
 
                 e.HasIndex(x => new { x.UserId, x.CreatedAt });
+                e.HasIndex(x => x.GroupId);
             });
 
             // ======================
@@ -249,7 +249,7 @@ namespace UrDoggy.Data
                 e.Property(x => x.Description).HasMaxLength(2000).IsRequired(false);
 
                 e.HasOne(g => g.Owner)
-                .WithMany()
+                .WithMany(u => u.OwnedGroups)
                 .HasForeignKey(g => g.OwnerId)
                 .OnDelete(DeleteBehavior.Restrict);
             });
@@ -260,17 +260,19 @@ namespace UrDoggy.Data
             model.Entity<GroupDetail>(e =>
             {
                 e.ToTable("GroupDetails");
-                e.HasKey(x => x.GroupId);
+                e.HasKey(x => x.Id); // hoặc composite if you want
+
                 e.HasOne(gd => gd.Group)
-                .WithMany(g => g.Members)
-                .HasForeignKey(gd => gd.GroupId)
-                .OnDelete(DeleteBehavior.Cascade);
+                 .WithMany(g => g.Members)
+                 .HasForeignKey(gd => gd.GroupId)
+                 .OnDelete(DeleteBehavior.Cascade);
 
                 e.HasOne(gd => gd.User)
-                .WithMany()
-                .HasForeignKey(gd => gd.MemberId)
-                .OnDelete(DeleteBehavior.Restrict);
-                e.HasIndex(x => new { x.GroupId, x.MemberId }).IsUnique();
+                 .WithMany(u => u.GroupDetails)
+                 .HasForeignKey(gd => gd.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => new { x.GroupId, x.UserId }).IsUnique();
             });
 
             // ======================

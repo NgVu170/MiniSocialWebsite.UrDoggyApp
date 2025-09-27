@@ -10,16 +10,17 @@ namespace UrDoggy.Core.Models
     [Table("GroupDetails")]
     public class GroupDetail
     {
+        public int Id { get; set; }
         public int GroupId { get; set; }
-        public int MemberId { get; set; }
-        public GroupRole Roles { get; set; } = GroupRole.Member; // default role is Member
+        public int UserId { get; set; }
+        public GroupRole Role { get; set; } = GroupRole.Member; // default role is Member
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public Status MemberStatus { get; set; } = Status.Active; // default status is Active
-        int activtyScore { get; set; } = 0; // default activity score is 0
+        public int ActivtyScore { get; set; } = 0; // default activity score is 0
         //navigation
-        public Group Group { get; set; }
-        public User User { get; set; }
+        public Group Group { get; set; } = null!;
+        public User User { get; set; } = null!;
     }
 
     public enum GroupRole

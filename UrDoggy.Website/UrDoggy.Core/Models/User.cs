@@ -10,20 +10,20 @@ namespace UrDoggy.Core.Models
     public class User : IdentityUser<int>
     {
         public string ProfilePicture { get; set; } = string.Empty;
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsAdmin { get; set; } = false;
         public string DisplayName { get; set; } = string.Empty;
         public string Bio { get; set; } = string.Empty;
 
         // Navigation
-        public ICollection<Post> Posts { get; set; }
-        public ICollection<Comment> Comments { get; set; }
-        public ICollection<PostVote> PostVotes { get; set; }
-        public ICollection<Friend> Friends { get; set; }
-        public ICollection<Message> SentMessages { get; set; }
-        public ICollection<Message> ReceivedMessages { get; set; }
-        public ICollection<Notification> Notifications { get; set; }
-        public ICollection<Group> OwnedGroups { get; set; }
-        public ICollection<GroupDetail> GroupDetails { get; set; }
+        public ICollection<Post> Posts { get; set; } = new List<Post>();
+        public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+        public ICollection<PostVote> PostVotes { get; set; } = new List<PostVote>();
+        public ICollection<Friend> Friends { get; set; } = new List<Friend>();
+        public ICollection<Message> SentMessages { get; set; } = new List<Message>();
+        public ICollection<Message> ReceivedMessages { get; set; } = new List<Message>();
+        public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
+        public ICollection<Group> OwnedGroups { get; set; } = new List<Group>();
+        public ICollection<GroupDetail> GroupDetails { get; set; } = new List<GroupDetail>();
     }
 }

@@ -229,6 +229,14 @@ namespace UrDoggy.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Avatar")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoverImage")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -250,48 +258,47 @@ namespace UrDoggy.Data.Migrations
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("UrDoggy.Core.Models.GroupDetail", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActivtyScore")
+                        .HasColumnType("int");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("JoinedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("MemberId")
-                        .HasColumnType("int");
-
                     b.Property<int>("MemberStatus")
                         .HasColumnType("int");
 
-                    b.Property<int>("Roles")
+                    b.Property<int>("Role")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("UserId")
+                    b.Property<int>("UserId")
                         .HasColumnType("int");
 
-                    b.HasKey("GroupId");
-
-                    b.HasIndex("MemberId");
+                    b.HasKey("Id");
 
                     b.HasIndex("UserId");
 
-                    b.HasIndex("GroupId", "MemberId")
+                    b.HasIndex("GroupId", "UserId")
                         .IsUnique();
 
                     b.ToTable("GroupDetails", (string)null);
@@ -422,9 +429,6 @@ namespace UrDoggy.Data.Migrations
                     b.Property<int?>("GroupId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GroupId1")
-                        .HasColumnType("int");
-
                     b.Property<int>("UpVotes")
                         .HasColumnType("int");
 
@@ -434,8 +438,6 @@ namespace UrDoggy.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("GroupId");
-
-                    b.HasIndex("GroupId1");
 
                     b.HasIndex("UserId", "CreatedAt");
 
@@ -715,14 +717,10 @@ namespace UrDoggy.Data.Migrations
             modelBuilder.Entity("UrDoggy.Core.Models.Group", b =>
                 {
                     b.HasOne("UrDoggy.Core.Models.User", "Owner")
-                        .WithMany()
+                        .WithMany("OwnedGroups")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("UrDoggy.Core.Models.User", null)
-                        .WithMany("OwnedGroups")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Owner");
                 });
@@ -736,14 +734,10 @@ namespace UrDoggy.Data.Migrations
                         .IsRequired();
 
                     b.HasOne("UrDoggy.Core.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("MemberId")
+                        .WithMany("GroupDetails")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.HasOne("UrDoggy.Core.Models.User", null)
-                        .WithMany("GroupDetails")
-                        .HasForeignKey("UserId");
 
                     b.Navigation("Group");
 
@@ -793,19 +787,15 @@ namespace UrDoggy.Data.Migrations
 
             modelBuilder.Entity("UrDoggy.Core.Models.Post", b =>
                 {
-                    b.HasOne("UrDoggy.Core.Models.User", null)
+                    b.HasOne("UrDoggy.Core.Models.Group", "Group")
                         .WithMany("Posts")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("UrDoggy.Core.Models.Group", "Group")
-                        .WithMany("Posts")
-                        .HasForeignKey("GroupId1");
-
                     b.HasOne("UrDoggy.Core.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Posts")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Group");
