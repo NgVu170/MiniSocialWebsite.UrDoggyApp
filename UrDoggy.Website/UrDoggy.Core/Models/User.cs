@@ -23,5 +23,7 @@ namespace UrDoggy.Core.Models
         public ICollection<Message> SentMessages { get; set; }
         public ICollection<Message> ReceivedMessages { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+        public ICollection<Group> OwnedGroups { get; set; }
+        public ICollection<GroupDetail> GroupDetails { get; set; }
     }
 }

@@ -18,10 +18,8 @@ namespace UrDoggy.Core.Models
         public Status MemberStatus { get; set; } = Status.Active; // default status is Active
         int activtyScore { get; set; } = 0; // default activity score is 0
         //navigation
-        [ForeignKey("GroupId")]
         public Group Group { get; set; }
-        [ForeignKey("MemberIds")]
-        public User Member { get; set; }
+        public User User { get; set; }
     }
 
     public enum GroupRole

@@ -10,7 +10,7 @@ namespace UrDoggy.Core.Models
     [Table ("Groups")]
     public class Group
     {
-        int Id { get; set; }
+        public int Id { get; set; }
         public string GroupName { get; set; }
         public string Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
@@ -19,7 +19,11 @@ namespace UrDoggy.Core.Models
         public Status GroupStatus { get; set; } = Status.Active;
 
         //Navigation
+        [ForeignKey("OwnerId")]
         public User Owner { get; set; }
+
+        public ICollection<GroupDetail> Members { get; set; }
+        public ICollection<Post> Posts { get; set; }
     }
 
     public enum Status
