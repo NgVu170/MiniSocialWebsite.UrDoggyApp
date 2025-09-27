@@ -16,6 +16,7 @@ namespace UrDoggy.Core.Models
         public int UpVotes { get; set; } = 0;
         public int DownVotes { get; set; } = 0;
         // Navigation
+        public User User { get; set; }
         public Group? Group { get; set; }
         public ICollection<Comment> Comments { get; set; }
         public ICollection<PostVote> PostVotes { get; set; }

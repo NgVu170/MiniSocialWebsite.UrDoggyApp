@@ -54,6 +54,11 @@ namespace UrDoggy.Data
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
 
+                e.HasOne<User>()
+                    .WithMany(g => g.Posts)
+                    .HasForeignKey(g => g.GroupId)
+                    .OnDelete(DeleteBehavior.SetNull);
+
                 e.HasIndex(x => new { x.UserId, x.CreatedAt });
             });
 
@@ -252,7 +257,21 @@ namespace UrDoggy.Data
             // ======================
             // GROUP DETAIL
             // ======================
-            
+            model.Entity<GroupDetail>(e =>
+            {
+                e.ToTable("GroupDetails");
+                e.HasKey(x => x.GroupId);
+                e.HasOne(gd => gd.Group)
+                .WithMany(g => g.Members)
+                .HasForeignKey(gd => gd.GroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(gd => gd.User)
+                .WithMany()
+                .HasForeignKey(gd => gd.MemberId)
+                .OnDelete(DeleteBehavior.Restrict);
+                e.HasIndex(x => new { x.GroupId, x.MemberId }).IsUnique();
+            });
 
             // ======================
             // IGNORE các model không phải entity DB

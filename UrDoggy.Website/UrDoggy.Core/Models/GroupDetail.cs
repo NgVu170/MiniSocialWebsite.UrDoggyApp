@@ -11,7 +11,7 @@ namespace UrDoggy.Core.Models
     public class GroupDetail
     {
         public int GroupId { get; set; }
-        public int MemberIds { get; set; }
+        public int MemberId { get; set; }
         public GroupRole Roles { get; set; } = GroupRole.Member; // default role is Member
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

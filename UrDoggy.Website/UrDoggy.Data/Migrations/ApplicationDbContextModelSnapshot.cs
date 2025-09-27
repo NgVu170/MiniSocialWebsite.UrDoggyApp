@@ -221,6 +221,82 @@ namespace UrDoggy.Data.Migrations
                     b.ToTable("Friends", (string)null);
                 });
 
+            modelBuilder.Entity("UrDoggy.Core.Models.Group", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(2000)
+                        .HasColumnType("nvarchar(2000)");
+
+                    b.Property<string>("GroupName")
+                        .IsRequired()
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
+
+                    b.Property<int>("GroupStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Groups", (string)null);
+                });
+
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupDetail", b =>
+                {
+                    b.Property<int>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoinedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MemberId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("MemberStatus")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Roles")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("GroupId");
+
+                    b.HasIndex("MemberId");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("GroupId", "MemberId")
+                        .IsUnique();
+
+                    b.ToTable("GroupDetails", (string)null);
+                });
+
             modelBuilder.Entity("UrDoggy.Core.Models.Media", b =>
                 {
                     b.Property<int>("Id")
@@ -343,6 +419,12 @@ namespace UrDoggy.Data.Migrations
                     b.Property<int>("DownVotes")
                         .HasColumnType("int");
 
+                    b.Property<int?>("GroupId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GroupId1")
+                        .HasColumnType("int");
+
                     b.Property<int>("UpVotes")
                         .HasColumnType("int");
 
@@ -350,6 +432,10 @@ namespace UrDoggy.Data.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("GroupId");
+
+                    b.HasIndex("GroupId1");
 
                     b.HasIndex("UserId", "CreatedAt");
 
@@ -626,6 +712,44 @@ namespace UrDoggy.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("UrDoggy.Core.Models.Group", b =>
+                {
+                    b.HasOne("UrDoggy.Core.Models.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UrDoggy.Core.Models.User", null)
+                        .WithMany("OwnedGroups")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupDetail", b =>
+                {
+                    b.HasOne("UrDoggy.Core.Models.Group", "Group")
+                        .WithMany("Members")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UrDoggy.Core.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("MemberId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("UrDoggy.Core.Models.User", null)
+                        .WithMany("GroupDetails")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("UrDoggy.Core.Models.Media", b =>
                 {
                     b.HasOne("UrDoggy.Core.Models.Post", "Post")
@@ -671,9 +795,22 @@ namespace UrDoggy.Data.Migrations
                 {
                     b.HasOne("UrDoggy.Core.Models.User", null)
                         .WithMany("Posts")
+                        .HasForeignKey("GroupId")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.HasOne("UrDoggy.Core.Models.Group", "Group")
+                        .WithMany("Posts")
+                        .HasForeignKey("GroupId1");
+
+                    b.HasOne("UrDoggy.Core.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Group");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("UrDoggy.Core.Models.PostTag", b =>
@@ -714,6 +851,13 @@ namespace UrDoggy.Data.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("UrDoggy.Core.Models.Group", b =>
+                {
+                    b.Navigation("Members");
+
+                    b.Navigation("Posts");
+                });
+
             modelBuilder.Entity("UrDoggy.Core.Models.Post", b =>
                 {
                     b.Navigation("Comments");
@@ -736,7 +880,11 @@ namespace UrDoggy.Data.Migrations
 
                     b.Navigation("Friends");
 
+                    b.Navigation("GroupDetails");
+
                     b.Navigation("Notifications");
+
+                    b.Navigation("OwnedGroups");
 
                     b.Navigation("PostVotes");
 
