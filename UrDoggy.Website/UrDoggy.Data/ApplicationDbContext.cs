@@ -21,6 +21,8 @@ namespace UrDoggy.Data
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<Report> Reports => Set<Report>();
         public DbSet<Friend> Friends => Set<Friend>();
+        public DbSet<Group> Groups => Set<Group>();
+        public DbSet<GroupDetail> GroupDetails => Set<GroupDetail>();
 
         protected override void OnModelCreating(ModelBuilder model)
         {
@@ -229,6 +231,28 @@ namespace UrDoggy.Data
 
                 e.HasIndex(x => new { x.PostId, x.CreatedAt });
             });
+
+            // ======================
+            // GROUP
+            // ======================
+            model.Entity<Group>(e =>
+            {
+                e.ToTable("Groups");
+                e.HasKey(x => x.Id);
+
+                e.Property(x => x.GroupName).HasMaxLength(128).IsRequired();
+                e.Property(x => x.Description).HasMaxLength(2000).IsRequired(false);
+
+                e.HasOne(g => g.Owner)
+                .WithMany()
+                .HasForeignKey(g => g.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ======================
+            // GROUP DETAIL
+            // ======================
+            
 
             // ======================
             // IGNORE các model không phải entity DB
