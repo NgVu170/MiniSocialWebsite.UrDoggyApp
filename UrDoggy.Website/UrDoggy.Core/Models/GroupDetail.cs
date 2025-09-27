@@ -10,7 +10,7 @@ namespace UrDoggy.Core.Models
     [Table("GroupDetails")]
     public class GroupDetail
     {
-        int GroupId { get; set; }
+        public int GroupId { get; set; }
         public int MemberIds { get; set; }
         public GroupRole Roles { get; set; } = GroupRole.Member; // default role is Member
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
@@ -20,6 +20,8 @@ namespace UrDoggy.Core.Models
         //navigation
         [ForeignKey("GroupId")]
         public Group Group { get; set; }
+        [ForeignKey("MemberIds")]
+        public User Member { get; set; }
     }
 
     public enum GroupRole
