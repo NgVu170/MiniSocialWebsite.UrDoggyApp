@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UrDoggy.Core.Models;  // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
+using UrDoggy.Core.Models.Group_Models;
 using UrDoggy.Core.Models.GroupModels;  //Group models
 
 namespace UrDoggy.Data
@@ -25,7 +26,7 @@ namespace UrDoggy.Data
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<GroupDetail> GroupDetails => Set<GroupDetail>();
         public DbSet<GroupPostStatus> GroupPostStatuses => Set<GroupPostStatus>();  
-
+        public DbSet<GroupReport> GroupReports => Set<GroupReport>();
         protected override void OnModelCreating(ModelBuilder model)
         {
             base.OnModelCreating(model); // cần cho Identity
@@ -319,6 +320,25 @@ namespace UrDoggy.Data
                     .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasIndex(x => new { x.PostId, x.GroupId });
+            });
+
+            // ======================
+            // GROUP REPORT
+            // ======================
+            model.Entity<GroupReport>(e =>
+            {
+                e.ToTable("GroupReports");
+                e.HasKey(x => x.Id); // hoặc composite if you want
+                //Relations
+                e.HasOne(x => x.GroupPost)
+                    .WithMany()
+                    .HasForeignKey(x => x.GroupPostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                e.HasOne(x => x.Reporter)
+                    .WithMany()
+                    .HasForeignKey(x => x.ReporterId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                e.HasIndex(x => new { x.GroupPostId, x.ReporterId, x.CreatedAt });
             });
 
             // ======================
