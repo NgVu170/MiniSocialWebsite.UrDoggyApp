@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UrDoggy.Core.Models
+namespace UrDoggy.Core.Models.GroupModels
 {
     [Table("GroupDetails")]
     public class GroupDetail

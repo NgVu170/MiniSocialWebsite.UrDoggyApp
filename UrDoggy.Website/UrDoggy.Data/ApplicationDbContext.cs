@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UrDoggy.Core.Models;     // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
+using UrDoggy.Core.Models;  // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
+using UrDoggy.Core.Models.GroupModels;  //Group models
 
 namespace UrDoggy.Data
 {
@@ -23,6 +24,7 @@ namespace UrDoggy.Data
         public DbSet<Friend> Friends => Set<Friend>();
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<GroupDetail> GroupDetails => Set<GroupDetail>();
+        public DbSet<GroupPostStatus> GroupPostStatuses => Set<GroupPostStatus>();  
 
         protected override void OnModelCreating(ModelBuilder model)
         {
@@ -273,6 +275,38 @@ namespace UrDoggy.Data
                  .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasIndex(x => new { x.GroupId, x.UserId }).IsUnique();
+            });
+
+            // ======================
+            // GROUP POST STATUS
+            // ======================
+            model.Entity<GroupPostStatus>(e =>
+            {
+                e.ToTable("GroupPostStatuses");
+                e.HasKey(x => x.Id); // hoặc composite if you want
+
+                //Relations
+                e.HasOne(x => x.Post)
+                    .WithMany()
+                    .HasForeignKey(x => x.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(x => x.Group)
+                    .WithMany()
+                    .HasForeignKey(x => x.GroupId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(x => x.Author)
+                    .WithMany()
+                    .HasForeignKey(x => x.AuthorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Mod)
+                    .WithMany()
+                    .HasForeignKey(x => x.ModId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => new { x.PostId, x.GroupId });
             });
 
             // ======================
