@@ -13,8 +13,8 @@ namespace UrDoggy.Core.Models.GroupModels
         public int Id { get; set; }
         public string GroupName { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
-        public string Avatar { get; set; } = string.Empty;
-        public string CoverImage { get; set; } = string.Empty;
+        public string Avatar { get; set; } = ".\\UrDoggy.Website\\UrDoggyApp\\wwwroot\\images\\default-avatar.png";
+        public string CoverImage { get; set; } = ".\\UrDoggy.Website\\UrDoggyApp\\wwwroot\\images\\default-cover.png";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public int OwnerId { get; set; }

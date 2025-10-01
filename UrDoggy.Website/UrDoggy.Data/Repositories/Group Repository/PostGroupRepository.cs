@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UrDoggy.Core.Models;
+using UrDoggy.Core.Models.Group_Models;
 using UrDoggy.Core.Models.GroupModels;
 
 namespace UrDoggy.Data.Repositories.Group_Repository
@@ -16,7 +17,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
         {
             _context = context;
         }
-
+        //======================= NORMAL USER =======================
         public override async Task<List<Post>> GetAllPost(int? groupId)
         {
             var querry = _context.Posts.AsQueryable();
@@ -51,15 +52,6 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             await _context.SaveChangesAsync();
         }
 
-        public override async Task UpdatePost(Post post)
-        {
-            if (!post.GroupId.HasValue)
-            {
-                throw new ArgumentException("GroupId must be provided for group posts.");
-            }
-            await base.UpdatePost(post);
-        }
-
         public override async Task DeletePost(int postId, int? modId = null)
         {
             var post = await _context.Posts
@@ -83,9 +75,91 @@ namespace UrDoggy.Data.Repositories.Group_Repository
 
         public override async Task ReportPost(int postId, int reporterId, string reason)
         {
-            throw new Exception("Reporting group posts is not implemented yet.");
+            _context.GroupReports.Add(new GroupReport
+            {
+                GroupPostId = postId,
+                ReporterId = reporterId,
+                Reason = reason,
+                CreatedAt = DateTime.UtcNow
+            });
+            await _context.SaveChangesAsync();
         }
 
-
+        //======================= MODERATOR, ADMIN =====================
+        public async Task<List<Post>> GetAllPendingPost(int groupId)
+        {
+            var pendingPostIds = await _context.GroupPostStatuses
+                .Where(s => s.GroupId == groupId && s.Status == StateOfPost.Pending)
+                .Select(s => s.PostId)
+                .ToListAsync();
+            return await _context.Posts
+                .Where(p => pendingPostIds.Contains(p.Id))
+                .OrderByDescending(p => p.CreatedAt)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+        public async Task<Post> ApprovedPost(int postId, int modId)
+        {
+            var post = await _context.Posts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
+            if (post == null)
+            {
+                throw new ArgumentException("Post not found or is not a group post.");
+            }
+            var status = await _context.GroupPostStatuses
+                .FirstOrDefaultAsync(s => s.PostId == postId);
+            if (status == null)
+            {
+                throw new InvalidOperationException("Post status not found.");
+            }
+            status.Status = StateOfPost.Approved;
+            status.StatusUpdate = DateTime.UtcNow;
+            status.ModId = modId;
+            await _context.SaveChangesAsync();
+            return post;
+        }
+        public async Task<Post> DeniedPost(int postId, int modId)
+        {
+            var post = await _context.Posts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
+            if (post == null)
+            {
+                throw new ArgumentException("Post not found or is not a group post.");
+            }
+            var status = await _context.GroupPostStatuses
+                .FirstOrDefaultAsync(s => s.PostId == postId);
+            if (status == null)
+            {
+                throw new InvalidOperationException("Post status not found.");
+            }
+            status.Status = StateOfPost.Rejected;
+            status.StatusUpdate = DateTime.UtcNow;
+            status.ModId = modId;
+            await _context.SaveChangesAsync();
+            return post;
+        }
+        public async Task<Post> ChangeStatus(int postId, int modId, StateOfPost statusOfPost)
+        {
+            var post = await _context.Posts
+                .AsNoTracking()
+                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
+            if (post == null)
+            {
+                throw new ArgumentException("Post not found or is not a group post.");
+            }
+            var status = await _context.GroupPostStatuses
+                .FirstOrDefaultAsync(s => s.PostId == postId);
+            if (status == null)
+            {
+                throw new InvalidOperationException("Post status not found.");
+            }
+            status.Status = statusOfPost;
+            status.StatusUpdate = DateTime.UtcNow;
+            status.ModId = modId;
+            await _context.SaveChangesAsync();
+            return post;
+        }
     }
 }

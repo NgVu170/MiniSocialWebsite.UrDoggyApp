@@ -67,7 +67,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // UPDATE: update content; if post.MediaItems is provided, sync Media table to match it
-        public virtual async Task UpdatePost(Post post)
+        public async Task UpdatePost(Post post)
         {
             var existing = await _context.Posts
                 .Include(p => p.MediaItems)

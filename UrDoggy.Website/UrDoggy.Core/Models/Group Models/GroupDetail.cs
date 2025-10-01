@@ -25,8 +25,8 @@ namespace UrDoggy.Core.Models.GroupModels
 
     public enum GroupRole
     {
-        Owner,
         Admin,
+        Moderator,
         Member
     }
 }
