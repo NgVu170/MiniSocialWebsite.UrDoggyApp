@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using UrDoggy.Core.Models;
 using UrDoggy.Services.Interfaces;
@@ -17,6 +18,7 @@ namespace UrDoggy.Website.Controllers
         private readonly IMediaService _mediaService;
         private readonly IFriendService _friendService;
         private const string HiddenPostsCookieName = "HiddenPosts";
+        private const string ViewedPostsCookieName = "ViewedPosts";
 
         public NewsfeedController(
             IPostService postService,
@@ -50,10 +52,23 @@ namespace UrDoggy.Website.Controllers
                 .Where(id => id >= 0)
                 .ToList();
 
-            var allPosts = await _postService.GetNewsfeed();
+            // Lấy danh sách posts đã xem từ cookie
+            string viewedCookieValue = Request.Cookies[ViewedPostsCookieName] ?? "";
+            HashSet<int> viewedPostIds = viewedCookieValue
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(text => int.TryParse(text, out var v) ? v : -1)
+                .Where(id => id >= 0)
+                .ToHashSet();
+
+            // Lấy bài viết recommended và loại bỏ những post đã xem
+            var allPosts = await _postService.GetRecommendedPosts(userId.Value, viewedPostIds);
+
             var visiblePosts = allPosts
                 .Where(post => !hiddenIds.Contains(post.Id))
                 .ToList();
+
+            // THÊM: Cập nhật danh sách posts đã xem
+            UpdateViewedPostsCookie(viewedPostIds, visiblePosts);
 
             // Lấy comments cho mỗi post
             foreach (var post in visiblePosts)
@@ -428,6 +443,39 @@ namespace UrDoggy.Website.Controllers
                 new CookieOptions
                 {
                     Expires = DateTimeOffset.UtcNow.AddDays(30),
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict
+                });
+        }
+
+        // Method để cập nhật cookie posts đã xem
+        private void UpdateViewedPostsCookie(HashSet<int> viewedPostIds, List<Post> newPosts)
+        {
+            // Thêm các post mới vào danh sách đã xem
+            foreach (var post in newPosts)
+            {
+                if (!viewedPostIds.Contains(post.Id))
+                {
+                    viewedPostIds.Add(post.Id);
+                }
+            }
+
+            // Giới hạn số lượng posts đã xem (tránh cookie quá lớn)
+            // Giữ lại 100 posts gần đây nhất
+            if (viewedPostIds.Count > 100)
+            {
+                var recentPosts = viewedPostIds.Take(100).ToHashSet();
+                viewedPostIds = recentPosts;
+            }
+
+            string newCookieValue = string.Join(",", viewedPostIds);
+            Response.Cookies.Append(
+                ViewedPostsCookieName,
+                newCookieValue,
+                new CookieOptions
+                {
+                    Expires = DateTimeOffset.UtcNow.AddDays(7), // Lưu 7 ngày
                     HttpOnly = true,
                     Secure = true,
                     SameSite = SameSiteMode.Strict
