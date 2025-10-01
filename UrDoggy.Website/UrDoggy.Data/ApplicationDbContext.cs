@@ -58,7 +58,7 @@ namespace UrDoggy.Data
                 e.HasOne(g => g.Group)
                     .WithMany(g => g.Posts)
                     .HasForeignKey(g => g.GroupId)
-                    .OnDelete(DeleteBehavior.SetNull);
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasIndex(x => new { x.UserId, x.CreatedAt });
                 e.HasIndex(x => x.GroupId);
@@ -140,6 +140,18 @@ namespace UrDoggy.Data
                 e.HasKey(x => x.Id);
 
                 e.Property(x => x.Reason).HasMaxLength(1000).IsRequired();
+
+                // FK tới Post (khi xoá Post thì xoá report theo)
+                e.HasOne(r => r.Post)
+                    .WithMany() // hoặc .WithMany(p => p.Reports) nếu bạn thêm ICollection<Report> vào Post
+                    .HasForeignKey(r => r.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // FK tới User (người report) - RESTRICT để tránh multiple cascade
+                e.HasOne(r => r.Reporter)
+                    .WithMany() // hoặc .WithMany(u => u.Reports) nếu bạn thêm ICollection<Report> vào User
+                    .HasForeignKey(r => r.ReporterId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 // Bạn đang dùng FK scalar (PostId, ReporterId) không có nav -> để nguyên
                 e.HasIndex(x => new { x.PostId, x.CreatedAt });
@@ -289,7 +301,7 @@ namespace UrDoggy.Data
                 e.HasOne(x => x.Post)
                     .WithMany()
                     .HasForeignKey(x => x.PostId)
-                    .OnDelete(DeleteBehavior.Cascade);
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.Group)
                     .WithMany()

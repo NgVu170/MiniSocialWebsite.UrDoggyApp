@@ -13,5 +13,9 @@ namespace UrDoggy.Core.Models
         public int ReporterId { get; set; }
         public string Reason { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        // Navigation
+        public Post Post { get; set; } = null!;
+        public User Reporter { get; set; } = null!;
     }
 }

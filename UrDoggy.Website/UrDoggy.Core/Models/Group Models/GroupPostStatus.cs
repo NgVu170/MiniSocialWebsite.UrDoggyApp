@@ -30,6 +30,7 @@ namespace UrDoggy.Core.Models.GroupModels
         Pending,
         Approved,
         Rejected,
-        Removed
+        Removed,
+        Reported
     }
 }

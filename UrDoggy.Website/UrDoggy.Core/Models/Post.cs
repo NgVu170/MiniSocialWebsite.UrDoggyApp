@@ -23,5 +23,6 @@ namespace UrDoggy.Core.Models
         public ICollection<PostVote> PostVotes { get; set; } = new List<PostVote>();
         public ICollection<PostTag> PostTags { get; set; } = new List<PostTag>();
         public ICollection<Media> MediaItems { get; set; } = new List<Media>();
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
     }
 }

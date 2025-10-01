@@ -29,7 +29,7 @@ namespace UrDoggy.Services.Service
             _mediaService = mediaService;
         }
 
-        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost();
+        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost(null);
 
         public async Task<Post> GetById(int postId)
         {
@@ -58,7 +58,7 @@ namespace UrDoggy.Services.Service
 
         public async Task DeletePost(int postId)
         {
-            await _postRepository.DeletePost(postId);
+            await _postRepository.DeletePost(postId,null);
         }
 
         public async Task Vote(int postId, int userId, bool isUpvote)
@@ -88,7 +88,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<List<Post>> GetUserPosts(int userId)
         {
-            var allPosts = await _postRepository.GetAllPost();
+            var allPosts = await _postRepository.GetAllPost(null);
             return allPosts
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
@@ -97,7 +97,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<int> GetPostCount(int userId)
         {
-            var allPosts = await _postRepository.GetAllPost();
+            var allPosts = await _postRepository.GetAllPost(null);
             return allPosts.Count(p => p.UserId == userId);
         }
 

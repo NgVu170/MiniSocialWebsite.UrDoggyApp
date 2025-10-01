@@ -26,5 +26,6 @@ namespace UrDoggy.Core.Models
         public ICollection<Notification> Notifications { get; set; } = new List<Notification>();
         public ICollection<Group> OwnedGroups { get; set; } = new List<Group>();
         public ICollection<GroupDetail> GroupDetails { get; set; } = new List<GroupDetail>();
+        public ICollection<Report> Reports { get; set; } = new List<Report>();
     }
 }
