@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,18 +38,27 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             {
                 throw new ArgumentException("GroupId must be provided for group posts.");
             }
-            await base.CreatePost(post, media);
-
             var status = new GroupPostStatus
             {
-                PostId = post.Id,
                 GroupId = post.GroupId.Value,
                 AuthorId = post.UserId,
+                Content = post.Content,
                 UploaddAt = DateTime.UtcNow,
                 Status = StateOfPost.Pending,
                 StatusUpdate = DateTime.UtcNow
             };
             _context.GroupPostStatuses.Add(status);
+            await _context.SaveChangesAsync();
+
+            foreach(var(path, mediaType) in media)
+    {
+                _context.Media.Add(new Media
+                {
+                    Path = path,
+                    MediaType = mediaType,
+                    GroupPostStatusId = status.Id
+                });
+            }
             await _context.SaveChangesAsync();
         }
 
@@ -98,47 +108,55 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 .AsNoTracking()
                 .ToListAsync();
         }
-        public async Task<Post> ApprovedPost(int postId, int modId)
+        public async Task<Post> ApprovedPost(int statusId, int modId)
         {
-            var post = await _context.Posts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
-            if (post == null)
-            {
-                throw new ArgumentException("Post not found or is not a group post.");
-            }
             var status = await _context.GroupPostStatuses
-                .FirstOrDefaultAsync(s => s.PostId == postId);
+                .Include(s => s.MediaItems)
+                .FirstOrDefaultAsync(s => s.Id == statusId);
+
             if (status == null)
+                throw new InvalidOperationException("Pending post not found.");
+
+            var newPost = new Post
             {
-                throw new InvalidOperationException("Post status not found.");
+                UserId = status.AuthorId,
+                GroupId = status.GroupId,
+                Content = status.Content,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Posts.Add(newPost);
+            await _context.SaveChangesAsync();
+
+            foreach (var media in status.MediaItems)
+            {
+                _context.Media.Add(new Media
+                {
+                    Path = media.Path,
+                    MediaType = media.MediaType,
+                    PostId = newPost.Id
+                });
             }
+
             status.Status = StateOfPost.Approved;
             status.StatusUpdate = DateTime.UtcNow;
             status.ModId = modId;
+
             await _context.SaveChangesAsync();
-            return post;
+            return newPost;
         }
-        public async Task<Post> DeniedPost(int postId, int modId)
+        public async Task DeniedPost(int statusId, int modId)
         {
-            var post = await _context.Posts
-                .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
-            if (post == null)
-            {
-                throw new ArgumentException("Post not found or is not a group post.");
-            }
             var status = await _context.GroupPostStatuses
-                .FirstOrDefaultAsync(s => s.PostId == postId);
+        .Include(s => s.MediaItems)
+        .FirstOrDefaultAsync(s => s.Id == statusId);
+
             if (status == null)
-            {
-                throw new InvalidOperationException("Post status not found.");
-            }
-            status.Status = StateOfPost.Rejected;
-            status.StatusUpdate = DateTime.UtcNow;
-            status.ModId = modId;
+                throw new InvalidOperationException("Pending post not found.");
+
+            _context.Media.RemoveRange(status.MediaItems);
+            _context.GroupPostStatuses.Remove(status);
             await _context.SaveChangesAsync();
-            return post;
         }
         public async Task<Post> ChangeStatus(int postId, int modId, StateOfPost statusOfPost)
         {
