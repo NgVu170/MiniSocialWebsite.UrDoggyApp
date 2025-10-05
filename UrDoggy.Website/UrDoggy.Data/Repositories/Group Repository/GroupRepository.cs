@@ -25,7 +25,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             await _context.SaveChangesAsync();
             return group;
         }
-        public async Task UpdateGroup(Group group)
+        public async Task<Group> UpdateGroup(Group group)
         {
             var existingGroup = await _context.Groups.FindAsync(group.Id);
             if (existingGroup == null)
@@ -39,6 +39,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             existingGroup.UpdatedAt = DateTime.UtcNow;
             _context.Groups.Update(existingGroup);
             await _context.SaveChangesAsync();
+            return existingGroup;
         }
         public async Task DeleteGroup(int groupId)
         {
