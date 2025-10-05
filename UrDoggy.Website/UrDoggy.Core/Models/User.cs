@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,8 +29,13 @@ namespace UrDoggy.Core.Models
         public ICollection<Group> OwnedGroups { get; set; } = new List<Group>();
         public ICollection<GroupDetail> GroupDetails { get; set; } = new List<GroupDetail>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
-        public ICollection<GroupPostStatus> AuthoredGroupPosts { get; set; } = new List<GroupPostStatus>();
-        public ICollection<GroupPostStatus> ModeratedGroupPosts { get; set; } = new List<GroupPostStatus>();
-        public ICollection<GroupReport> GroupReports { get; set; } = new List<GroupReport>();   
+        public ICollection<GroupReport> GroupReports { get; set; } = new List<GroupReport>();
+
+        [InverseProperty(nameof(GroupPostStatus.Author))]
+        public ICollection<GroupPostStatus> GroupPostsCreated { get; set; } = new List<GroupPostStatus>();
+
+        [InverseProperty(nameof(GroupPostStatus.Mod))]
+        public ICollection<GroupPostStatus> GroupPostsModerated { get; set; } = new List<GroupPostStatus>();
     }
 }
+

@@ -30,7 +30,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             var existingMember = await _context.GroupDetails
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.GroupId == groupId);
-            if (existingMember != null)
+            if ((existingMember != null))
                 return false;
             var newMember = new GroupDetail
             {
@@ -38,7 +38,6 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 GroupId = groupId,
                 Role = GroupRole.Member,
                 JoinedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
             };
             _context.GroupDetails.Add(newMember);
             await _context.SaveChangesAsync();
@@ -51,18 +50,49 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.GroupId == groupId);
             if (existingMember == null)
                 return false;
-            _context.GroupDetails.Remove(existingMember);
+            existingMember.MemberStatus = Status.Deleted;
+            existingMember.UpdatedAt = DateTime.UtcNow;
+            _context.GroupDetails.Update(existingMember);
             await _context.SaveChangesAsync();
             return true;
         }
         //======================= MODERATOR =========================
-        public async Task<bool> BanUser(int userId)
+        public async Task<bool> BanUser(int userId, int groupdId, int modId)
         {
-            throw new Exception("Not implemented yet.");
+            var findUser = await _context.GroupDetails
+                .Where(g => g.UserId == userId && g.GroupId == groupdId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (findUser == null)
+            {
+                throw new ArgumentException("User not found in group.");
+            } else
+            {
+                findUser.MemberStatus = Status.Banned;
+                findUser.UpdatedAt = DateTime.UtcNow;
+                _context.GroupDetails.Update(findUser);
+                await _context.SaveChangesAsync();
+                return true;
+            }
         }
-        public async Task<bool> KickUser(int userId)
+        public async Task<bool> KickUser(int userId, int groupId, int modId)
         {
-            throw new Exception("Not implemented yet.");
+            var findUser = await _context.GroupDetails
+                .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+            if (findUser == null)
+            {
+                throw new ArgumentException("User not found in group.");
+            }
+            else
+            {
+                findUser.MemberStatus = Status.Banned;
+                findUser.UpdatedAt = DateTime.UtcNow;
+                _context.GroupDetails.Update(findUser);
+                await _context.SaveChangesAsync();
+                return true;
+            }
         }
         //===================== ADMINISTRATOR =======================
         public async Task<bool> CreateMod (int userId, int groupId)

@@ -144,7 +144,7 @@ namespace UrDoggy.Data
 
                 // FK tới Post (khi xoá Post thì xoá report theo)
                 e.HasOne(r => r.Post)
-                    .WithMany() // hoặc .WithMany(p => p.Reports) nếu bạn thêm ICollection<Report> vào Post
+                    .WithMany(p => p.Reports) // hoặc .WithMany(p => p.Reports) nếu bạn thêm ICollection<Report> vào Post
                     .HasForeignKey(r => r.PostId)
                     .OnDelete(DeleteBehavior.Cascade);
 
@@ -249,6 +249,11 @@ namespace UrDoggy.Data
                     .HasForeignKey(x => x.PostId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+                e.HasOne(m => m.GroupPostStatus)
+                    .WithMany(gp => gp.MediaItems)
+                    .HasForeignKey(m => m.GroupPostStatusId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 e.HasIndex(x => new { x.PostId, x.CreatedAt });
             });
 
@@ -300,9 +305,9 @@ namespace UrDoggy.Data
 
                 //Relations
                 e.HasOne(x => x.Post)
-                    .WithMany()
-                    .HasForeignKey(x => x.PostId)
-                    .OnDelete(DeleteBehavior.Restrict);
+                   .WithMany()
+                   .HasForeignKey(x => x.PostId)
+                   .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.Group)
                     .WithMany()
@@ -310,12 +315,12 @@ namespace UrDoggy.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 e.HasOne(x => x.Author)
-                    .WithMany()
+                    .WithMany( u => u.GroupPostsCreated)
                     .HasForeignKey(x => x.AuthorId)
                     .OnDelete(DeleteBehavior.Restrict);
 
                 e.HasOne(x => x.Mod)
-                    .WithMany()
+                    .WithMany(u => u.GroupPostsModerated)
                     .HasForeignKey(x => x.ModId)
                     .OnDelete(DeleteBehavior.Restrict);
 
