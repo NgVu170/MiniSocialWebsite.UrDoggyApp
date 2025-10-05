@@ -75,6 +75,32 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 return true;
             }
         }
+        public async Task<bool> UnbanUser(int userId, int groupId, int modId)
+        {
+            var findUser = await _context.GroupDetails
+                .Where(g => g.UserId == userId && g.GroupId == groupId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+
+            if (findUser == null)
+            {
+                throw new ArgumentException("User not found in group.");
+            }
+
+            if (findUser.MemberStatus != Status.Banned)
+            {
+                throw new InvalidOperationException("User is not banned.");
+            }
+
+            // Cập nhật lại trạng thái
+            findUser.MemberStatus = Status.Active; // hoặc Status.Member tuỳ enum của bạn
+            findUser.UpdatedAt = DateTime.UtcNow;
+
+            _context.GroupDetails.Update(findUser);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
         public async Task<bool> KickUser(int userId, int groupId, int modId)
         {
             var findUser = await _context.GroupDetails

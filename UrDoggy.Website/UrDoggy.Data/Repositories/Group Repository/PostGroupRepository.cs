@@ -96,19 +96,16 @@ namespace UrDoggy.Data.Repositories.Group_Repository
         }
 
         //======================= MODERATOR, ADMIN =====================
-        public async Task<List<Post>> GetAllPendingPost(int groupId)
+        public async Task<List<GroupPostStatus>> GetAllPendingPost(int groupId)
         {
-            var pendingPostIds = await _context.GroupPostStatuses
-                .Where(s => s.GroupId == groupId && s.Status == StateOfPost.Pending)
-                .Select(s => s.PostId)
-                .ToListAsync();
-            return await _context.Posts
-                .Where(p => pendingPostIds.Contains(p.Id))
-                .OrderByDescending(p => p.CreatedAt)
-                .AsNoTracking()
-                .ToListAsync();
+            return await _context.GroupPostStatuses
+                        .Where(gps => gps.GroupId == groupId && gps.Status == StateOfPost.Pending)
+                        .Include(gps => gps.Author)
+                        .Include(gps => gps.MediaItems)
+                        .Include(gps => gps.Group)
+                        .ToListAsync();
         }
-        public async Task<Post> ApprovedPost(int statusId, int modId)
+        public async Task<bool> ApprovePost(int statusId, int modId)
         {
             var status = await _context.GroupPostStatuses
                 .Include(s => s.MediaItems)
@@ -143,20 +140,22 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             status.ModId = modId;
 
             await _context.SaveChangesAsync();
-            return newPost;
+            return true;
         }
-        public async Task DeniedPost(int statusId, int modId)
+        public async Task<bool> DeniedPost(int statusId, int modId)
         {
             var status = await _context.GroupPostStatuses
         .Include(s => s.MediaItems)
         .FirstOrDefaultAsync(s => s.Id == statusId);
 
             if (status == null)
+            {
                 throw new InvalidOperationException("Pending post not found.");
-
+            }
             _context.Media.RemoveRange(status.MediaItems);
             _context.GroupPostStatuses.Remove(status);
             await _context.SaveChangesAsync();
+            return true;
         }
         public async Task<Post> ChangeStatus(int postId, int modId, StateOfPost statusOfPost)
         {
@@ -178,6 +177,13 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             status.ModId = modId;
             await _context.SaveChangesAsync();
             return post;
+        }
+        public async Task<List<GroupReport>> GetAllReportPost(int groupId)
+        {
+            return await _context.GroupReports
+                .AsNoTracking()
+                .Where(r => r.GroupPost.GroupId == groupId)
+                .ToListAsync();
         }
     }
 }
