@@ -250,5 +250,42 @@ namespace UrDoggy.Data.Repositories
                 "INSERT INTO PostShares (PostId, UserId) VALUES ({0}, {1})",
                 postId, userId);
         }
+
+        public async Task<int> GetTotalPostCount(List<int> userIds)
+        {
+            return await _context.Posts
+                .AsNoTracking()
+                .CountAsync(p => userIds.Contains(p.UserId));
+        }
+
+        public async Task<float> RankCalculate(int currentUserId, Post Post)
+        {
+            float result = 0;
+            var relationship = _context.Friends.Where(r =>
+                (r.UserId == currentUserId && r.FriendId == Post.UserId)
+                || (r.UserId == Post.UserId && r.FriendId == currentUserId))
+                .FirstOrDefault();
+
+            if (relationship != null)
+            {
+                if (relationship.Status == "Accepted")
+                {
+                    result += 5; // Bạn bè
+                }
+                else if (relationship.Status == "Pending")
+                {
+                    result += 2; // Đang chờ kết bạn
+                }
+                else if (relationship.Status == "Rejected")
+                {
+                    return result = float.MinValue; // Bị từ chối
+                }
+            }
+            else
+            {
+                result += 1; // Không có quan hệ
+            }
+            return result += (Post.UpVotes - Post.DownVotes) * 0.1f; // Điểm từ lượt vote
+        }
     }
 }

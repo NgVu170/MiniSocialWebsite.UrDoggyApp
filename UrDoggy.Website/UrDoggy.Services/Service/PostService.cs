@@ -29,24 +29,7 @@ namespace UrDoggy.Services.Service
             _mediaService = mediaService;
         }
 
-        public async Task<List<Post>> GetNewsfeed(int userId, int pageNumber = 1, int pageSize = 10)
-        {
-            // Lấy danh sách bạn bè
-            var friends = await _friendRepository.GetFriends(userId);
-            var friendIds = friends.Select(f => f.Id).ToList();
-            friendIds.Add(userId); // Bao gồm cả bài viết của chính user
-
-            // Lấy tất cả bài viết và lọc theo bạn bè
-            var allPosts = await _postRepository.GetAllPost();
-            var newsfeedPosts = allPosts
-                .Where(p => friendIds.Contains(p.UserId))
-                .OrderByDescending(p => p.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToList();
-
-            return newsfeedPosts;
-        }
+        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost();
 
         public async Task<Post> GetById(int postId)
         {
@@ -103,14 +86,12 @@ namespace UrDoggy.Services.Service
             await _postRepository.SharePost(postId, userId);
         }
 
-        public async Task<List<Post>> GetUserPosts(int userId, int pageNumber = 1, int pageSize = 10)
+        public async Task<List<Post>> GetUserPosts(int userId)
         {
             var allPosts = await _postRepository.GetAllPost();
             return allPosts
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
                 .ToList();
         }
 
@@ -118,6 +99,65 @@ namespace UrDoggy.Services.Service
         {
             var allPosts = await _postRepository.GetAllPost();
             return allPosts.Count(p => p.UserId == userId);
+        }
+
+        public async Task<int> GetTotalPostCount(int userId)
+        {
+            var friends = await _friendRepository.GetFriends(userId);
+            var friendIds = friends.Select(f => f.Id).ToList();
+            friendIds.Add(userId);
+
+            return await _postRepository.GetTotalPostCount(friendIds);
+        }
+
+        public async Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Lấy tất cả bài viết (trừ của chính user)
+                var allPosts = await _postRepository.GetAllPost();
+
+                if (allPosts == null || !allPosts.Any())
+                    return new List<Post>();
+
+                var filteredPosts = allPosts.Where(p => p.UserId != userId).ToList();
+
+                // Loại bỏ posts đã xem nếu có
+                if (excludedPostIds != null && excludedPostIds.Any())
+                {
+                    filteredPosts = filteredPosts.Where(p => !excludedPostIds.Contains(p.Id)).ToList();
+                }
+                if (!filteredPosts.Any())
+                    return new List<Post>();
+
+                // Tính điểm recommendation cho mỗi bài viết
+                var postScores = new List<(Post Post, float Score)>();
+
+                foreach (var post in filteredPosts)
+                {
+                    var score = await _postRepository.RankCalculate(userId, post);
+                    if (score > float.MinValue) // Loại bỏ bài viết bị rejected
+                    {
+                        postScores.Add((post, score));
+                    }
+                }
+
+                // Sắp xếp theo điểm giảm dần và phân trang
+                var recommendedPosts = postScores
+                    .OrderByDescending(x => x.Score)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.Post)
+                    .ToList();
+
+                return recommendedPosts;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi và trả về danh sách rỗng
+                Console.WriteLine($"Error in GetRecommendedPosts: {ex.Message}");
+                return new List<Post>();
+            }
         }
     }
 }

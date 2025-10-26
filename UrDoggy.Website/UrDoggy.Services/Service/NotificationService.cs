@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -158,12 +159,22 @@ namespace UrDoggy.Services.Service
 
         public async Task MarkAllRead(int userId)
         {
-            await _notificationRepository.MarkAsRead(userId);
+            await _notificationRepository.MarkAllRead(userId);
         }
 
         public async Task DeleteNotificationsForPost(int postId)
         {
             await _notificationRepository.DeleteByPostId(postId);
+        }
+
+        public async Task<bool> MarkAsRead(int notificationId, int userId)
+        {
+            return await _notificationRepository.MarkAsRead(notificationId, userId);
+        }
+
+        public async Task ClearAllNotifications(int userId)
+        {
+            await _notificationRepository.ClearAllNotifications(userId);
         }
     }
 }

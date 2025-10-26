@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,11 @@ namespace UrDoggy.Data.Repositories
             _context = context;
         }
 
-        public Task<List<Comment>> GetCommentsByPostId(int postId)
+        public async Task<List<Comment>> GetCommentsByPostId(int postId)
         {
-            return Task.FromResult(_context.Comments.Where(c => c.PostId == postId).ToList());
+            return await _context.Comments
+                .Where(c => c.PostId == postId)
+                .ToListAsync() ?? new List<Comment>();
         }
 
         public async Task AddComment(Comment comment)
@@ -45,6 +48,11 @@ namespace UrDoggy.Data.Repositories
                 _context.Comments.Remove(comment);
                 await _context.SaveChangesAsync();
             }
+        }
+
+        public async Task<Comment> GetCommentById(int commentId)
+        {
+            return await _context.Comments.FindAsync(commentId);
         }
 
     }

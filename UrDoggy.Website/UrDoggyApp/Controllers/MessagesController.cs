@@ -31,11 +31,11 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(int? otherUserId)
         {
-            var meId = await _userService.GetCurrentUserId(User);
+            var meId = HttpContext.Session.GetInt32("UserId");
             if (meId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            int me = meId;
+            int me = meId.Value;
 
             // Lấy danh sách bạn bè
             var friends = await _friendService.GetFriends(me);
@@ -93,7 +93,6 @@ namespace UrDoggy.Website.Controllers
             ViewBag.Chats = allConversations;
             ViewBag.ActiveUser = activeUserId;
             ViewBag.Thread = thread;
-            ViewBag.CurrentUserId = me;
 
             return View();
         }
@@ -108,14 +107,14 @@ namespace UrDoggy.Website.Controllers
                 return RedirectToAction("Index", new { otherUserId = toUserId });
             }
 
-            var meId = await _userService.GetCurrentUserId(User);
-            if (meId == 0)
+            var meId = HttpContext.Session.GetInt32("UserId");
+            if (meId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
             {
                 // Gửi tin nhắn
-                var message = await _messageService.SendMessage(meId, toUserId, content);
+                var message = await _messageService.SendMessage(meId.Value, toUserId, content);
 
                 // Gửi real-time notification qua SignalR
                 await _hubContext.Clients.Group(toUserId.ToString())
@@ -134,13 +133,13 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int messageId, int? otherUserId)
         {
-            var meId = await _userService.GetCurrentUserId(User);
+            var meId = HttpContext.Session.GetInt32("UserId");
             if (meId == 0)
                 return RedirectToAction("Login", "Auth");
 
             try
             {
-                await _messageService.DeleteMessage(meId, messageId);
+                await _messageService.DeleteMessage(meId.Value, messageId);
                 TempData["Success"] = "Đã xóa tin nhắn";
             }
             catch (Exception ex)
@@ -150,47 +149,5 @@ namespace UrDoggy.Website.Controllers
 
             return RedirectToAction("Index", new { otherUserId });
         }
-
-        [HttpGet]
-        public async Task<IActionResult> GetConversations()
-        {
-            var meId = await _userService.GetCurrentUserId(User);
-            if (meId == 0)
-                return Unauthorized();
-
-            var conversations = await _messageService.GetConversations(meId);
-            return Ok(conversations);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> MarkAsRead(int otherUserId)
-        {
-            var meId = await _userService.GetCurrentUserId(User);
-            if (meId == 0)
-                return Unauthorized();
-
-            await _messageService.MarkAsRead(meId, otherUserId);
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetUnreadCount()
-        {
-            var meId = await _userService.GetCurrentUserId(User);
-            if (meId == 0)
-                return Unauthorized();
-
-            // Tính tổng unread messages từ tất cả conversations
-            var partnerIds = await _messageService.GetChatPartnerIds(meId);
-            int totalUnread = 0;
-
-            foreach (var partnerId in partnerIds)
-            {
-                totalUnread += await _messageService.GetUnreadCount(meId, partnerId);
-            }
-
-            return Ok(totalUnread);
-        }
-
     }
 }

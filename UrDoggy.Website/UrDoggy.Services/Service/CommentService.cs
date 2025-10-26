@@ -32,7 +32,7 @@ namespace UrDoggy.Services.Service
             }
 
             // Verify user exists
-            var user = await _userRepository.GetByI(userId);
+            var user = await _userRepository.GetById(userId);
             if (user == null)
             {
                 throw new ArgumentException("Người dùng không tồn tại");
@@ -67,8 +67,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<Comment> GetCommentById(int commentId)
         {
-            var allComments = await _commentRepository.GetCommentsByPostId(0); // Get all then filter
-            return allComments.FirstOrDefault(c => c.Id == commentId);
+            return await _commentRepository.GetCommentById(commentId);
         }
 
         public async Task<int> GetCommentCount(int postId)

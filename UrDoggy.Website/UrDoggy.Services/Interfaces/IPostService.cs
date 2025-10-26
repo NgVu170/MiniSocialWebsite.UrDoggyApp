@@ -10,7 +10,7 @@ namespace UrDoggy.Services.Interfaces
 {
     public interface IPostService
     {
-        Task<List<Post>> GetNewsfeed(int userId, int pageNumber = 1, int pageSize = 10);
+        Task<List<Post>> GetNewsfeed();
         Task<Post> GetById(int postId);
         Task<Post> CreatePost(int userId, string content, List<(string path, string mediaType)> mediaItems = null);
         Task EditPost(Post post);
@@ -20,7 +20,9 @@ namespace UrDoggy.Services.Interfaces
         Task<bool> HasVoted(int postId, int userId);
         Task ReportPost(int postId, int reporterId, string reason);
         Task SharePost(int postId, int userId);
-        Task<List<Post>> GetUserPosts(int userId, int pageNumber = 1, int pageSize = 10);
+        Task<List<Post>> GetUserPosts(int userId);
         Task<int> GetPostCount(int userId);
+        Task<int> GetTotalPostCount(int userId);
+        Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, int pageNumber = 1, int pageSize = 10);
     }
 }
