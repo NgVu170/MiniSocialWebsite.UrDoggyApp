@@ -43,3 +43,257 @@
         </ul>
     }
 </div>
+
+<style>
+    /* Notification System Style */
+    :root {
+        --noti-primary: #25D366;
+        --noti-secondary: #0984e3;
+        --noti-bg: #f8f9fa;
+        --noti-card: #ffffff;
+        --noti-border: rgba(0, 0, 0, 0.1);
+    }
+
+    .notification-card {
+        background: var(--noti-card);
+        border: none;
+        border-radius: 1.5rem;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+        .notification-card::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--noti-primary), var(--noti-secondary));
+        }
+
+        .notification-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.1);
+        }
+
+        .notification-card.unread {
+            background: linear-gradient(135deg, rgba(37, 211, 102, 0.05) 0%, rgba(9, 132, 227, 0.05) 100%);
+        }
+
+    .notification-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+    }
+
+        .notification-icon.like {
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+        }
+
+        .notification-icon.comment {
+            background: rgba(9, 132, 227, 0.1);
+            color: #0984e3;
+        }
+
+        .notification-icon.friend {
+            background: rgba(37, 211, 102, 0.1);
+            color: #25D366;
+        }
+
+    .notification-time {
+        font-size: 0.8rem;
+        opacity: 0.7;
+        transition: opacity 0.3s ease;
+    }
+
+    .notification-card:hover .notification-time {
+        opacity: 1;
+    }
+
+    .notification-actions {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        opacity: 0;
+        transition: all 0.3s ease;
+    }
+
+    .notification-card:hover .notification-actions {
+        opacity: 1;
+        right: 1.5rem;
+    }
+
+    .mark-all-btn {
+        background: linear-gradient(135deg, var(--noti-primary) 0%, var(--noti-secondary) 100%);
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1.5rem;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+        .mark-all-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+        }
+
+    @@media (max-width: 768px) {
+        .notification-card {
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        .notification-actions {
+            opacity: 1;
+            right: 1rem;
+        }
+    }
+</style>
+@*
+<div class="container py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="display-6 fw-bold">Notifications</h2>
+        <button class="mark-all-btn" onclick="markAllAsRead()">
+            Mark all as read
+        </button>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="notification-card text-center py-5">
+            <i class="fas fa-bell-slash fa-2x text-muted mb-3"></i>
+            <div class="h5 text-muted">No notifications yet</div>
+        </div>
+    }
+    else
+    {
+        <div class="notification-list">
+            @foreach (var n in Model)
+            {
+                <div class="notification-card @(!n.IsRead ? "unread" : "")">
+                    <div class="d-flex align-items-center">
+                        <div class="notification-icon @GetIconType(n.Type)">
+                            <i class="@GetIconClass(n.Type)"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="notification-time">@n.CreatedAt.ToString("g")</div>
+                            <div class="mt-1 h5">
+                                @if (n.PostId.HasValue && PostService.GetById(n.PostId.Value) != null)
+                                {
+                                    <a asp-controller="Newsfeed"
+                                       asp-action="Details"
+                                       asp-route-id="@n.PostId"
+                                       class="text-decoration-none text-dark">
+                                        @n.Message
+                                    </a>
+                                }
+                                else
+                                {
+                                    @n.Message
+                                }
+                            </div>
+                        </div>
+                        <div class="notification-actions">
+                            <button class="btn btn-sm btn-link text-muted"
+                                    onclick="deleteNotification(@n.Id)">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<script>
+    // Real-time updates
+    const eventSource = new EventSource('/notifications/stream');
+    eventSource.onmessage = function(e) {
+        const notification = JSON.parse(e.data);
+        prependNotification(notification);
+    };
+
+    function prependNotification(noti) {
+        const list = document.querySelector('.notification-list');
+        const newCard = document.createElement('div');
+        newCard.className = `notification-card unread`;
+        newCard.innerHTML = `
+            <div class="d-flex align-items-center">
+                <div class="notification-icon ${noti.type}">
+                    <i class="${getIconClass(noti.type)}"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="notification-time">${new Date().toLocaleString()}</div>
+                    <div class="mt-1 h5">${noti.message}</div>
+                </div>
+                <div class="notification-actions">
+                    <button class="btn btn-sm btn-link text-muted"
+                            onclick="deleteNotification(${noti.id})">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+        list.insertBefore(newCard, list.firstChild);
+        animateNotification(newCard);
+    }
+
+    function animateNotification(element) {
+        anime({
+            targets: element,
+            opacity: [0, 1],
+            translateY: [-20, 0],
+            duration: 300,
+            easing: 'easeOutExpo'
+        });
+    }
+
+    async function markAllAsRead() {
+        await fetch('/notifications/mark-all-read', { method: 'POST' });
+        document.querySelectorAll('.notification-card').forEach(card => {
+            card.classList.remove('unread');
+        });
+    }
+
+    async function deleteNotification(id) {
+        await fetch(`/notifications/delete/${id}`, { method: 'DELETE' });
+        document.querySelector(`notification-card[data-id="${id}"]`).remove();
+    }
+</script>
+
+@functions {
+    string GetIconClass(string type)
+    {
+        return type switch
+        {
+            "like" => "fas fa-heart",
+            "comment" => "fas fa-comment",
+            "friend" => "fas fa-user-plus",
+            _ => "fas fa-bell"
+        };
+    }
+
+    string GetIconType(string type)
+    {
+        return type switch
+        {
+            "like" => "like",
+            "comment" => "comment",
+            "friend" => "friend",
+            _ => ""
+        };
+    }
+}
+*@

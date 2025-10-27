@@ -1,4 +1,4 @@
-﻿@using Microsoft.AspNetCore.Mvc
+﻿﻿@using Microsoft.AspNetCore.Mvc
 @using UrDoggy.Core.Models
 @inject UrDoggy.Services.Interfaces.IFriendService FriendService
 @inject UrDoggy.Services.Interfaces.INotificationService NotificationService
@@ -28,68 +28,192 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
           rel="stylesheet" />
     <style>
+        :root {
+            --primary: #2d3436;
+            --secondary: #0984e3;
+            --accent: #00b894;
+            --text: #2d3436;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
         html, body {
             height: 100%;
             margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            color: var(--text);
         }
 
         body {
-            background: #f0f2f5;
+            background: var(--bg);
         }
 
         .navbar {
-            background: #79f9aa;
-            box-shadow: 2px 2px 2px rgba(0,0,0,.1);
+            background: linear-gradient(135deg, #25d366 0%, #0984e3 100%);
+            box-shadow: var(--shadow);
+            height: 100px;
+            padding: 0 2rem;
         }
 
-            .navbar .fa-lg {
-                font-size: 2rem;
+        .navbar-brand img {
+            height: 100px;
+            transition: transform 0.3s ease;
+        }
+
+        .navbar-brand:hover img {
+            transform: scale(1.05);
+        }
+
+        .input-group {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+            border-radius: 2rem;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+            .input-group .btn {
+                background: transparent;
+                border: none;
             }
+
+            .input-group .form-control {
+                background: transparent;
+                border: none;
+                padding: 0.75rem 1.5rem;
+            }
+
+
+        .fa-bell {
+            transition: transform 0.3s ease;
+        }
+
+            .fa-bell:hover {
+                transform: rotate(15deg);
+            }
+
+        .dropdown-menu {
+            border: none;
+            box-shadow: var(--shadow);
+            margin-top: 1rem !important;
+            border-radius: 1rem;
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            transition: all 0.2s ease;
+        }
 
         .sidebar {
-            padding-top: 1rem;
-            background: #fff;
-            box-shadow: 2px 2px 2px rgba(0,0,0,.1);
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            border-radius: 0 1.5rem 1.5rem 0;
+            padding: 2rem 1.5rem;
         }
 
-        body.messages-page {
-            overflow: hidden;
+        .list-group-item {
+            border: none;
+            margin: 0.5rem 0;
+            border-radius: 0.75rem !important;
+            transition: all 0.2s ease;
         }
 
-            body.messages-page .sidebar {
-                position: sticky;
-                top: 56px;
-                height: calc(100vh - 56px);
-                overflow-y: auto;
+            .list-group-item:hover {
+                background: var(--secondary);
+                color: #25D366 !important;
+                transform: translateX(8px);
             }
 
-            body.messages-page .main-content {
-                display: flex;
-                flex-direction: column;
-                height: calc(100vh - 56px);
-                padding: 0;
+        .btn-success {
+            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+            border: none;
+            padding: 0.5rem 2rem;
+            border-radius: 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+            .btn-success:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 24px rgba(0, 184, 148, 0.08);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             }
 
-                body.messages-page .main-content .chat-window {
-                    flex: 1 1 auto;
-                    overflow-y: auto;
-                    background: #fff;
-                    padding: 1rem;
-                    word-wrap: break-word;
-                    white-space: pre-wrap;
+        .contacts {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+            .contacts h6 {
+                color: var(--secondary);
+                font-weight: 600;
+                margin-bottom: 1.5rem;
+                font-size: 1.1rem;
+            }
+
+            .contacts li {
+                padding: 0.75rem;
+                border-radius: 1rem;
+                transition: all 0.2s ease;
+            }
+
+                .contacts li:hover {
+                    background: rgba(0, 184, 148, 0.1);
+                    transform: scale(1.02);
                 }
 
-                body.messages-page .main-content .send-box {
-                    flex: 0 0 auto;
-                    padding: .75rem;
-                    background: #f8f9fa;
-                    border-top: 1px solid #ddd;
-                }
+        .chat-window {
+            background: var(--card-bg);
+            border-radius: 1.5rem;
+            box-shadow: var(--shadow);
+        }
 
-                    body.messages-page .main-content .send-box .form-control {
-                        height: 38px;
-                    }
+        .send-box {
+            border-radius: 0 0 1.5rem 1.5rem;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(4px);
+        }
+
+        @@media (max-width: 992px) {
+            .navbar {
+                padding: 0 1rem;
+                height: 70px;
+            }
+
+            .navbar-brand img {
+                height: 80px;
+            }
+
+            .sidebar {
+                border-radius: 1.5rem;
+                margin: 1rem;
+            }
+        }
+
+        .badge {
+            transition: transform 0.3s ease;
+        }
+
+            .badge:hover {
+                transform: scale(1.1);
+            }
+
+        .rounded-circle {
+            border: 2px solid var(--friend-primary);
+            padding: 2px;
+            transition: all 0.3s ease;
+        }
+
+            .rounded-circle:hover {
+                transform: rotate(15deg) scale(1.1);
+                box-shadow: 0 4px 12px #25d366;
+            }
     </style>
+
     @RenderSection("Styles", required: false)
 </head>
 <body class="@(isMessages ? "messages-page" : "")">
@@ -205,7 +329,7 @@
                 {
                     <div class="contacts border rounded bg-white p-3">
                         <h6>Contacts</h6>
-                        
+
                         @if (!friends.Any())
                         {
                             <div class="text-center">
