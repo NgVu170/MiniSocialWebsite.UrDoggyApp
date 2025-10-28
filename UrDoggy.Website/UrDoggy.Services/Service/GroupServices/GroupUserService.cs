@@ -65,6 +65,12 @@ namespace UrDoggy.Services.Service.GroupServices
                 return await _userGroupRepositrory.JoinGroup(userId, groupId);
             }
         }
+        public async Task<Group> getGroupById(int groupId)
+        { 
+            return await _context.Groups
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.Id == groupId);
+        }
         public async Task<bool> LeaveGroup(int userId, int groupId)
         {
             var existingMembership = await _context.GroupDetails

@@ -15,16 +15,15 @@ namespace UrDoggy.Website.Controllers
     [Authorize]
     public class GroupController : Controller
     {
+        private readonly SignInManager<User> _signInManager;
         private readonly ApplicationDbContext _context;
         private readonly IGroupUserService _groupUserService;
         private readonly IAdminGroupService _adminGroupService;
         private readonly IModeratorService _moderatorService;
-        private readonly SignInManager<User> _signInManager;
 
         public GroupController(
             IGroupUserService groupUserService, 
             IAdminGroupService adminGroupService,
-
             ApplicationDbContext context,
             IModeratorService moderatorService)
         {
@@ -32,7 +31,6 @@ namespace UrDoggy.Website.Controllers
             _groupUserService = groupUserService;
             _moderatorService = moderatorService;
             _adminGroupService = adminGroupService;
-
         }
 
         #region User in Group
@@ -51,7 +49,11 @@ namespace UrDoggy.Website.Controllers
             var posts = await _groupUserService.GetAllPost(groupId);
             return View(posts);
         }
-        
+        public async Task<IActionResult> GroupDetail(int groupId)
+        {
+            var group = await _groupUserService.getGroupById(groupId);
+            return View(group);
+        }
         #endregion
 
         #region Modereator in Group

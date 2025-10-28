@@ -23,5 +23,6 @@ namespace UrDoggy.Services.Interfaces.GroupServices
         Task<Post> CreatePost(Post post, IEnumerable<(string path, string mediaType)> media);
         Task DeletePost(int postId, int? modId = null);
         Task<bool> ReportPost(int postId, int userId, string reason);
+        Task<Group> getGroupById(int groupId);
     }
 }
