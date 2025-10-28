@@ -22,6 +22,12 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             if (group.CreatedAt == default) group.CreatedAt = DateTime.UtcNow;
             group.OwnerId = creator;
             _context.Groups.Add(group);
+            var findUser = await _context.GroupDetails.FindAsync(creator);
+            if (findUser != null)
+            {
+                findUser.Role = GroupRole.Admin;
+                _context.GroupDetails.Update(findUser);
+            }
             await _context.SaveChangesAsync();
             return group;
         }
