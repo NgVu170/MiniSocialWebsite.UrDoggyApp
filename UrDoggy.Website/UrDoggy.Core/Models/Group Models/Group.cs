@@ -29,6 +29,7 @@ namespace UrDoggy.Core.Models.GroupModels
     public enum Status
     {
         Active,
+        Private,
         Warning,
         Banned,
         Deleted

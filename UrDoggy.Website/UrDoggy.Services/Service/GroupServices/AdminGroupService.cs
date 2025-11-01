@@ -29,9 +29,9 @@ namespace UrDoggy.Services.Service.GroupServices
                 .CreateMod(userId, groupId);
         }
 
-        public Task<Group> CreateGroup(Group group, int ownerId)
+        public async Task<Group> CreateGroup(Group group, int ownerId)
         {
-            return _groupRepository
+            return await _groupRepository
                 .CreateGroup(group, ownerId);
         }
 

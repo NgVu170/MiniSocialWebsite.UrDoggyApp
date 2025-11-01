@@ -1,0 +1,88 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<UrDoggy.Core.Models.GroupModels.Group>
+@using UrDoggy.Core.Models.GroupModels
+@{
+	ViewData["Title"] = "Groups";
+	int userId = int.Parse(ViewBag.UserId);
+	var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
+	var userInGroups = ViewBag.UserInGroups as HashSet<int> ?? new HashSet<int>();
+}
+
+<div class=container>
+	<!--All Groups-->
+	@foreach (var group in Model)
+	{
+		@if (group.GroupStatus == Status.Active
+								|| group.GroupStatus == Status.Warning
+								|| group.GroupStatus == Status.Private)
+		{
+			<div class="group-card">
+				<img src="@group.Avatar" />
+				<img src="@group.CoverImage" />
+				<h2>@group.GroupName</h2>
+				<p>@group.Description</p>
+				<p>Status: @group.GroupStatus</p>
+
+				<!--Tui khg biet dem nhu the nao cuu tui nhe ban-->
+				<p>Members: so luong thanh vien nhom</p>
+
+				<div class="card-footer">
+					<a asp-action="JoinGroup"
+					asp-controller="Group"
+					class="btn btn-primary">Join Group</a>
+
+					@if (group.GroupStatus != Status.Private
+						&& group.GroupStatus != Status.Banned
+						&& group.GroupStatus != Status.Deleted)
+					{
+						<a asp-action="PostsInGroup"
+						asp-controller="Group"
+						asp-route-groupId="@group.Id"
+						class="btn btn-primary">
+							View Group
+						</a>
+					}
+
+					@if (group.OwnerId == userId
+							|| modGroups.Contains(group.Id))
+					{
+						<a asp-action="GroupManagement"
+						asp-asp-controller="Group"
+						class="btn btn-primary">Group Mangement</a>
+					}
+				</div>
+			</div>
+		}
+	}
+
+	<!--User in groups-->
+	<h2>Your groups</h2> <!--Tui muon la dang Tab de chuyen giua cac ben-->
+	@foreach(var group in Model)
+	{
+		if (userInGroups.Contains(group.Id) 
+			&& (group.GroupStatus != Status.Banned && group.GroupStatus != Status.Deleted))
+		{
+			<div class="group-card">
+				<img src="@group.Avatar" />
+				<img src="@group.CoverImage" />
+				<h2>@group.GroupName</h2>
+				<p>@group.Description</p>
+				<p>Status: @group.GroupStatus</p>
+			</div>
+			<a asp-action="PostsInGroup"
+			   asp-controller="Group"
+			   asp-route-groupId="@group.Id"
+			   class="btn btn-primary">
+				View Group
+			</a>
+			<a asp-action="LeaveGroup"
+				asp-asp-controller="Group"
+			   asp-route-groupId="@group.Id"
+			   class="btn btn-primary"
+			   onclick="return confirm('Bạn có chắc chắn muốn rời khỏi nhóm này không?');"
+			   >Leave Group</a>
+		}
+	}
+</div>

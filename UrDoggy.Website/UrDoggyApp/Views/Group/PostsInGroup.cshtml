@@ -1,0 +1,91 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model List<UrDoggy.Core.Models.Post>
+@using UrDoggy.Core.Models.GroupModels
+@using UrDoggy.Core.Models
+@{
+	var groupInformation = ViewBag.GroupInformation as Group;
+	var modList = ViewBag.ModList as List<User>;
+	int userId = int.Parse(ViewBag.UserId);
+	GroupRole role = (GroupRole)ViewBag.Role;
+}
+<div class="head">
+	<div class="card-header">
+		<h1>Group: @groupInformation.GroupName</h1>
+		<p>Owner: @groupInformation.Owner.DisplayName</p>
+		<p>
+			Mod: {
+			@foreach (var user in modList)
+				{
+					<img src="@user.ProfilePicture" /> @user.DisplayName
+				}
+			}
+		</p>
+		<p>Description: @groupInformation.Description</p>
+		<p>Group member: @groupInformation.Members.Count</p>
+		<a asp-action="AllMemberInGroup"
+		   asp-controller="Group"
+		   asp-route-groupId="@groupInformation.Id"
+		   class="btn btn-primary"> View all user in group </a>
+	</div>
+</div>
+
+<body class="body">
+	<div class="container">
+		<a asp-action="Index"
+		   asp-controller="Group"
+		   class="btn btn-primary"> Back to Groups </a>
+		<a asp-action="CreatePost"
+			asp-controller="Group"
+			asp-route-groupId="@groupInformation.Id"
+			class="btn btn-primary"> Create post </a>
+
+		<!-- Posts in group -->
+		@foreach (var post in Model)
+		{
+			<div class="post-card">
+				<h2>@post.Content</h2>
+				<p>By: @post.User.DisplayName</p>
+				<p>@post.Content</p>
+				<p>Created at: @post.CreatedAt</p>
+				<p>Upvote: @post.UpVotes</p>
+				<p>Downvote: @post.DownVotes</p>
+				<p>Comments: @post.Comments.Count</p>
+				<div class="card-footer">
+					<a asp-action="ReportPost"
+					   asp-controller="Group"
+					   asp-route-postId="@post.Id"
+					   class="btn btn-primary"> Report Post </a>
+				</div>
+				<!--Author-->
+				@if (post.User.Id == userId) 
+				{
+					<div class="card-footer">
+						<a asp-action="DeletePostByAuthor"
+						   asp-controller="Group"
+						   asp-route-postId="@post.Id"
+						   class="btn btn-danger"> Delete Post </a>
+					</div>
+				}
+				<!-- Moderator || Admin -->
+				else if (role == GroupRole.Moderator || role == GroupRole.Admin)
+				{
+					<div class="card-footer">
+					<a asp-action="DeletePostByManagement"
+						   asp-controller="Group"
+						   asp-route-postId="@post.Id"
+						   class="btn btn-danger"> Delete Post </a>
+					</div>
+				}
+			</div>
+			<div class="card-footer">
+				Comment section <!--Cuu khg biet lam-->
+			</div>
+		}
+	</div>
+
+	<div class="container">
+		
+	</div>
+</body>
