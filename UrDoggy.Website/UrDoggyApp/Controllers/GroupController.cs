@@ -13,6 +13,7 @@ namespace UrDoggy.Website.Controllers
     [Route("[controller]/[action]")]
     public class GroupController : Controller
     {
+        #region Attributes & Constructor, Helper function
         private readonly ApplicationDbContext _context;
         private readonly IGroupUserService _groupUserService;
         private readonly IAdminGroupService _adminGroupService;
@@ -36,7 +37,7 @@ namespace UrDoggy.Website.Controllers
             userId = HttpContext.Session.GetInt32("UserId");
             return userId != null;
         }
-
+        #endregion
         // ============= USER ZONE ==============
         [HttpGet]
         public async Task<IActionResult> Index()
@@ -227,6 +228,73 @@ namespace UrDoggy.Website.Controllers
 
             await _adminGroupService.DeleteGroup(groupId);
             return RedirectToAction("Index");
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditGroupInformation(int groupId)
+        {
+            CheckLogin();
+            var group = await _context.Groups.AsNoTracking().FirstOrDefaultAsync(g => g.Id == groupId);
+
+            if (group == null)
+                return NotFound();
+
+            // Chỉ cho phép Admin chỉnh sửa group
+            var detail = await _context.GroupDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(gd => gd.GroupId == groupId && gd.UserId == userId);
+
+            if (detail == null || detail.Role != GroupRole.Admin)
+                return Forbid();
+
+            return View(group);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditGroupInformation(int groupId, string groupName, string description, IFormFile? avatar, IFormFile? coverImage)
+        {
+            CheckLogin();
+            var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == groupId);
+            if (group == null)
+                return NotFound();
+            var detail = await _context.GroupDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(gd => gd.GroupId == groupId && gd.UserId == userId);
+            if (detail == null || detail.Role != GroupRole.Admin)
+                return Forbid();
+
+            group.GroupName = groupName;
+            group.Description = description;
+            group.UpdatedAt = DateTime.UtcNow;
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "group_uploads", $"group_{groupId}");
+            if (!Directory.Exists(uploadPath))
+                Directory.CreateDirectory(uploadPath);
+
+            if (avatar != null)
+            {
+                var avatarFileName = $"avatar_{Guid.NewGuid()}{Path.GetExtension(avatar.FileName)}";
+                var avatarPath = Path.Combine(uploadPath, avatarFileName);
+                using (var stream = new FileStream(avatarPath, FileMode.Create))
+                {
+                    await avatar.CopyToAsync(stream);
+                }
+                group.Avatar = $"/group_uploads/group_{groupId}/{avatarFileName}";
+            }
+
+            if (coverImage != null)
+            {
+                var coverFileName = $"cover_{Guid.NewGuid()}{Path.GetExtension(coverImage.FileName)}";
+                var coverPath = Path.Combine(uploadPath, coverFileName);
+                using (var stream = new FileStream(coverPath, FileMode.Create))
+                {
+                    await coverImage.CopyToAsync(stream);
+                }
+                group.CoverImage = $"/group_uploads/group_{groupId}/{coverFileName}";
+            }
+
+            await _adminGroupService.UpdateGroup(group);
+            return RedirectToAction("GroupManagement", new { groupId });
         }
     }
 }
