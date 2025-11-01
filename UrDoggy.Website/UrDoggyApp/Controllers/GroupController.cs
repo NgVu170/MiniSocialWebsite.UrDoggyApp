@@ -22,18 +22,20 @@ namespace UrDoggy.Website.Controllers
         private readonly ApplicationDbContext _context;
         private readonly IGroupUserService _groupUserService;
         private readonly IAdminGroupService _adminGroupService;
+        private readonly IModeratorService _moderatorService;
         private int? userId;
         protected int groupId;
 
         public GroupController(
             IGroupUserService groupUserService,
             IAdminGroupService adminGroupService,
+            IModeratorService moderatorService,
             ApplicationDbContext context)
         {
             _context = context;
             _groupUserService = groupUserService;
             _adminGroupService = adminGroupService;
-
+            _moderatorService = moderatorService;
             //check login
             CheckLogin();
         }
@@ -68,7 +70,7 @@ namespace UrDoggy.Website.Controllers
             return View(groups);
         }
         [HttpPost]
-        private async Task CreateGroup(FormCollection collection)
+        public async Task CreateGroup(FormCollection collection)
         {
             var newGroup = new Group
             {
@@ -115,7 +117,7 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpGet]
-        private async Task<IActionResult> CreatePost()
+        public async Task<IActionResult> CreatePost()
         {
             var group = await _context.Groups.FindAsync(groupId);
             if (group == null)
@@ -129,7 +131,7 @@ namespace UrDoggy.Website.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        private async Task<IActionResult> CreatePost(int groupId, string content, List<IFormFile> MediaFiles)
+        public async Task<IActionResult> CreatePost(int groupId, string content, List<IFormFile> MediaFiles)
         {
             CheckLogin();
             var user = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
@@ -239,12 +241,71 @@ namespace UrDoggy.Website.Controllers
                     return Forbid();
                 }
                 var group = await _groupUserService.getGroupById(groupId);
+                var pendingPostList = await _adminGroupService.GetAllPendingPost(groupId);
+                var memberList = await _groupUserService.GetAllMemberInGroup(groupId);
+                var reportList = await _moderatorService.GetAllReportPost(groupId);
+                var role = await _groupUserService.getRole(userId, groupId);
+
+                ViewBag.PendingPostList = pendingPostList;
+                ViewBag.MemberList = memberList;
+                ViewBag.ReportList = reportList;
+                ViewBag.Role = role;
                 return View(group);
             }
             else
             {
                 return Unauthorized();
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ApprovePost(int postId, int groupId)
+        {
+            await _moderatorService.ApprovePost(postId, this.userId.Value);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> RejectPost(int postId, int groupId)
+        {
+            await _moderatorService.RejectPost(postId, this.userId.Value);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PromoteToModerator(int userId, int groupId)
+        {
+            await _adminGroupService.AddModerator(userId, groupId);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DemoteToMember(int userId, int groupId)
+        {
+            await _adminGroupService.RemoveModerator(userId, groupId);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+        [HttpPost]
+        public async Task<IActionResult>BanMember(int userId, int groupId, string reason)
+        {
+            await _moderatorService.BanUser(userId, groupId, this.userId.Value ,reason);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> KickMember(int userId, int groupId)
+        {
+            await _moderatorService.KickUser(userId, groupId, this.userId.Value);
+            return RedirectToAction("GroupManagement", new { groupId });
+        }
+        //[HttpPost]
+        //public async Task<IActionResult> EditGroupInformation(int userId, int groupId)
+        //{
+        //    await _adminGroupService.UpdateGroup(userId, groupId, this.userId.Value);
+        //    return RedirectToAction("GroupManagement", new { groupId });
+        //}
+        [HttpPost]
+        public async Task<IActionResult> ReleaseGroup(int groupId)
+        {
+            await _adminGroupService.DeleteGroup(groupId);
+            return RedirectToAction("Index");
         }
         #endregion
     }

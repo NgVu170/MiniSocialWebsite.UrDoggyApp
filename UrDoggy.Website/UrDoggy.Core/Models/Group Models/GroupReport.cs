@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UrDoggy.Core.Models.Group_Models
+namespace UrDoggy.Core.Models.GroupModels
 {
     public class GroupReport
     {

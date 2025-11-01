@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using UrDoggy.Core.Models.Group_Models;
+using UrDoggy.Core.Models.GroupModels;
 using UrDoggy.Core.Models.GroupModels;
 
 namespace UrDoggy.Core.Models

@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using UrDoggy.Core.Models;
-using UrDoggy.Core.Models.Group_Models;
 using UrDoggy.Core.Models.GroupModels;
 
 namespace UrDoggy.Data.Repositories.Group_Repository

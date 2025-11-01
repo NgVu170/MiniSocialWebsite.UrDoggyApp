@@ -12,7 +12,7 @@ namespace UrDoggy.Services.Interfaces.GroupServices
         Task<bool> ApprovePost(int groupPostStatusId, int modId);
         Task<bool> RejectPost(int grouPostStatusId, int modId);
         Task<List<GroupPostStatus>> GetAllPendingPost(int groupId);
-        Task<List<Core.Models.Group_Models.GroupReport>> GetAllReportPost(int groupId);
+        Task<List<Core.Models.GroupModels.GroupReport>> GetAllReportPost(int groupId);
         Task DeletePost(int postId, int modId);
         Task<bool> BanUser(int userId, int groupId, int modId, string reason);
         Task<bool> UnbanUser(int userId, int groupId, int modId);

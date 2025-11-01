@@ -110,5 +110,16 @@ namespace UrDoggy.Services.Service.GroupServices
                 return true;
             }
         }
+        public async Task<GroupRole> getRole(int userId, int groupId)
+        {
+            var member = await _context.GroupDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(g => g.GroupId == groupId && g.UserId == userId);
+            if (member == null)
+            {
+                throw new ArgumentException("User is not a member of the group.");
+            }
+            return member.Role;
+        }
     }
 }

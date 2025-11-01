@@ -24,5 +24,6 @@ namespace UrDoggy.Services.Interfaces.GroupServices
         Task DeletePost(int postId, int? modId = null);
         Task<bool> ReportPost(int postId, int userId, string reason);
         Task<Group> getGroupById(int groupId);
+        Task<GroupRole> getRole(int userId, int groupId);
     }
 }

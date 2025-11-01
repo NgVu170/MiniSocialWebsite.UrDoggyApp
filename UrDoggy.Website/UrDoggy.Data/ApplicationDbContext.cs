@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using UrDoggy.Core.Models;  // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
-using UrDoggy.Core.Models.Group_Models;
+using UrDoggy.Core.Models.GroupModels;
 using UrDoggy.Core.Models.GroupModels;  //Group models
 
 namespace UrDoggy.Data
