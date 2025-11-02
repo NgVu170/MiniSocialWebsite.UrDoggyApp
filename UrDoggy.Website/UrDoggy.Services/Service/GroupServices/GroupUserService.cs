@@ -93,7 +93,7 @@ namespace UrDoggy.Services.Service.GroupServices
         public async Task DeletePost(int postId, int? modId = null)
         {
             var postRepo = new PostRepository(_context);
-            await _postRepository.DeletePost(postId, modId);
+            await _postRepository.DeletePost(postId, modId);         
         }
         public async Task<bool> ReportPost(int postId, int userId, string reason)
         {

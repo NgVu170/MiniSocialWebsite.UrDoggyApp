@@ -64,7 +64,6 @@ namespace UrDoggy.Data.Repositories.Group_Repository
         public override async Task DeletePost(int postId, int? modId = null)
         {
             var post = await _context.Posts
-                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
 
             if (post != null && modId.HasValue)
@@ -115,6 +114,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
 
             var newPost = new Post
             {
+                Id = status.Id,
                 UserId = status.AuthorId,
                 GroupId = status.GroupId,
                 Content = status.Content,
@@ -144,8 +144,8 @@ namespace UrDoggy.Data.Repositories.Group_Repository
         public async Task<bool> DeniedPost(int statusId, int modId)
         {
             var status = await _context.GroupPostStatuses
-        .Include(s => s.MediaItems)
-        .FirstOrDefaultAsync(s => s.Id == statusId);
+            .Include(s => s.MediaItems)
+            .FirstOrDefaultAsync(s => s.Id == statusId);
 
             if (status == null)
             {

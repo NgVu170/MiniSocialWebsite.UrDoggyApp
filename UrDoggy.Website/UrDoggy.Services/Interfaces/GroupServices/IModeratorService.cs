@@ -14,7 +14,7 @@ namespace UrDoggy.Services.Interfaces.GroupServices
         Task<List<GroupPostStatus>> GetAllPendingPost(int groupId);
         Task<List<Core.Models.GroupModels.GroupReport>> GetAllReportPost(int groupId);
         Task DeletePost(int postId, int modId);
-        Task<bool> BanUser(int userId, int groupId, int modId, string reason);
+        Task<bool> BanUser(int userId, int groupId, int modId);
         Task<bool> UnbanUser(int userId, int groupId, int modId);
         Task<bool> KickUser(int userId, int groupId, int modId);
     }

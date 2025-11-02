@@ -34,4 +34,5 @@ namespace UrDoggy.Core.Models.GroupModels
         Banned,
         Deleted
     }
+    
 }

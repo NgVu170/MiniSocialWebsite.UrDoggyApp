@@ -200,12 +200,12 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> BanMember(int targetUserId, int groupId, string reason)
+        public async Task<IActionResult> BanMember(int targetUserId, int groupId)
         {
             if (!CheckLogin())
                 return RedirectToAction("Login", "Auth");
 
-            await _moderatorService.BanUser(targetUserId, groupId, userId.Value, reason);
+            await _moderatorService.BanUser(targetUserId, groupId, userId.Value);
             return RedirectToAction("GroupManagement", new { groupId });
         }
 

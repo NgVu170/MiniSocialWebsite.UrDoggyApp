@@ -16,7 +16,7 @@ namespace UrDoggy.Core.Models.GroupModels
         public GroupRole Role { get; set; } = GroupRole.Member; // default role is Member
         public DateTime JoinedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
-        public Status MemberStatus { get; set; } = Status.Active; // default status is Active
+        public MemberStatus MemberStatus { get; set; } = MemberStatus.Active; // default status is Active
         public int ActivtyScore { get; set; } = 0; // default activity score is 0
         //navigation
         public Group Group { get; set; } = null!;
@@ -28,5 +28,12 @@ namespace UrDoggy.Core.Models.GroupModels
         Admin,
         Moderator,
         Member
+    }
+    public enum MemberStatus
+    {
+        Active,
+        Banned,
+        Deleted,
+        Leaved
     }
 }

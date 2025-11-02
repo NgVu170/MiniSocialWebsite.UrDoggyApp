@@ -32,7 +32,7 @@ namespace UrDoggy.Services.Service.GroupServices
                 .ApprovePost(groupPostStatusId, modId);
         }
 
-        public async Task<bool> BanUser(int userId, int groupId, int modId, string reason)
+        public async Task<bool> BanUser(int userId, int groupId, int modId)
         {
             return await _userGroupRepositrory
                 .BanUser(userId, groupId, modId);

@@ -50,7 +50,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.GroupId == groupId);
             if (existingMember == null)
                 return false;
-            existingMember.MemberStatus = Status.Deleted;
+            existingMember.MemberStatus = MemberStatus.Leaved;
             existingMember.UpdatedAt = DateTime.UtcNow;
             _context.GroupDetails.Update(existingMember);
             await _context.SaveChangesAsync();
@@ -68,7 +68,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 throw new ArgumentException("User not found in group.");
             } else
             {
-                findUser.MemberStatus = Status.Banned;
+                findUser.MemberStatus = MemberStatus.Banned;
                 findUser.UpdatedAt = DateTime.UtcNow;
                 _context.GroupDetails.Update(findUser);
                 await _context.SaveChangesAsync();
@@ -87,13 +87,13 @@ namespace UrDoggy.Data.Repositories.Group_Repository
                 throw new ArgumentException("User not found in group.");
             }
 
-            if (findUser.MemberStatus != Status.Banned)
+            if (findUser.MemberStatus != MemberStatus.Banned)
             {
                 throw new InvalidOperationException("User is not banned.");
             }
 
             // Cập nhật lại trạng thái
-            findUser.MemberStatus = Status.Active; // hoặc Status.Member tuỳ enum của bạn
+            findUser.MemberStatus = MemberStatus.Active; // hoặc Status.Member tuỳ enum của bạn
             findUser.UpdatedAt = DateTime.UtcNow;
 
             _context.GroupDetails.Update(findUser);
@@ -113,7 +113,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             }
             else
             {
-                findUser.MemberStatus = Status.Banned;
+                findUser.MemberStatus = MemberStatus.Deleted;
                 findUser.UpdatedAt = DateTime.UtcNow;
                 _context.GroupDetails.Update(findUser);
                 await _context.SaveChangesAsync();
@@ -125,7 +125,7 @@ namespace UrDoggy.Data.Repositories.Group_Repository
         {
             var findGroup = await _context.Groups
                 .AsNoTracking()
-                .FirstOrDefaultAsync(g => g.OwnerId == groupId);
+                .FirstOrDefaultAsync(g => g.Id == groupId);
             if (findGroup == null)
             {
                 throw new ArgumentException("Group not found.");
@@ -134,19 +134,22 @@ namespace UrDoggy.Data.Repositories.Group_Repository
             var existingMod = await _context.GroupDetails
                 .AsNoTracking()
                 .FirstOrDefaultAsync(m => m.UserId == userId && m.GroupId == groupId);
-            if (existingMod != null)
-                return false;
+            if (existingMod == null)
+            {
+                throw new ArgumentException($"User not found in group{groupId}.");
+            }
 
             existingMod.Role = GroupRole.Moderator;
             existingMod.UpdatedAt = DateTime.UtcNow;
             _context.GroupDetails.Update(existingMod);
+            await _context.SaveChangesAsync();
             return true;
         }
         public async Task<bool> RemoveMod(int userId, int groupId)
         {
             var findGroup = await _context.Groups
                 .AsNoTracking()
-                .FirstOrDefaultAsync(g => g.OwnerId == groupId);
+                .FirstOrDefaultAsync(g => g.Id == groupId);
             if (findGroup == null)
             {
                 throw new ArgumentException("Group not found.");
