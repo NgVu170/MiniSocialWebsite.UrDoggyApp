@@ -1,67 +1,34 @@
-﻿@model UrDoggy.Core.Models.GroupModels.Group
+﻿@using UrDoggy.Core.Models.GroupModels
+@model Group
 
 @{
-    ViewData["Title"] = "CreateGroup";
+    ViewData["Title"] = "Tạo nhóm";
 }
 
-<h1>CreateGroup</h1>
-
-<h4>Group</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateGroup">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="GroupName" class="control-label"></label>
-                <input asp-for="GroupName" class="form-control" />
-                <span asp-validation-for="GroupName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Avatar" class="control-label"></label>
-                <input asp-for="Avatar" class="form-control" />
-                <span asp-validation-for="Avatar" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CoverImage" class="control-label"></label>
-                <input asp-for="CoverImage" class="form-control" />
-                <span asp-validation-for="CoverImage" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CreatedAt" class="control-label"></label>
-                <input asp-for="CreatedAt" class="form-control" />
-                <span asp-validation-for="CreatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="UpdatedAt" class="control-label"></label>
-                <input asp-for="UpdatedAt" class="form-control" />
-                <span asp-validation-for="UpdatedAt" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="OwnerId" class="control-label"></label>
-                <select asp-for="OwnerId" class ="form-control" asp-items="ViewBag.OwnerId"></select>
-            </div>
-            <div class="form-group">
-                <label asp-for="GroupStatus" class="control-label"></label>
-                <select asp-for="GroupStatus" class="form-control"></select>
-                <span asp-validation-for="GroupStatus" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Tạo nhóm mới</h2>
+        <a class="btn btn-outline-secondary" href="~/Group/Index">← Quay lại</a>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+    @using (Html.BeginForm("CreateGroup", "Group", FormMethod.Post))
+    {
+        <div class="mb-3">
+            <label class="form-label">Tên nhóm</label>
+            <input class="form-control" name="GroupName" required />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" name="Description" rows="3"></textarea>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Avatar URL (tùy chọn)</label>
+            <input class="form-control" name="Avatar" placeholder="/images/default-avatar.png" />
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Cover URL (tùy chọn)</label>
+            <input class="form-control" name="CoverImage" placeholder="/images/default-cover.png" />
+        </div>
+        <button type="submit" class="btn btn-success">Tạo nhóm</button>
+    }
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

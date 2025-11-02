@@ -114,7 +114,6 @@ namespace UrDoggy.Data.Repositories.Group_Repository
 
             var newPost = new Post
             {
-                Id = status.Id,
                 UserId = status.AuthorId,
                 GroupId = status.GroupId,
                 Content = status.Content,

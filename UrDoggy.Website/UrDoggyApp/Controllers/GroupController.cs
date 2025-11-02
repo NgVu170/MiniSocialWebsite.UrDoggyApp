@@ -62,11 +62,23 @@ namespace UrDoggy.Website.Controllers
             return View(groups);
         }
 
+        [HttpGet]
+        public IActionResult CreateGroup()
+        {
+            if (!CheckLogin())
+                return RedirectToAction("Login", "Auth");
+
+            return View();
+        }
+
         [HttpPost]
         public async Task<IActionResult> CreateGroup(string GroupName, string Description, string Avatar, string CoverImage)
         {
             if (!CheckLogin())
                 return RedirectToAction("Login", "Auth");
+
+            Avatar = string.IsNullOrWhiteSpace(Avatar) ? "/images/default-avatar.png" : Avatar.Trim();
+            CoverImage = string.IsNullOrWhiteSpace(CoverImage) ? "/images/default-cover.png" : CoverImage.Trim();
 
             var newGroup = new Group
             {
@@ -125,6 +137,135 @@ namespace UrDoggy.Website.Controllers
             return View(posts);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> CreatePost(int groupId)
+        {
+            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+
+            // phải là thành viên đang Active mới được đăng bài
+            var member = await _context.GroupDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(gd => gd.GroupId == groupId && gd.UserId == userId);
+
+            if (member == null || member.MemberStatus != MemberStatus.Active)
+            {
+                TempData["Error"] = "Bạn chưa là thành viên đang hoạt động của nhóm này.";
+                return RedirectToAction(nameof(PostsInGroup), new { groupId });
+            }
+
+            var group = await _context.Groups.AsNoTracking().FirstOrDefaultAsync(g => g.Id == groupId);
+            if (group == null) return NotFound();
+
+            ViewBag.GroupInformation = group;
+            return View(); // Views/Group/CreatePost.cshtml
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreatePost(int groupId, string content, List<IFormFile>? media)
+        {
+            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+
+            // xác thực quyền đăng
+            var member = await _context.GroupDetails
+                .AsNoTracking()
+                .FirstOrDefaultAsync(gd => gd.GroupId == groupId && gd.UserId == userId);
+
+            if (member == null || member.MemberStatus != MemberStatus.Active)
+            {
+                TempData["Error"] = "Bạn chưa là thành viên đang hoạt động của nhóm này.";
+                return RedirectToAction(nameof(PostsInGroup), new { groupId });
+            }
+
+            if (string.IsNullOrWhiteSpace(content))
+            {
+                TempData["Error"] = "Nội dung bài viết không được để trống.";
+                return RedirectToAction(nameof(CreatePost), new { groupId });
+            }
+
+            // Tạo record Pending cho moderator duyệt (dựa trên GroupPostStatus.cs)
+            var status = new GroupPostStatus
+            {
+                GroupId = groupId,
+                AuthorId = userId!.Value,
+                Content = content.Trim(),
+                Status = StateOfPost.Pending,
+                UploaddAt = DateTime.UtcNow,
+                MediaItems = new List<Media>()
+            };
+
+            // Lưu media (nếu có) vào wwwroot/group_uploads/group_{id}/posts
+            if (media != null && media.Count > 0)
+            {
+                var uploadBase = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "group_uploads", $"group_{groupId}", "posts");
+                if (!Directory.Exists(uploadBase)) Directory.CreateDirectory(uploadBase);
+
+                foreach (var file in media)
+                {
+                    if (file?.Length > 0)
+                    {
+                        var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
+                        if (!new[] { ".png", ".jpg", ".jpeg", ".webp", ".gif" }.Contains(ext)) continue; // bỏ file lạ
+
+                        var fname = $"{Guid.NewGuid()}{ext}";
+                        var fpath = Path.Combine(uploadBase, fname);
+
+                        using var stream = new FileStream(fpath, FileMode.Create);
+                        await file.CopyToAsync(stream);
+
+                        status.MediaItems!.Add(new Media
+                        {
+                            Path = $"/group_uploads/group_{groupId}/posts/{fname}",
+                            CreatedAt = DateTime.UtcNow
+                        });
+                    }
+                }
+            }
+
+            _context.GroupPostStatuses.Add(status);
+            await _context.SaveChangesAsync();
+
+            TempData["Success"] = "Đã gửi bài để kiểm duyệt.";
+            return RedirectToAction(nameof(PostsInGroup), new { groupId });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ReportPost(int groupId, int postId, string reason)
+        {
+            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                TempData["Error"] = "Vui lòng nhập lý do báo cáo.";
+                return RedirectToAction(nameof(PostsInGroup), new { groupId });
+            }
+
+            // Gọi tầng service/repo bạn đã có
+            var ok = await _groupUserService.ReportPost(userId!.Value, postId, reason.Trim());
+            TempData[ok ? "Success" : "Error"] = ok ? "Đã gửi báo cáo." : "Không thể gửi báo cáo.";
+            return RedirectToAction(nameof(PostsInGroup), new { groupId });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePostByOwner(int groupId, int postId)
+        {
+            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+
+            // Bảo đảm đúng tác giả
+            var post = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == postId);
+            if (post == null)
+            {
+                TempData["Error"] = "Bài viết không tồn tại.";
+                return RedirectToAction(nameof(PostsInGroup), new { groupId });
+            }
+
+
+            // BE của bạn đã có GroupUserService.DeletePost(postId, modId?) 
+            // Ta xoá với tư cách chủ bài: modId = null
+            await _groupUserService.DeletePost(postId, null);
+            TempData["Success"] = "Đã xóa bài của bạn.";
+            return RedirectToAction(nameof(PostsInGroup), new { groupId });
+        }
         // ============= GROUP MANAGEMENT ZONE ==============
         private bool CheckPermission(int userId, int groupId)
         {
@@ -295,6 +436,25 @@ namespace UrDoggy.Website.Controllers
 
             await _adminGroupService.UpdateGroup(group);
             return RedirectToAction("GroupManagement", new { groupId });
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeletePostByModerator(int groupId, int postId)
+        {
+            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+
+            // Chỉ cho Admin/Mod
+            var canModerate = _context.GroupDetails
+                .AsNoTracking()
+                .Any(gd => gd.GroupId == groupId && gd.UserId == userId &&
+                           (gd.Role == GroupRole.Admin || gd.Role == GroupRole.Moderator));
+
+            if (!canModerate) return Forbid();
+
+            // BE của bạn đã có ModeratorService.DeletePost(postId, modId)
+            await _moderatorService.DeletePost(postId, userId!.Value);
+            TempData["Success"] = "Moderator đã xóa bài.";
+            return RedirectToAction(nameof(PostsInGroup), new { groupId });
         }
     }
 }

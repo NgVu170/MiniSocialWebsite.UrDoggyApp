@@ -1,88 +1,65 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@model List<UrDoggy.Core.Models.GroupModels.Group>
-@using UrDoggy.Core.Models.GroupModels
+﻿@using UrDoggy.Core.Models.GroupModels
+@model IEnumerable<Group>
+
 @{
-	ViewData["Title"] = "Groups";
-	int userId = int.Parse(ViewBag.UserId);
-	var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
-	var userInGroups = ViewBag.UserInGroups as HashSet<int> ?? new HashSet<int>();
+    ViewData["Title"] = "Groups";
+    var userInGroups = ViewBag.UserInGroups as List<GroupDetail> ?? new List<GroupDetail>();
+    var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
+    var userId = ViewBag.UserId as int?;
+    var userGroupIds = userInGroups.Select(g => g.GroupId).ToHashSet();
 }
 
-<div class=container>
-	<!--All Groups-->
-	@foreach (var group in Model)
-	{
-		@if (group.GroupStatus == Status.Active
-								|| group.GroupStatus == Status.Warning
-								|| group.GroupStatus == Status.Private)
-		{
-			<div class="group-card">
-				<img src="@group.Avatar" />
-				<img src="@group.CoverImage" />
-				<h2>@group.GroupName</h2>
-				<p>@group.Description</p>
-				<p>Status: @group.GroupStatus</p>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh sách nhóm</h2>
+        <a class="btn btn-success" href="~/Group/CreateGroup">+ Tạo nhóm</a>
+    </div>
 
-				<!--Tui khg biet dem nhu the nao cuu tui nhe ban-->
-				<p>Members: so luong thanh vien nhom</p>
+    @if (!Model?.Any() ?? true)
+    {
+        <div class="alert alert-info">Chưa có nhóm nào.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var g in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="@(string.IsNullOrWhiteSpace(g.CoverImage) ? "/images/default-cover.png" : g.CoverImage)" alt="cover" onerror="this.src='/images/default-cover.png';" />
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="@(string.IsNullOrWhiteSpace(g.Avatar) ? "/images/default-avatar.png" : g.Avatar)" alt="avatar" class="rounded-circle me-2" style="width:40px;height:40px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+                                <h5 class="card-title mb-0">@g.GroupName</h5>
+                            </div>
+                            <p class="card-text text-muted">@g.Description</p>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-primary btn-sm" href="~/Group/PostsInGroup?groupId=@g.Id">Xem bài</a>
 
-				<div class="card-footer">
-					<a asp-action="JoinGroup"
-					asp-controller="Group"
-					class="btn btn-primary">Join Group</a>
+                                @if (userGroupIds.Contains(g.Id))
+                                {
+                                    <form method="post" action="~/Group/LeaveGroup" class="d-inline">
+                                        <input type="hidden" name="groupId" value="@g.Id" />
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">Rời nhóm</button>
+                                    </form>
 
-					@if (group.GroupStatus != Status.Private
-						&& group.GroupStatus != Status.Banned
-						&& group.GroupStatus != Status.Deleted)
-					{
-						<a asp-action="PostsInGroup"
-						asp-controller="Group"
-						asp-route-groupId="@group.Id"
-						class="btn btn-primary">
-							View Group
-						</a>
-					}
-
-					@if (group.OwnerId == userId
-							|| modGroups.Contains(group.Id))
-					{
-						<a asp-action="GroupManagement"
-						asp-asp-controller="Group"
-						class="btn btn-primary">Group Mangement</a>
-					}
-				</div>
-			</div>
-		}
-	}
-
-	<!--User in groups-->
-	<h2>Your groups</h2> <!--Tui muon la dang Tab de chuyen giua cac ben-->
-	@foreach(var group in Model)
-	{
-		if (userInGroups.Contains(group.Id) 
-			&& (group.GroupStatus != Status.Banned && group.GroupStatus != Status.Deleted))
-		{
-			<div class="group-card">
-				<img src="@group.Avatar" />
-				<img src="@group.CoverImage" />
-				<h2>@group.GroupName</h2>
-				<p>@group.Description</p>
-				<p>Status: @group.GroupStatus</p>
-			</div>
-			<a asp-action="PostsInGroup"
-			   asp-controller="Group"
-			   asp-route-groupId="@group.Id"
-			   class="btn btn-primary">
-				View Group
-			</a>
-			<a asp-action="LeaveGroup"
-				asp-asp-controller="Group"
-			   asp-route-groupId="@group.Id"
-			   class="btn btn-primary"
-			   onclick="return confirm('Bạn có chắc chắn muốn rời khỏi nhóm này không?');"
-			   >Leave Group</a>
-		}
-	}
+                                    @if (modGroups.Contains(g.Id))
+                                    {
+                                        <a class="btn btn-warning btn-sm" href="~/Group/GroupManagement?groupId=@g.Id">Quản trị</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <form method="post" action="~/Group/JoinGroup" class="d-inline">
+                                        <input type="hidden" name="groupId" value="@g.Id" />
+                                        <button class="btn btn-primary btn-sm" type="submit">Tham gia</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
 </div>
