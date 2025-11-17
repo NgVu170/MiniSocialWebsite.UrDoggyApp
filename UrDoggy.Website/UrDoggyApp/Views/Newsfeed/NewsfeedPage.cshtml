@@ -131,6 +131,29 @@
         background: linear-gradient(45deg, #25D366, #0984e3);
         border-radius: 4px;
     }
+
+    /*Style Recommend User List*/
+    #tag-popup {
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 8px;
+        width: 250px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+    }
+
+    .tag-item {
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+
+        .tag-item:hover {
+            background: #f0f0f0;
+        }
 </style>
 
 <div class="post-create mb-3">
@@ -138,9 +161,11 @@
         @Html.AntiForgeryToken()
         <div class="mb-2 d-flex">
             <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
-            <textarea name="content" class="form-control ms-2" rows="3"
+            <textarea name="content" class="form-control ms-2" rows="3" id="content-box"
             placeholder="What's on your mind?" required></textarea>
         </div>
+        <div id="tag-popup"></div>
+
         <div class="mb-2">
             <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
@@ -368,4 +393,6 @@
             document.getElementById('edit-comment-' + commentId).style.display = 'none';
         }
     </script>
+
+    <script src="~/js/post-tagging.js"></script>
 }

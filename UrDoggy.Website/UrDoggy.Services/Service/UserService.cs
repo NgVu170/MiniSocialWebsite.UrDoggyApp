@@ -90,5 +90,16 @@ namespace UrDoggy.Services.Service
         {
             return await _userManager.GetUserAsync(user);
         }
+        public async Task<List<User>> ListRecommnedUsers(int userId, string? s)
+        {
+            if (string.IsNullOrWhiteSpace(s))
+            {
+                return await _userRepository.GetUserFriends(userId);
+            }
+            else
+            {
+                return await _userRepository.Search(s);
+            }
+        }
     }
 }

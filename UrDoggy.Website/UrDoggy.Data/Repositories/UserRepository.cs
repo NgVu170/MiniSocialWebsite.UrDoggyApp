@@ -106,5 +106,13 @@ namespace UrDoggy.Data.Repositories
                 .OrderBy(u => u.UserName)
                 .ToListAsync();
         }
+        public async Task<List<User>> GetUserFriends(int userId)
+        {
+            var friends = _context.Set<Friend>()
+                .Where(f => f.UserId == userId
+                ||f.FriendId == userId)
+                .Select(f => f.FriendUser);
+            return await friends.AsNoTracking().ToListAsync();
+        }
     }
 }

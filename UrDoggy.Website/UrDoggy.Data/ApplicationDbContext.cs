@@ -51,6 +51,30 @@ namespace UrDoggy.Data
                     .WithMany(u => u.Posts)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
+                e.HasMany(x => x.TaggedUsers)
+                 .WithMany()
+                 .UsingEntity<Dictionary<string, object>>(
+                    "PostTaggedUsers",
+
+                    // Join → User (KHÔNG cascade)
+                    j => j.HasOne<User>()
+                          .WithMany()
+                          .HasForeignKey("UserId")
+                          .OnDelete(DeleteBehavior.Restrict),
+
+                    // Join → Post (CÓ cascade)
+                    j => j.HasOne<Post>()
+                          .WithMany()
+                          .HasForeignKey("PostId")
+                          .OnDelete(DeleteBehavior.Cascade),
+
+                    j =>
+                    {
+                        j.HasKey("PostId", "UserId");
+                        j.ToTable("PostTaggedUsers");
+                        j.HasIndex("UserId");
+                        j.HasIndex("PostId");
+                    });
 
                 e.HasIndex(x => new { x.UserId, x.CreatedAt });
             });
