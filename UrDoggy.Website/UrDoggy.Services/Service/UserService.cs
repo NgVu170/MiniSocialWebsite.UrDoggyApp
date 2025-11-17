@@ -90,5 +90,10 @@ namespace UrDoggy.Services.Service
         {
             return await _userManager.GetUserAsync(user);
         }
+
+        public async Task<List<User>> TagUser(string userPart)
+        {
+            return await _userRepository.TagUser(userPart);
+        }
     }
 }
