@@ -33,8 +33,4 @@
     <None Include="wwwroot\images\default-avatar.jpg" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Views\" />
-  </ItemGroup>
-
 </Project>

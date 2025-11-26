@@ -15,6 +15,7 @@ namespace UrDoggy.Services.Interfaces
         Task AdminDeletedPost(int userId, int postId, string adminName);
         Task EnsureFriendCommentNotif(int userId, int postId, int commenterId, string commenterName, string friendName);
         Task EnsureMessageNotif(int userId, int senderId, string senderName, string messagePreview);
+        Task EnsureTagNotif(int userId, int receiverId, string receiverName, int postId);
         Task DeleteMessageNotificationsFor(int userId, int senderId);
         Task<List<Notification>> GetNotifications(int userId);
         Task<int> GetUnreadCount(int userId);

@@ -1,4 +1,5 @@
 ﻿@model List<UrDoggy.Core.Models.Post>
+@using UrDoggy.Core.Models
 @inject UrDoggy.Services.Interfaces.IPostService PostService
 @inject UrDoggy.Services.Interfaces.IUserService UserService
 
@@ -11,6 +12,7 @@
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
+	List<User> TaggedUsers = new List<User>();
 }
 <style>
     /* Newsfeed Style Update */
@@ -163,14 +165,27 @@
             <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
             <textarea name="content" class="form-control ms-2" rows="3" id="content-box"
             placeholder="What's on your mind?" required></textarea>
+            <input type="hidden" id="tagged-users" name="taggedUsers" />
         </div>
-        <div id="tag-popup"></div>
+
+
 
         <div class="mb-2">
             <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
         <button type="submit" class="btn btn-success">Post</button>
     </form>
+    <div id="tag-popup"
+         style="
+                position: absolute;
+                display: none;
+                background: lightgrey;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                width: 250px;
+                z-index: 9999;
+             ">
+    </div>
 </div>
 
 @foreach (var post in Model)
@@ -305,8 +320,19 @@
             <input type="hidden" name="postId" value="@post.Id" />
             <div class="d-flex">
                 <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
-                <textarea name="content" class="form-control ms-2" rows="2"
+                <textarea name="content" class="form-control ms-2" rows="2" id="content-box"
                 placeholder="Write a comment..." required></textarea>
+                <div id="tag-popup"
+                     style="
+                position: absolute;
+                display: none;
+                background: lightgrey;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                width: 250px;
+                z-index: 9999;
+                 ">
+                </div>
             </div>
             <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
         </form>
@@ -395,4 +421,4 @@
     </script>
 
     <script src="~/js/post-tagging.js"></script>
-}
+}   

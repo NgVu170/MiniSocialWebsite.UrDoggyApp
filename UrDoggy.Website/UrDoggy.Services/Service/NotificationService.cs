@@ -142,6 +142,23 @@ namespace UrDoggy.Services.Service
             }
         }
 
+        public async Task EnsureTagNotif(int userId, int receiverId, string senderName, int postId)
+        {
+            var message = $"{senderName} đã nhắc đến bạn tại bài viết tin nhắn cho bạn: {postId}";
+            var notification = new Notification
+            {
+                UserId = receiverId,
+                Message = message,
+                IsRead = false,
+                CreatedAt = DateTime.UtcNow,
+                Type = 7, // Message type
+                PostId = null,
+                TriggerId = userId
+            };
+
+            await _notificationRepository.Add(notification);
+        }
+
         public async Task DeleteMessageNotificationsFor(int userId, int senderId)
         {
             await _notificationRepository.DeleteByTypeAndTrigger(userId, 6, senderId);
