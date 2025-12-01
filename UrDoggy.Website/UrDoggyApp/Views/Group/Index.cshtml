@@ -1,0 +1,65 @@
+﻿@using UrDoggy.Core.Models.GroupModels
+@model IEnumerable<Group>
+
+@{
+    ViewData["Title"] = "Groups";
+    var userInGroups = ViewBag.UserInGroups as List<GroupDetail> ?? new List<GroupDetail>();
+    var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
+    var userId = ViewBag.UserId as int?;
+    var userGroupIds = userInGroups.Select(g => g.GroupId).ToHashSet();
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Danh sách nhóm</h2>
+        <a class="btn btn-success" href="~/Group/CreateGroup">+ Tạo nhóm</a>
+    </div>
+
+    @if (!Model?.Any() ?? true)
+    {
+        <div class="alert alert-info">Chưa có nhóm nào.</div>
+    }
+    else
+    {
+        <div class="row g-3">
+            @foreach (var g in Model)
+            {
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <img class="card-img-top" src="@(string.IsNullOrWhiteSpace(g.CoverImage) ? "/images/default-cover.png" : g.CoverImage)" alt="cover" onerror="this.src='/images/default-cover.png';" />
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-2">
+                                <img src="@(string.IsNullOrWhiteSpace(g.Avatar) ? "/images/default-avatar.png" : g.Avatar)" alt="avatar" class="rounded-circle me-2" style="width:40px;height:40px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+                                <h5 class="card-title mb-0">@g.GroupName</h5>
+                            </div>
+                            <p class="card-text text-muted">@g.Description</p>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-outline-primary btn-sm" href="~/Group/PostsInGroup?groupId=@g.Id">Xem bài</a>
+
+                                @if (userGroupIds.Contains(g.Id))
+                                {
+                                    <form method="post" action="~/Group/LeaveGroup" class="d-inline">
+                                        <input type="hidden" name="groupId" value="@g.Id" />
+                                        <button class="btn btn-outline-secondary btn-sm" type="submit">Rời nhóm</button>
+                                    </form>
+
+                                    @if (modGroups.Contains(g.Id))
+                                    {
+                                        <a class="btn btn-warning btn-sm" href="~/Group/GroupManagement?groupId=@g.Id">Quản trị</a>
+                                    }
+                                }
+                                else
+                                {
+                                    <form method="post" action="~/Group/JoinGroup" class="d-inline">
+                                        <input type="hidden" name="groupId" value="@g.Id" />
+                                        <button class="btn btn-primary btn-sm" type="submit">Tham gia</button>
+                                    </form>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

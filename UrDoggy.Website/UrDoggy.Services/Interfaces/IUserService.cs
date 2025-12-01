@@ -13,6 +13,7 @@ namespace UrDoggy.Services.Interfaces
         Task<User> GetProfile(int userId);
         Task UpdateProfile(int userId, string displayName, string bio, string profilePicture);
         Task<List<User>> Search(string searchTerm);
+        Task<List<User>> TagUser(string userPart);
         Task<User> GetById(int userId);
         Task<User> GetByUsername(string username);
         Task<List<User>> GetAllUsers();

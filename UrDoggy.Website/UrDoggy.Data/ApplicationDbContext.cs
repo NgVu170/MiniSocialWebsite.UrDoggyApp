@@ -2,7 +2,9 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using UrDoggy.Core.Models;     // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
+using UrDoggy.Core.Models;  // Comment, Message, Notification, Media, PostVote, Tag, PostTag, Report, Conversation(ignored), ConversationDto(ignored)
+using UrDoggy.Core.Models.GroupModels;
+using UrDoggy.Core.Models.GroupModels;  //Group models
 
 namespace UrDoggy.Data
 {
@@ -21,7 +23,10 @@ namespace UrDoggy.Data
         public DbSet<Notification> Notifications => Set<Notification>();
         public DbSet<Report> Reports => Set<Report>();
         public DbSet<Friend> Friends => Set<Friend>();
-
+        public DbSet<Group> Groups => Set<Group>();
+        public DbSet<GroupDetail> GroupDetails => Set<GroupDetail>();
+        public DbSet<GroupPostStatus> GroupPostStatuses => Set<GroupPostStatus>();  
+        public DbSet<GroupReport> GroupReports => Set<GroupReport>();
         protected override void OnModelCreating(ModelBuilder model)
         {
             base.OnModelCreating(model); // cần cho Identity
@@ -43,11 +48,10 @@ namespace UrDoggy.Data
             {
                 e.ToTable("Posts");
                 e.HasKey(x => x.Id);
-
                 e.Property(x => x.Content).HasMaxLength(5000);
 
                 // FK tới User: RESTRICT để tránh multiple cascade paths
-                e.HasOne<User>()
+                e.HasOne(p => p.User)
                     .WithMany(u => u.Posts)
                     .HasForeignKey(x => x.UserId)
                     .OnDelete(DeleteBehavior.Restrict);
@@ -76,7 +80,13 @@ namespace UrDoggy.Data
                         j.HasIndex("PostId");
                     });
 
+                e.HasOne(g => g.Group)
+                    .WithMany(g => g.Posts)
+                    .HasForeignKey(g => g.GroupId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
                 e.HasIndex(x => new { x.UserId, x.CreatedAt });
+                e.HasIndex(x => x.GroupId);
             });
 
             // ======================
@@ -155,6 +165,18 @@ namespace UrDoggy.Data
                 e.HasKey(x => x.Id);
 
                 e.Property(x => x.Reason).HasMaxLength(1000).IsRequired();
+
+                // FK tới Post (khi xoá Post thì xoá report theo)
+                e.HasOne(r => r.Post)
+                    .WithMany(p => p.Reports) // hoặc .WithMany(p => p.Reports) nếu bạn thêm ICollection<Report> vào Post
+                    .HasForeignKey(r => r.PostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                // FK tới User (người report) - RESTRICT để tránh multiple cascade
+                e.HasOne(r => r.Reporter)
+                    .WithMany() // hoặc .WithMany(u => u.Reports) nếu bạn thêm ICollection<Report> vào User
+                    .HasForeignKey(r => r.ReporterId)
+                    .OnDelete(DeleteBehavior.Restrict);
 
                 // Bạn đang dùng FK scalar (PostId, ReporterId) không có nav -> để nguyên
                 e.HasIndex(x => new { x.PostId, x.CreatedAt });
@@ -251,7 +273,101 @@ namespace UrDoggy.Data
                     .HasForeignKey(x => x.PostId)
                     .OnDelete(DeleteBehavior.Cascade);
 
+                e.HasOne(m => m.GroupPostStatus)
+                    .WithMany(gp => gp.MediaItems)
+                    .HasForeignKey(m => m.GroupPostStatusId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 e.HasIndex(x => new { x.PostId, x.CreatedAt });
+            });
+
+            // ======================
+            // GROUP
+            // ======================
+            model.Entity<Group>(e =>
+            {
+                e.ToTable("Groups");
+                e.HasKey(x => x.Id);
+
+                e.Property(x => x.GroupName).HasMaxLength(128).IsRequired();
+                e.Property(x => x.Description).HasMaxLength(2000).IsRequired(false);
+
+                e.HasOne(g => g.Owner)
+                .WithMany(u => u.OwnedGroups)
+                .HasForeignKey(g => g.OwnerId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            // ======================
+            // GROUP DETAIL
+            // ======================
+            model.Entity<GroupDetail>(e =>
+            {
+                e.ToTable("GroupDetails");
+                e.HasKey(x => x.Id); // hoặc composite if you want
+
+                e.HasOne(gd => gd.Group)
+                 .WithMany(g => g.Members)
+                 .HasForeignKey(gd => gd.GroupId)
+                 .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(gd => gd.User)
+                 .WithMany(u => u.GroupDetails)
+                 .HasForeignKey(gd => gd.UserId)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => new { x.GroupId, x.UserId }).IsUnique();
+            });
+
+            // ======================
+            // GROUP POST STATUS
+            // ======================
+            model.Entity<GroupPostStatus>(e =>
+            {
+                e.ToTable("GroupPostStatuses");
+                e.HasKey(x => x.Id); // hoặc composite if you want
+
+                //Relations
+                e.HasOne(x => x.Post)
+                   .WithMany()
+                   .HasForeignKey(x => x.PostId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Group)
+                    .WithMany()
+                    .HasForeignKey(x => x.GroupId)
+                    .OnDelete(DeleteBehavior.Cascade);
+
+                e.HasOne(x => x.Author)
+                    .WithMany( u => u.GroupPostsCreated)
+                    .HasForeignKey(x => x.AuthorId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasOne(x => x.Mod)
+                    .WithMany(u => u.GroupPostsModerated)
+                    .HasForeignKey(x => x.ModId)
+                    .OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => new { x.PostId, x.GroupId });
+            });
+
+            // ======================
+            // GROUP REPORT
+            // ======================
+            model.Entity<GroupReport>(e =>
+            {
+                e.ToTable("GroupReports");
+                e.HasKey(x => x.Id); // hoặc composite if you want
+                //Relations
+                e.HasOne(x => x.GroupPost)
+                    .WithMany()
+                    .HasForeignKey(x => x.GroupPostId)
+                    .OnDelete(DeleteBehavior.Cascade);
+                e.HasOne(x => x.Reporter)
+                    .WithMany()
+                    .HasForeignKey(x => x.ReporterId)
+                    .OnDelete(DeleteBehavior.Restrict);
+                e.HasIndex(x => new { x.GroupPostId, x.ReporterId, x.CreatedAt });
             });
 
             // ======================

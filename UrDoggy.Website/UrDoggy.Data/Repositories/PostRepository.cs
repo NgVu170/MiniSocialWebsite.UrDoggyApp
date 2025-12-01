@@ -16,7 +16,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // READ: feed
-        public async Task<List<Post>> GetAllPost()
+        public virtual async Task<List<Post>> GetAllPost(int? groupId)
         {
             return await _context.Posts
                 .Include(p => p.MediaItems)
@@ -38,7 +38,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // CREATE: create post + optional media list
-        public async Task CreatePost(Post post, IEnumerable<(string path, string mediaType)> media)
+        public virtual async Task CreatePost(Post post, IEnumerable<(string path, string mediaType)> media)
         {
             if (post.CreatedAt == default) post.CreatedAt = DateTime.UtcNow;
 
@@ -132,7 +132,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // DELETE: post (Media/Comments/etc cascade by FK)
-        public async Task DeletePost(int postId)
+        public virtual async Task DeletePost(int postId, int? modId)
         {
             var post = await _context.Posts.FindAsync(postId);
             if (post == null) return;
@@ -213,7 +213,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // ===== REPORT =====
-        public async Task ReportPost(int postId, int reporterId, string reason)
+        public virtual async Task ReportPost(int postId, int reporterId, string reason)
         {
             _context.Reports.Add(new Report
             {

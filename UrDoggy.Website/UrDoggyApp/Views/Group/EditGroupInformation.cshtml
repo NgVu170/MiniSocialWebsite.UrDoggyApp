@@ -1,0 +1,51 @@
+﻿@using UrDoggy.Core.Models.GroupModels
+@model Group
+
+@{
+    ViewData["Title"] = "Sửa thông tin nhóm";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Sửa thông tin nhóm</h2>
+        <a class="btn btn-outline-secondary" href="~/Group/GroupManagement?groupId=@Model.Id">← Quản trị nhóm</a>
+    </div>
+
+    @using (Html.BeginForm("EditGroupInformation", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="groupId" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label class="form-label">Tên nhóm</label>
+            <input class="form-control" name="groupName" value="@Model.GroupName" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mô tả</label>
+            <textarea class="form-control" name="description" rows="3">@Model.Description</textarea>
+        </div>
+
+        <div class="row g-3">
+            <div class="col-md-6">
+                <label class="form-label">Avatar hiện tại</label>
+                <div class="d-flex align-items-center">
+                    <img src="@(Model.Avatar ?? "/images/default-avatar.png")" style="width:64px;height:64px;object-fit:cover;" class="rounded me-2" onerror="this.src='/images/default-avatar.png';" />
+                    <input type="file" class="form-control" name="avatar" accept=".png,.jpg,.jpeg,.webp" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="form-label">Cover hiện tại</label>
+                <div>
+                    <img src="@(Model.CoverImage ?? "/images/default-cover.png")" style="width:100%;max-width:240px;height:80px;object-fit:cover;" class="rounded mb-2" onerror="this.src='/images/default-cover.png';" />
+                    <input type="file" class="form-control" name="coverImage" accept=".png,.jpg,.jpeg,.webp" />
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <button class="btn btn-primary" type="submit">Lưu thay đổi</button>
+            <a class="btn btn-outline-secondary" href="~/Group/GroupManagement?groupId=@Model.Id">Hủy</a>
+        </div>
+    }
+</div>

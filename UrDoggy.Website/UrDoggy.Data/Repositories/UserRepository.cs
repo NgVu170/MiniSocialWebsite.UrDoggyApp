@@ -106,6 +106,7 @@ namespace UrDoggy.Data.Repositories
                 .OrderBy(u => u.UserName)
                 .ToListAsync();
         }
+
         public async Task<List<User>> GetUserFriends(int userId)
         {
             var friends = _context.Set<Friend>()
@@ -113,6 +114,24 @@ namespace UrDoggy.Data.Repositories
                 ||f.FriendId == userId)
                 .Select(f => f.FriendUser);
             return await friends.AsNoTracking().ToListAsync();
+        }
+        
+        public async Task<List<User>> TagUser(string userPart)
+        {
+            userPart ??= string.Empty;
+            return await _context.Users.AsNoTracking()
+                .Where(u => u.UserName.Contains(userPart) 
+                || u.DisplayName.Contains(userPart))
+                .Select(u => new User
+                {
+                    Id = u.Id,
+                    UserName = u.UserName,
+                    DisplayName = u.DisplayName,
+                    ProfilePicture = u.ProfilePicture
+                })
+                .OrderBy(u => u.UserName)
+                .Take(5)
+                .ToListAsync();
         }
     }
 }
