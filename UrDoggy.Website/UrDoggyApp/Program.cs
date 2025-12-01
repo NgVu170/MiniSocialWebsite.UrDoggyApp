@@ -35,6 +35,17 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddRoleManager<RoleManager<IdentityRole<int>>>();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
 //Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -114,5 +125,7 @@ app.MapControllerRoute(
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<NotificationHub>("/notificationhub");
+app.MapControllers();
+app.UseCors("AllowAll");
 
 app.Run();
