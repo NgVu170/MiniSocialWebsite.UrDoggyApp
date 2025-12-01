@@ -168,10 +168,21 @@
                 <textarea name="content"
                           id="postContent"
                           class="form-control"
-                          rows="3" id="content-box"
+                          rows="3"
                           placeholder="What's on your mind?"
                           required></textarea>
-            
+
+                <div id="tag-popup"
+                     style="
+                    position: absolute;
+                    color: red;
+                    background: lightgrey;
+                    border: 1px solid #ccc;
+                    border-radius: 6px;
+                    width: 250px;
+                    z-index: 9999;
+                 ">
+                </div>
 
                 <div id="hashtagSuggestions"
                      class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
@@ -184,17 +195,7 @@
         </div>
         <button type="submit" class="btn btn-success">Post</button>
     </form>
-    <div id="tag-popup"
-         style="
-                position: absolute;
-                display: none;
-                background: lightgrey;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                width: 250px;
-                z-index: 9999;
-             ">
-    </div>
+
     
 </div>
 
@@ -395,7 +396,8 @@
 }
 
 @section Scripts {
-    <script src="~/js/hashtag-suggestion.js" asp-append-version="true"></script>
+    <script src="~/js/hashtag-suggestion.js"></script>
+    <script src="~/js/post-tagging.js"></script>
 
     <script>
         function copyShareLink(postId) {
