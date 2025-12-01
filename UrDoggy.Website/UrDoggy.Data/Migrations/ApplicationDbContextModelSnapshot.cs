@@ -367,7 +367,7 @@ namespace UrDoggy.Data.Migrations
                     b.ToTable("GroupPostStatuses", (string)null);
                 });
 
-            modelBuilder.Entity("UrDoggy.Core.Models.Group_Models.GroupReport", b =>
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupModels.GroupReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -902,7 +902,7 @@ namespace UrDoggy.Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("UrDoggy.Core.Models.Group_Models.GroupReport", b =>
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupModels.GroupReport", b =>
                 {
                     b.HasOne("UrDoggy.Core.Models.Post", "GroupPost")
                         .WithMany()

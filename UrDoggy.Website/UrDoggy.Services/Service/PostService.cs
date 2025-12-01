@@ -115,7 +115,7 @@ namespace UrDoggy.Services.Service
             try
             {
                 // Lấy tất cả bài viết (trừ của chính user)
-                var allPosts = await _postRepository.GetAllPost();
+                var allPosts = await _postRepository.GetAllPost(null);
 
                 if (allPosts == null || !allPosts.Any())
                     return new List<Post>();

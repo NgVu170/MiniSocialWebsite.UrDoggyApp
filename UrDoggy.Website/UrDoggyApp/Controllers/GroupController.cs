@@ -11,7 +11,7 @@ namespace UrDoggy.Website.Controllers
 {
     [Authorize]
     [Route("[controller]/[action]")]
-    public class GroupController : Controller
+    public class GroupController : Controller   
     {
         #region Attributes & Constructor, Helper function
         private readonly ApplicationDbContext _context;
@@ -46,12 +46,14 @@ namespace UrDoggy.Website.Controllers
                 return RedirectToAction("Login", "Auth");
 
             var modGroups = await _context.GroupDetails
+                .AsNoTracking()
                 .Where(gd => gd.UserId == userId &&
                         (gd.Role == GroupRole.Admin || gd.Role == GroupRole.Moderator))
                 .Select(gd => gd.GroupId)
                 .ToHashSetAsync();
 
             var userInGroups = await _context.GroupDetails
+                .AsNoTracking()
                 .Where(gd => gd.UserId == userId)
                 .ToListAsync();
 
@@ -122,8 +124,8 @@ namespace UrDoggy.Website.Controllers
                 return RedirectToAction("Login", "Auth");
 
             var posts = await _groupUserService.GetAllPost(groupId);
-            var groupInfo = await _context.Groups.Include(g => g.Owner).FirstOrDefaultAsync(g => g.Id == groupId);
-            var modList = await _context.GroupDetails.Include(gd => gd.User)
+            var groupInfo = await _context.Groups.AsNoTracking().Include(g => g.Owner).FirstOrDefaultAsync(g => g.Id == groupId);
+            var modList = await _context.GroupDetails.AsNoTracking().Include(gd => gd.User)
                 .Where(gd => gd.GroupId == groupId && gd.Role == GroupRole.Moderator)
                 .ToListAsync();
 
@@ -269,7 +271,7 @@ namespace UrDoggy.Website.Controllers
         // ============= GROUP MANAGEMENT ZONE ==============
         private bool CheckPermission(int userId, int groupId)
         {
-            var userInGroup = _context.GroupDetails
+            var userInGroup = _context.GroupDetails.AsNoTracking()
                 .FirstOrDefault(gd => gd.GroupId == groupId && gd.UserId == userId);
 
             return userInGroup != null && (userInGroup.Role == GroupRole.Admin || userInGroup.Role == GroupRole.Moderator);
@@ -395,7 +397,7 @@ namespace UrDoggy.Website.Controllers
         public async Task<IActionResult> EditGroupInformation(int groupId, string groupName, string description, IFormFile? avatar, IFormFile? coverImage)
         {
             CheckLogin();
-            var group = await _context.Groups.FirstOrDefaultAsync(g => g.Id == groupId);
+            var group = await _context.Groups.AsNoTracking().FirstOrDefaultAsync(g => g.Id == groupId);
             if (group == null)
                 return NotFound();
             var detail = await _context.GroupDetails
