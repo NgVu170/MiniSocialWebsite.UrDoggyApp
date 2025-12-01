@@ -7,6 +7,145 @@
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
 }
 
+<style>
+    .list-group {
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    .list-group-item {
+        padding: 1.25rem 1.5rem;
+        border: none;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.95);
+    }
+
+        .list-group-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-group-item:hover {
+            background: rgba(9, 132, 227, 0.03);
+            transform: translateX(5px);
+        }
+
+    .rounded-circle[style*="40px"] {
+        border: 2px solid var(--secondary);
+        transition: transform 0.3s ease;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .list-group-item:hover .rounded-circle {
+        transform: scale(1.1);
+    }
+
+    .list-group-item a {
+        font-weight: 600;
+        color: #2d3436;
+        text-decoration: none;
+        transition: color 0.2s ease;
+    }
+
+        .list-group-item a:hover {
+            color: var(--primary);
+        }
+
+    /* Add Friend Button */
+    .btn-sm.btn-primary {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        border: none;
+        border-radius: 2rem;
+        padding: 0.4rem 1.25rem;
+        font-weight: 500;
+        box-shadow: 0 4px 10px rgba(37, 211, 102, 0.25);
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-sm.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-sm.btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-sm.btn-primary::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(30deg);
+            transition: transform 0.5s ease;
+        }
+
+        .btn-sm.btn-primary:hover::after {
+            transform: rotate(30deg) translate(20%, 0);
+        }
+
+    button.btn-primary[disabled] {
+        position: relative;
+        opacity: 0.8;
+    }
+
+        button.btn-primary[disabled]::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.6);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+    @@keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    p {
+        text-align: center;
+        padding: 3rem;
+        color: #636e72;
+        font-size: 1.1rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 1rem;
+    }
+
+    @@media (max-width: 768px) {
+        .list-group-item {
+            flex-direction: column;
+            align-items: flex-start !important;
+        }
+
+        .d-flex.align-items-center {
+            margin-bottom: 1rem;
+            width: 100%;
+        }
+
+        .btn-sm.btn-primary {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+    }
+</style>
+
 <h3>Search Results</h3>
 
 @if (!Model.Any())
