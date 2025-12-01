@@ -163,13 +163,22 @@
         @Html.AntiForgeryToken()
         <div class="mb-2 d-flex">
             <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
-            <textarea name="content" class="form-control ms-2" rows="3" id="content-box"
-            placeholder="What's on your mind?" required></textarea>
-            <input type="hidden" id="tagged-users" name="taggedUsers" />
+
+            <div class="flex-grow-1 position-relative ms-2">
+                <textarea name="content"
+                          id="postContent"
+                          class="form-control"
+                          rows="3" id="content-box"
+                          placeholder="What's on your mind?"
+                          required></textarea>
+            
+
+                <div id="hashtagSuggestions"
+                     class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
+                     style="z-index: 1000; max-height: 300px; overflow-y: auto; top: 100%;">
+                </div>
+            </div>
         </div>
-
-
-
         <div class="mb-2">
             <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
@@ -186,6 +195,7 @@
                 z-index: 9999;
              ">
     </div>
+    
 </div>
 
 @foreach (var post in Model)
@@ -248,20 +258,6 @@
         </div>
 
         <p>@post.Content</p>
-
-        @* @if (!string.IsNullOrEmpty(post.MediaPath)) *@
-        @* { *@
-        @*     if (post.MediaType == "image") *@
-        @*     { *@
-        @*         <img src="@post.MediaPath" class="img-fluid rounded mb-3" alt="Post image" /> *@
-        @*     } *@
-        @*     else *@
-        @*     { *@
-        @*         <video controls class="w-100 rounded mb-3"> *@
-        @*             <source src="@post.MediaPath" type="video/mp4" /> *@
-        @*         </video> *@
-        @*     } *@
-        @* } *@
 
         @if (post.MediaItems != null && post.MediaItems.Any())
         {
@@ -399,6 +395,8 @@
 }
 
 @section Scripts {
+    <script src="~/js/hashtag-suggestion.js" asp-append-version="true"></script>
+
     <script>
         function copyShareLink(postId) {
             const url = `${window.location.origin}/Newsfeed/Details/${postId}`;
@@ -419,6 +417,4 @@
             document.getElementById('edit-comment-' + commentId).style.display = 'none';
         }
     </script>
-
-    <script src="~/js/post-tagging.js"></script>
-}   
+}
