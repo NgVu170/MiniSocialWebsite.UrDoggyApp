@@ -109,5 +109,55 @@ namespace UrDoggy.Services.Service
 
             return await _postRepository.GetTotalPostCount(friendIds);
         }
+
+        public async Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                // Lấy tất cả bài viết (trừ của chính user)
+                var allPosts = await _postRepository.GetAllPost();
+
+                if (allPosts == null || !allPosts.Any())
+                    return new List<Post>();
+
+                var filteredPosts = allPosts.Where(p => p.UserId != userId).ToList();
+
+                // Loại bỏ posts đã xem nếu có
+                if (excludedPostIds != null && excludedPostIds.Any())
+                {
+                    filteredPosts = filteredPosts.Where(p => !excludedPostIds.Contains(p.Id)).ToList();
+                }
+                if (!filteredPosts.Any())
+                    return new List<Post>();
+
+                // Tính điểm recommendation cho mỗi bài viết
+                var postScores = new List<(Post Post, float Score)>();
+
+                foreach (var post in filteredPosts)
+                {
+                    var score = await _postRepository.RankCalculate(userId, post);
+                    if (score > float.MinValue) // Loại bỏ bài viết bị rejected
+                    {
+                        postScores.Add((post, score));
+                    }
+                }
+
+                // Sắp xếp theo điểm giảm dần và phân trang
+                var recommendedPosts = postScores
+                    .OrderByDescending(x => x.Score)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .Select(x => x.Post)
+                    .ToList();
+
+                return recommendedPosts;
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi và trả về danh sách rỗng
+                Console.WriteLine($"Error in GetRecommendedPosts: {ex.Message}");
+                return new List<Post>();
+            }
+        }
     }
 }

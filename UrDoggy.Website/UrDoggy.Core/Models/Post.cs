@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,8 @@ namespace UrDoggy.Core.Models
         public ICollection<Comment> Comments { get; set; } = new List<Comment>();
         public ICollection<PostVote> PostVotes { get; set; } = new List<PostVote>();
         public ICollection<PostTag> PostTags { get; set; } = new List<PostTag>();
-        public ICollection<Media> MediaItems { get; set; } = new List<Media>();
+        public ICollection<Media>? MediaItems { get; set; } = new List<Media>();
         public ICollection<Report> Reports { get; set; } = new List<Report>();
+        public ICollection<User>? TaggedUsers { get; set; } = null;
     }
 }

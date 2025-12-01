@@ -1,4 +1,5 @@
 ﻿@model List<UrDoggy.Core.Models.Post>
+@using UrDoggy.Core.Models
 @inject UrDoggy.Services.Interfaces.IPostService PostService
 @inject UrDoggy.Services.Interfaces.IUserService UserService
 
@@ -11,21 +12,180 @@
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
+	List<User> TaggedUsers = new List<User>();
 }
+<style>
+    /* Newsfeed Style Update */
+    .post-create {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(10px);
+        border-radius: 1.5rem;
+        padding: 1.5rem;
+        box-shadow: 0 8px 32px rgba(0, 184, 148, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+        .post-create textarea {
+            background: transparent;
+            border: none;
+            resize: none;
+            font-size: 1.1rem;
+            padding: 1rem;
+        }
+
+            .post-create textarea:focus {
+                box-shadow: none;
+                background: rgba(0, 184, 148, 0.05);
+            }
+
+        .post-create .btn-success {
+            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+            border: none;
+            padding: 0.5rem 2rem;
+            border-radius: 2rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .post-create .btn-success:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            }
+
+    .post-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 1.5rem;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(0, 184, 148, 0.08);
+        }
+
+    .img-fluid.rounded {
+        border-radius: 1rem !important;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn-outline-success,
+    .btn-outline-danger {
+        border-radius: 1rem;
+        padding: 0.25rem 1rem;
+        transition: all 0.2s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-outline-success::before,
+        .btn-outline-danger::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.1;
+            background: currentColor;
+        }
+
+        .btn-outline-success:hover,
+        .btn-outline-danger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+    .comment-section {
+        background: rgba(240, 242, 245, 0.5);
+        border-radius: 1rem;
+        padding: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .comment-edit-form {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        padding: 1rem;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    @@media (max-width: 768px) {
+        .post-create {
+            border-radius: 1rem;
+            padding: 1rem;
+        }
+
+        .post-card {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+        }
+    }
+
+    ::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #25D366, #0984e3);
+        border-radius: 4px;
+    }
+
+    /*Style Recommend User List*/
+    #tag-popup {
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 8px;
+        width: 250px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+    }
+
+    .tag-item {
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+
+        .tag-item:hover {
+            background: #f0f0f0;
+        }
+</style>
 
 <div class="post-create mb-3">
     <form method="post" asp-action="Create" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
         <div class="mb-2 d-flex">
             <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
-            <textarea name="content" class="form-control ms-2" rows="3"
+            <textarea name="content" class="form-control ms-2" rows="3" id="content-box"
             placeholder="What's on your mind?" required></textarea>
+            <input type="hidden" id="tagged-users" name="taggedUsers" />
         </div>
+
+
+
         <div class="mb-2">
             <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
         <button type="submit" class="btn btn-success">Post</button>
     </form>
+    <div id="tag-popup"
+         style="
+                position: absolute;
+                display: none;
+                background: lightgrey;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                width: 250px;
+                z-index: 9999;
+             ">
+    </div>
 </div>
 
 @foreach (var post in Model)
@@ -160,8 +320,19 @@
             <input type="hidden" name="postId" value="@post.Id" />
             <div class="d-flex">
                 <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
-                <textarea name="content" class="form-control ms-2" rows="2"
+                <textarea name="content" class="form-control ms-2" rows="2" id="content-box"
                 placeholder="Write a comment..." required></textarea>
+                <div id="tag-popup"
+                     style="
+                position: absolute;
+                display: none;
+                background: lightgrey;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                width: 250px;
+                z-index: 9999;
+                 ">
+                </div>
             </div>
             <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
         </form>
@@ -248,4 +419,6 @@
             document.getElementById('edit-comment-' + commentId).style.display = 'none';
         }
     </script>
-}
+
+    <script src="~/js/post-tagging.js"></script>
+}   

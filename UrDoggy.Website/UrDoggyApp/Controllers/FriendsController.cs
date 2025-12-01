@@ -116,5 +116,24 @@ namespace UrDoggy.Website.Controllers
 
             return RedirectToAction("Index");
         }
+
+        //api call
+        [HttpGet("Recommend")]
+        public async Task<IActionResult> Recommend(string? keyword)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null)
+                return Unauthorized();
+
+            var list = await _userService.ListRecommnedUsers(userId.Value, keyword);
+
+            return Json(list.Select(u => new {
+                id = u.Id,
+                userName = u.UserName,
+                displayName = u.DisplayName
+            }));
+        }
     }
 }
+
+
