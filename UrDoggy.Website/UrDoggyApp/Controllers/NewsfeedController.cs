@@ -122,8 +122,8 @@ namespace UrDoggy.Website.Controllers
                         }
                     }
                 }
-                var newPost = await _postService.CreatePost(userId.Value, content, mediaItems);
-               
+
+                await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
             }
             catch (Exception ex)
