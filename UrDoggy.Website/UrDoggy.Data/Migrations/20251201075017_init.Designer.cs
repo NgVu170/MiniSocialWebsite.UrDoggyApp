@@ -12,8 +12,8 @@ using UrDoggy.Data;
 namespace UrDoggy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20251005080656_AddRelationFromGroupPostStatusToMedia")]
-    partial class AddRelationFromGroupPostStatusToMedia
+    [Migration("20251201075017_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -156,6 +156,23 @@ namespace UrDoggy.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("PostTaggedUsers", b =>
+                {
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("PostId", "UserId");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostTaggedUsers", (string)null);
                 });
 
             modelBuilder.Entity("UrDoggy.Core.Models.Comment", b =>
@@ -353,7 +370,7 @@ namespace UrDoggy.Data.Migrations
                     b.ToTable("GroupPostStatuses", (string)null);
                 });
 
-            modelBuilder.Entity("UrDoggy.Core.Models.Group_Models.GroupReport", b =>
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupModels.GroupReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -772,6 +789,21 @@ namespace UrDoggy.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("PostTaggedUsers", b =>
+                {
+                    b.HasOne("UrDoggy.Core.Models.Post", null)
+                        .WithMany()
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("UrDoggy.Core.Models.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("UrDoggy.Core.Models.Comment", b =>
                 {
                     b.HasOne("UrDoggy.Core.Models.Post", "Post")
@@ -873,7 +905,7 @@ namespace UrDoggy.Data.Migrations
                     b.Navigation("Post");
                 });
 
-            modelBuilder.Entity("UrDoggy.Core.Models.Group_Models.GroupReport", b =>
+            modelBuilder.Entity("UrDoggy.Core.Models.GroupModels.GroupReport", b =>
                 {
                     b.HasOne("UrDoggy.Core.Models.Post", "GroupPost")
                         .WithMany()
