@@ -24,5 +24,7 @@ namespace UrDoggy.Services.Interfaces
         Task<int> GetPostCount(int userId);
         Task<int> GetTotalPostCount(int userId);
         Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, bool isPersonalized = true, int pageNumber = 1, int pageSize = 10);
+        Task SaveAsync();
+
     }
 }

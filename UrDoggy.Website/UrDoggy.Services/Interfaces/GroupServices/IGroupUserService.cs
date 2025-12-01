@@ -1,29 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UrDoggy.Core.Models;
+﻿using UrDoggy.Core.Models;
 using UrDoggy.Core.Models.GroupModels;
-using UrDoggy.Data.Repositories.Group_Repository;
 
 namespace UrDoggy.Services.Interfaces.GroupServices
 {
     public interface IGroupUserService
     {
-        //Service for querrying group and post information for normal users
+        // ====================== GROUP QUERY ======================
+
         Task<List<Group>> GetAllGroup();
-        Task<List<Post>> GetAllPost(int groupId);
-        Task<List<GroupDetail>> GetAllMemberInGroup( int groupId);
+        Task<Group?> getGroupById(int groupId);
+        Task<Group?> GetGroupByIdWithOwner(int groupId);
+
+        Task<List<GroupDetail>> GetAllMemberInGroup(int groupId);
         Task<List<GroupDetail>> GetAllGroupOfUser(int userId);
-        //Service for joining and leaving groups
+        Task<List<GroupDetail>> GetUserGroupDetails(int userId);
+        Task<HashSet<int>> GetModeratorGroupIds(int userId);
+        Task<List<GroupDetail>> GetModerators(int groupId);
+
+        // ====================== ROLE & PERMISSION ======================
+
+        Task<GroupRole> getRole(int userId, int groupId);
+        Task<bool> IsModeratorOrAdmin(int userId, int groupId);
+        Task<bool> IsAdmin(int userId, int groupId);
+        Task<bool> IsActiveMember(int userId, int groupId);
+
+        // ====================== POSTS ======================
+
+        Task<List<Post>> GetAllPost(int groupId);
+        Task<Post?> GetPostById(int postId);
+
+        Task CreatePendingPostAsync(GroupPostStatus post);
+        Task DeletePost(int postId, int? moderatorId = null);
+
+        // ====================== MEMBERSHIP ======================
+
         Task<bool> JoinGroup(int userId, int groupId);
         Task<bool> LeaveGroup(int userId, int groupId);
-        //Service for action
-        Task<Post> CreatePost(Post post, IEnumerable<(string path, string mediaType)> media);
-        Task DeletePost(int postId, int? modId = null);
-        Task<bool> ReportPost(int postId, int userId, string reason);
-        Task<Group> getGroupById(int groupId);
-        Task<GroupRole> getRole(int userId, int groupId);
+
+        // ====================== REPORT ======================
+        Task<bool> ReportPost(int userId, int postId, string reason);
     }
 }

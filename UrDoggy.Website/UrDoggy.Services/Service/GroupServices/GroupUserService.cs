@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using UrDoggy.Core.Models;
 using UrDoggy.Core.Models.GroupModels;
 using UrDoggy.Data;
-using UrDoggy.Data.Repositories;
-using UrDoggy.Data.Repositories.Group_Repository;
 using UrDoggy.Services.Interfaces.GroupServices;
 
 namespace UrDoggy.Services.Service.GroupServices
@@ -16,110 +9,232 @@ namespace UrDoggy.Services.Service.GroupServices
     public class GroupUserService : IGroupUserService
     {
         private readonly ApplicationDbContext _context;
-        private readonly UserGroupRepositrory _userGroupRepositrory;
-        private readonly PostRepository _postRepository;
-        private readonly GroupPostRepository _groupPostRepository;
+
         public GroupUserService(ApplicationDbContext context)
         {
-            _groupPostRepository = new GroupPostRepository(context);
-            _postRepository = new PostRepository(context);
-            _userGroupRepositrory = new UserGroupRepositrory(context);
             _context = context;
         }
+
+        // ====================== GROUP QUERY ======================
+
         public async Task<List<Group>> GetAllGroup()
         {
-            return await _context.Groups.AsNoTracking().ToListAsync();
-        }
-        public async Task<List<Post>> GetAllPost(int groupId)
-        {
-            var querry = _context.Posts.Where(g => g.GroupId == groupId).AsQueryable();
-            return await querry
-                .OrderByDescending(p => p.CreatedAt)
+            return await _context.Groups
                 .AsNoTracking()
+                .Where(g => g.GroupStatus == Status.Active)
                 .ToListAsync();
         }
-        public async Task<List<GroupDetail>> GetAllMemberInGroup(int groupId)
+
+        public async Task<Group?> getGroupById(int groupId)
         {
-            return await _context.GroupDetails
-                .Where(g => g.GroupId == groupId)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-        public async Task<List<GroupDetail>> GetAllGroupOfUser(int userId)
-        {
-            return await _context.GroupDetails
-                .Where(g => g.UserId == userId)
-                .AsNoTracking()
-                .ToListAsync();
-        }
-        public async Task<bool> JoinGroup(int userId, int groupId)
-        {
-            var existingMembership = await _context.GroupDetails
-                .FirstOrDefaultAsync(g => g.UserId == userId && g.GroupId == groupId);
-            if (existingMembership != null)
-            {
-                return false; // User is already a member of the group
-            }
-            else
-            {
-                return await _userGroupRepositrory.JoinGroup(userId, groupId);
-            }
-        }
-        public async Task<Group> getGroupById(int groupId)
-        { 
             return await _context.Groups
                 .AsNoTracking()
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
-        public async Task<bool> LeaveGroup(int userId, int groupId)
+
+        public async Task<Group?> GetGroupByIdWithOwner(int groupId)
         {
-            var existingMembership = await _context.GroupDetails
-                .FirstOrDefaultAsync(g => g.UserId == userId && g.GroupId == groupId);
-            if (existingMembership == null)
-            {
-                return false; // User is not a member of the group
-            }
-            else
-            {
-                return await _userGroupRepositrory.LeaveGroup(userId, groupId);
-            }
-        }
-        public async Task<Post> CreatePost(Post post, IEnumerable<(string path, string mediaType)> media)
-        {
-            var postRepo = new GroupPostRepository(_context);
-            await postRepo.CreatePost(post, media);
-            return post;
-        }
-        public async Task DeletePost(int postId, int? modId = null)
-        {
-            var postRepo = new PostRepository(_context);
-            await _postRepository.DeletePost(postId, modId);         
-        }
-        public async Task<bool> ReportPost(int postId, int userId, string reason)
-        {
-            var post = await _context.Posts
+            return await _context.Groups
+                .Include(g => g.Owner)
                 .AsNoTracking()
-                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
-            if (post == null)
-            {
-                throw new ArgumentException("Post not found or is not a group post.");
-            }
-            else
-            {
-                await _groupPostRepository.ReportPost(postId, userId, reason);
-                return true;
-            }
+                .FirstOrDefaultAsync(g => g.Id == groupId);
         }
+
+        public async Task<List<GroupDetail>> GetAllMemberInGroup(int groupId)
+        {
+            return await _context.GroupDetails
+                .Include(gd => gd.User)
+                .Where(gd => gd.GroupId == groupId && gd.MemberStatus == MemberStatus.Active)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<GroupDetail>> GetAllGroupOfUser(int userId)
+        {
+            return await _context.GroupDetails
+                .Include(gd => gd.Group)
+                .Where(gd => gd.UserId == userId && gd.MemberStatus == MemberStatus.Active)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<GroupDetail>> GetModerators(int groupId){
+            return await _context.GroupDetails
+                .Include(gd => gd.User)
+                .Where(gd => gd.GroupId == groupId &&
+                             (gd.Role == GroupRole.Moderator || gd.Role == GroupRole.Admin) &&
+                             gd.MemberStatus == MemberStatus.Active)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<HashSet<int>> GetModeratorGroupIds(int userId)
+        {
+            return await _context.GroupDetails
+                .Where(gd => gd.UserId == userId &&
+                             (gd.Role == GroupRole.Moderator || gd.Role == GroupRole.Admin) &&
+                             gd.MemberStatus == MemberStatus.Active)
+                .Select(gd => gd.GroupId)
+                .ToHashSetAsync();
+        }
+
+        public async Task<List<GroupDetail>> GetUserGroupDetails(int userId)
+        {
+            return await _context.GroupDetails
+                .Include(gd => gd.Group)
+                .Where(gd => gd.UserId == userId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        // ====================== ROLE & PERMISSION ======================
+
         public async Task<GroupRole> getRole(int userId, int groupId)
         {
             var member = await _context.GroupDetails
                 .AsNoTracking()
-                .FirstOrDefaultAsync(g => g.GroupId == groupId && g.UserId == userId);
+                .FirstOrDefaultAsync(g => g.UserId == userId && g.GroupId == groupId);
+
             if (member == null)
-            {
-                throw new ArgumentException("User is not a member of the group.");
-            }
+                throw new Exception("User is not in this group");
+
             return member.Role;
+        }
+
+        public async Task<bool> IsModeratorOrAdmin(int userId, int groupId)
+        {
+            var role = await getRole(userId, groupId);
+            return role == GroupRole.Admin || role == GroupRole.Moderator;
+        }
+
+        public async Task<bool> IsAdmin(int userId, int groupId)
+        {
+            var role = await getRole(userId, groupId);
+            return role == GroupRole.Admin;
+        }
+
+        public async Task<bool> IsActiveMember(int userId, int groupId)
+        {
+            return await _context.GroupDetails.AnyAsync(g =>
+                g.UserId == userId &&
+                g.GroupId == groupId &&
+                g.MemberStatus == MemberStatus.Active);
+        }
+
+        // ====================== POSTS ======================
+
+        public async Task<List<Post>> GetAllPost(int groupId)
+        {
+            return await _context.Posts
+                .Where(p => p.GroupId == groupId)
+                .OrderByDescending(p => p.CreatedAt)
+                .Include(p => p.User)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<Post?> GetPostById(int postId)
+        {
+            return await _context.Posts
+                .Include(p => p.User)
+                .Include(p => p.MediaItems)
+                .FirstOrDefaultAsync(p => p.Id == postId);
+        }
+
+        // ✅ NEW: CREATE PENDING POST (REPLACES OLD CreatePost)
+        public async Task CreatePendingPostAsync(GroupPostStatus post)
+        {
+            post.UploaddAt = DateTime.UtcNow;
+            post.Status = StateOfPost.Pending;
+            post.StatusUpdate = DateTime.UtcNow;
+
+            _context.GroupPostStatuses.Add(post);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeletePost(int postId, int? moderatorId = null)
+        {
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
+
+            if (post == null)
+                return;
+
+            post.Content = "[This post has been removed by moderator]";
+            await _context.SaveChangesAsync();
+
+            if (moderatorId.HasValue)
+            {
+                var status = await _context.GroupPostStatuses
+                    .FirstOrDefaultAsync(s => s.PostId == postId);
+
+                if (status != null)
+                {
+                    status.Status = StateOfPost.Removed;
+                    status.StatusUpdate = DateTime.UtcNow;
+                    status.ModId = moderatorId;
+                    await _context.SaveChangesAsync();
+                }
+            }
+        }
+
+        // ====================== MEMBERSHIP ======================
+
+        public async Task<bool> JoinGroup(int userId, int groupId)
+        {
+            var existing = await _context.GroupDetails
+                .FirstOrDefaultAsync(g => g.UserId == userId && g.GroupId == groupId);
+
+            if (existing != null)
+                return false;
+
+            _context.GroupDetails.Add(new GroupDetail
+            {
+                UserId = userId,
+                GroupId = groupId,
+                Role = GroupRole.Member,
+                MemberStatus = MemberStatus.Active,
+                JoinedAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> LeaveGroup(int userId, int groupId)
+        {
+            var member = await _context.GroupDetails
+                .FirstOrDefaultAsync(g => g.UserId == userId && g.GroupId == groupId);
+
+            if (member == null)
+                return false;
+
+            member.MemberStatus = MemberStatus.Leaved;
+            member.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        // ====================== REPORT ======================
+
+        public async Task<bool> ReportPost(int userId, int postId, string reason)
+        {
+            var post = await _context.Posts
+                .FirstOrDefaultAsync(p => p.Id == postId && p.GroupId.HasValue);
+
+            if (post == null)
+                return false;
+
+            _context.GroupReports.Add(new GroupReport
+            {
+                GroupPostId = postId,
+                ReporterId = userId,
+                Reason = reason,
+                CreatedAt = DateTime.UtcNow
+            });
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

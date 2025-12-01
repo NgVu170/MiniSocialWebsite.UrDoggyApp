@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using UrDoggy.Core.Models;
@@ -20,6 +21,7 @@ namespace UrDoggy.Website.Controllers
         private readonly IFriendService _friendService;
         private const string HiddenPostsCookieName = "HiddenPosts";
         private const string ViewedPostsCookieName = "ViewedPosts";
+
 
         public NewsfeedController(
             IPostService postService,
@@ -120,6 +122,7 @@ namespace UrDoggy.Website.Controllers
                         }
                     }
                 }
+                _postService.SaveAsync();
             }
             catch (Exception ex)
             {

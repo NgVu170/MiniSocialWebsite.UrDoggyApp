@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UrDoggy.Core.Models;
+using UrDoggy.Data;
 using UrDoggy.Data.Repositories;
 using UrDoggy.Services.Interfaces;
 
@@ -177,6 +178,10 @@ namespace UrDoggy.Services.Service
                 Console.WriteLine($"Error in GetRecommendedPosts: {ex.Message}");
                 return new List<Post>();
             }
+        }
+        public async Task SaveAsync()
+        {
+            await _postRepository.SaveChangesAsync();
         }
     }
 }
