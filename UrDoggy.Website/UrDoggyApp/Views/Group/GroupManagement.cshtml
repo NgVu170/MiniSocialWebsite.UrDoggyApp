@@ -1,0 +1,189 @@
+﻿@using UrDoggy.Core.Models
+@using UrDoggy.Core.Models.GroupModels
+@model Group
+
+@{
+    var pending = ViewBag.PendingPostList as List<GroupPostStatus> ?? new List<GroupPostStatus>();
+    var members = ViewBag.MemberList as List<GroupDetail> ?? new List<GroupDetail>();
+    var reports = ViewBag.ReportList as List<GroupReport> ?? new List<GroupReport>();
+    var role = ViewBag.Role as GroupRole?;
+    ViewData["Title"] = $"Quản trị nhóm - {Model.GroupName}";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <img src="@(Model.Avatar ?? "/images/default-avatar.png")" class="rounded-circle me-2" style="width:48px;height:48px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+            <div>
+                <h3 class="mb-0">@Model.GroupName</h3>
+                <small class="text-muted">@Model.Description</small>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="~/Group/PostsInGroup?groupId=@Model.Id">← Xem bài</a>
+            <a class="btn btn-primary" href="~/Group/EditGroupInformation?groupId=@Model.Id">Sửa thông tin nhóm</a>
+            @using (Html.BeginForm("ReleaseGroup", "Group", FormMethod.Post, new { onsubmit = "return confirm('Xóa (soft delete) nhóm này?');" }))
+            {
+                <input type="hidden" name="groupId" value="@Model.Id" />
+                <button class="btn btn-danger" type="submit">Xóa nhóm</button>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Bài chờ duyệt (@pending.Count)</strong>
+                </div>
+                <div class="card-body">
+                    @if (!pending.Any())
+                    {
+                        <div class="text-muted">Không có bài chờ duyệt.</div>
+                    }
+                    else
+                    {
+                        <div class="vstack gap-3">
+                            @foreach (var s in pending)
+                            {
+                                <div class="border rounded p-3">
+                                    <div class="d-flex justify-content-between">
+                                        <div>
+                                            <strong>Author #@s.AuthorId</strong>
+                                            <small class="text-muted ms-2">@s.UploaddAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</small>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            @using (Html.BeginForm("ApprovePost", "Group", FormMethod.Post))
+                                            {
+                                                <input type="hidden" name="postId" value="@s.Id" />
+                                                <input type="hidden" name="groupId" value="@Model.Id" />
+                                                <button class="btn btn-success btn-sm" type="submit">Duyệt</button>
+                                            }
+                                            @using (Html.BeginForm("RejectPost", "Group", FormMethod.Post))
+                                            {
+                                                <input type="hidden" name="postId" value="@s.Id" />
+                                                <input type="hidden" name="groupId" value="@Model.Id" />
+                                                <button class="btn btn-outline-danger btn-sm" type="submit">Từ chối</button>
+                                            }
+                                        </div>
+                                    </div>
+                                    <div class="mt-2">@s.Content</div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Thành viên (@members.Count)</strong>
+                </div>
+                <div class="card-body">
+                    @if (!members.Any())
+                    {
+                        <div class="text-muted">Chưa có thành viên.</div>
+                    }
+                    else
+                    {
+                        <table class="table table-sm align-middle">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th class="text-end">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var m in members)
+                                {
+                                    <tr>
+                                        <td>#@m.UserId</td>
+                                        <td>@m.Role</td>
+                                        <td>@m.MemberStatus</td>
+                                        <td class="text-end">
+                                            @if (m.Role == GroupRole.Member)
+                                            {
+                                                @using (Html.BeginForm("PromoteToModerator", "Group", FormMethod.Post, new { @class = "d-inline" }))
+                                                {
+                                                    <input type="hidden" name="targetUserId" value="@m.UserId" />
+                                                    <input type="hidden" name="groupId" value="@Model.Id" />
+                                                    <button class="btn btn-outline-primary btn-sm" type="submit">Thăng Mod</button>
+                                                }
+                                            }
+                                            else if (m.Role == GroupRole.Moderator)
+                                            {
+                                                @using (Html.BeginForm("DemoteToMember", "Group", FormMethod.Post, new { @class = "d-inline" }))
+                                                {
+                                                    <input type="hidden" name="targetUserId" value="@m.UserId" />
+                                                    <input type="hidden" name="groupId" value="@Model.Id" />
+                                                    <button class="btn btn-outline-secondary btn-sm" type="submit">Giáng Member</button>
+                                                }
+                                            }
+
+                                            @using (Html.BeginForm("BanMember", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Cấm thành viên này?');" }))
+                                            {
+                                                <input type="hidden" name="targetUserId" value="@m.UserId" />
+                                                <input type="hidden" name="groupId" value="@Model.Id" />
+                                                <button class="btn btn-danger btn-sm" type="submit">Cấm</button>
+                                            }
+                                            @using (Html.BeginForm("KickMember", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa thành viên khỏi nhóm?');" }))
+                                            {
+                                                <input type="hidden" name="targetUserId" value="@m.UserId" />
+                                                <input type="hidden" name="groupId" value="@Model.Id" />
+                                                <button class="btn btn-outline-danger btn-sm" type="submit">Kick</button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <strong>Báo cáo vi phạm (@reports.Count)</strong>
+                </div>
+                <div class="card-body">
+                    @if (!reports.Any())
+                    {
+                        <div class="text-muted">Chưa có báo cáo.</div>
+                    }
+                    else
+                    {
+                        <table class="table table-striped table-sm">
+                            <thead>
+                                <tr>
+                                    <th>ReportId</th>
+                                    <th>PostId</th>
+                                    <th>Reporter</th>
+                                    <th>Reason</th>
+                                    <th>Time</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var r in reports)
+                                {
+                                    <tr>
+                                        <td>@r.Id</td>
+                                        <td>@r.GroupPostId</td>
+                                        <td>@r.ReporterId</td>
+                                        <td>@r.Reason</td>
+                                        <td>@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 ﻿@model List<UrDoggy.Core.Models.Post>
+@using UrDoggy.Core.Models
 @inject UrDoggy.Services.Interfaces.IPostService PostService
 @inject UrDoggy.Services.Interfaces.IUserService UserService
 
@@ -11,6 +12,7 @@
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
+	List<User> TaggedUsers = new List<User>();
 }
 <style>
     /* Newsfeed Style Update */
@@ -131,6 +133,29 @@
         background: linear-gradient(45deg, #25D366, #0984e3);
         border-radius: 4px;
     }
+
+    /*Style Recommend User List*/
+    #tag-popup {
+        position: absolute;
+        background: white;
+        border: 1px solid #ddd;
+        padding: 8px;
+        border-radius: 8px;
+        width: 250px;
+        max-height: 200px;
+        overflow-y: auto;
+        display: none;
+        z-index: 1000;
+    }
+
+    .tag-item {
+        padding: 6px 10px;
+        cursor: pointer;
+    }
+
+        .tag-item:hover {
+            background: #f0f0f0;
+        }
 </style>
 
 <div class="post-create mb-3">
@@ -138,14 +163,40 @@
         @Html.AntiForgeryToken()
         <div class="mb-2 d-flex">
             <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:64px;height:64px;" />
-            <textarea name="content" class="form-control ms-2" rows="3"
-            placeholder="What's on your mind?" required></textarea>
+
+            <div class="flex-grow-1 position-relative ms-2">
+                <textarea name="content"
+                          id="postContent"
+                          class="form-control"
+                          rows="3"
+                          placeholder="What's on your mind?"
+                          required></textarea>
+
+                <div id="tag-popup"
+                     style="
+                    position: absolute;
+                    color: red;
+                    background: lightgrey;
+                    border: 1px solid #ccc;
+                    border-radius: 6px;
+                    width: 250px;
+                    z-index: 9999;
+                 ">
+                </div>
+
+                <div id="hashtagSuggestions"
+                     class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
+                     style="z-index: 1000; max-height: 300px; overflow-y: auto; top: 100%;">
+                </div>
+            </div>
         </div>
         <div class="mb-2">
             <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control" />
         </div>
         <button type="submit" class="btn btn-success">Post</button>
     </form>
+
+    
 </div>
 
 @foreach (var post in Model)
@@ -209,20 +260,6 @@
 
         <p>@post.Content</p>
 
-        @* @if (!string.IsNullOrEmpty(post.MediaPath)) *@
-        @* { *@
-        @*     if (post.MediaType == "image") *@
-        @*     { *@
-        @*         <img src="@post.MediaPath" class="img-fluid rounded mb-3" alt="Post image" /> *@
-        @*     } *@
-        @*     else *@
-        @*     { *@
-        @*         <video controls class="w-100 rounded mb-3"> *@
-        @*             <source src="@post.MediaPath" type="video/mp4" /> *@
-        @*         </video> *@
-        @*     } *@
-        @* } *@
-
         @if (post.MediaItems != null && post.MediaItems.Any())
         {
             @foreach (var item in post.MediaItems)
@@ -280,13 +317,24 @@
             <input type="hidden" name="postId" value="@post.Id" />
             <div class="d-flex">
                 <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:40px;height:40px;" />
-                <textarea name="content" class="form-control ms-2" rows="2"
+                <textarea name="content" class="form-control ms-2" rows="2" id="content-box"
                 placeholder="Write a comment..." required></textarea>
+                <div id="tag-popup"
+                     style="
+                position: absolute;
+                display: none;
+                background: lightgrey;
+                border: 1px solid #ccc;
+                border-radius: 6px;
+                width: 250px;
+                z-index: 9999;
+                 ">
+                </div>
             </div>
             <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
         </form>
 
-
+        xem them comment
         @foreach (var comment in post.Comments)
         {
             bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
@@ -348,6 +396,9 @@
 }
 
 @section Scripts {
+    <script src="~/js/hashtag-suggestion.js"></script>
+    <script src="~/js/post-tagging.js"></script>
+
     <script>
         function copyShareLink(postId) {
             const url = `${window.location.origin}/Newsfeed/Details/${postId}`;

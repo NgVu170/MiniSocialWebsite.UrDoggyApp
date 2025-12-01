@@ -8,6 +8,10 @@ using UrDoggy.Services.Interfaces;
 using UrDoggy.Services.Service;
 using UrDoggy.Website.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using UrDoggy.Data.Repositories.Group_Repository; // GroupRepository, GroupPostRepository, UserGroupRepositrory
+using UrDoggy.Services.Interfaces.GroupServices;  // IGroupUserService, IAdminGroupService, IModeratorService
+using UrDoggy.Services.Service.GroupServices; // GroupUserService, AdminGroupService, ModeratorService
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,6 +39,17 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
 .AddRoleManager<RoleManager<IdentityRole<int>>>();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+
 //Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>
@@ -59,6 +74,11 @@ builder.Services.AddScoped<MessageRepositpry>();
 builder.Services.AddScoped<MediaRepository>();
 builder.Services.AddScoped<NotificationRepository>();
 builder.Services.AddScoped<ReportRepository>();
+
+builder.Services.AddScoped<GroupRepository>();
+builder.Services.AddScoped<GroupPostRepository>();
+builder.Services.AddScoped<UserGroupRepositrory>();
+
 //Interface
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
@@ -69,6 +89,10 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IFriendService, FriendService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IMediaService, MediaService>();
+
+builder.Services.AddScoped<IGroupUserService, GroupUserService>();
+builder.Services.AddScoped<IAdminGroupService, AdminGroupService>();
+builder.Services.AddScoped<IModeratorService, ModeratorService>();
 
 
 var app = builder.Build();
@@ -114,5 +138,7 @@ app.MapControllerRoute(
 
 app.MapHub<ChatHub>("/chathub");
 app.MapHub<NotificationHub>("/notificationhub");
+app.MapControllers();
+app.UseCors("AllowAll");
 
 app.Run();

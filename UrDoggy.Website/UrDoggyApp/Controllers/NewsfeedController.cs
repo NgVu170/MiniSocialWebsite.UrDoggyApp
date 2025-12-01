@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using UrDoggy.Core.Models;
+using UrDoggy.Data;
 using UrDoggy.Services.Interfaces;
 using UrDoggy.Services.Service;
 
@@ -19,6 +21,7 @@ namespace UrDoggy.Website.Controllers
         private readonly IFriendService _friendService;
         private const string HiddenPostsCookieName = "HiddenPosts";
         private const string ViewedPostsCookieName = "ViewedPosts";
+
 
         public NewsfeedController(
             IPostService postService,
@@ -41,64 +44,16 @@ namespace UrDoggy.Website.Controllers
         [Route("/Newsfeed/Index")]
         public async Task<IActionResult> Index()
         {
-            var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null || userId == 0)
-                return RedirectToAction("Login", "Auth");
+            ViewBag.IsPersonalized = false;
+            return await LoadFeed();
+        }
 
-            string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
-            List<int> hiddenIds = cookieValue
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(text => int.TryParse(text, out var v) ? v : -1)
-                .Where(id => id >= 0)
-                .ToList();
-
-            try
-            {
-                // Lấy danh sách posts đã xem từ cookie
-                string viewedCookieValue = Request.Cookies[ViewedPostsCookieName] ?? "";
-                HashSet<int> viewedPostIds = viewedCookieValue
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(text => int.TryParse(text, out var v) ? v : -1)
-                    .Where(id => id >= 0)
-                    .ToHashSet();
-
-                // Lấy bài viết recommended và loại bỏ những post đã xem
-                var allPosts = await _postService.GetRecommendedPosts(userId.Value, viewedPostIds);
-
-                var visiblePosts = allPosts
-                    .Where(post => !hiddenIds.Contains(post.Id))
-                    .ToList();
-
-                // THÊM: Cập nhật danh sách posts đã xem
-                UpdateViewedPostsCookie(viewedPostIds, visiblePosts);
-
-                // Lấy comments cho mỗi post
-                foreach (var post in visiblePosts)
-                {
-                    post.Comments = await _commentService.GetComments(post.Id);
-                    foreach (var comment in post.Comments)
-                    {
-                        comment.User = await _userService.GetById(comment.UserId);
-                    }
-                }
-
-                var currentUser = userId.HasValue ? await _userService.GetById(userId.Value) : null;
-                int unreadCount = await _notificationService.GetUnreadCount(userId.Value);
-                var friends = userId.HasValue ? await _friendService.GetFriends(userId.Value) : new List<User>();
-
-                ViewBag.CurrentUser = currentUser;
-                ViewBag.UnreadCount = unreadCount;
-                ViewBag.Friends = friends;
-                ViewBag.HiddenPostIds = hiddenIds;
-
-                return View("NewsfeedPage", visiblePosts);
-            }
-            catch (Exception ex)
-            {
-                // Log lỗi và trả về view với danh sách rỗng
-                TempData["Error"] = "Có lỗi xảy ra khi tải bài viết: " + ex.Message;
-                return View("NewsfeedPage", new List<Post>());
-            }
+        [HttpGet]
+        [Route("/PersonalizedFeed")]
+        public async Task<IActionResult> PersonalizedFeed()
+        {
+            ViewBag.IsPersonalized = true;
+            return await LoadFeed();
         }
 
         [HttpGet]
@@ -124,10 +79,11 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content)
+        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? taggedUsers = null)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null)
+            var currentUser = await _userService.GetById(userId.Value);
+        if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
             try
@@ -147,8 +103,26 @@ namespace UrDoggy.Website.Controllers
                     }
                 }
 
-                await _postService.CreatePost(userId.Value, content, mediaItems);
+                var post = await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
+                if (taggedUsers != null )
+                {
+                    List<int> tagIds = new List<int>();
+                    if (!string.IsNullOrEmpty(taggedUsers))
+                    {
+                        tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(taggedUsers);
+                    }
+                    foreach(var tagId in tagIds)
+                    {
+                        var recevierUser = await _userService.GetById(tagId);
+                        if (recevierUser != null && userId != null)
+                        {
+                            await _notificationService.EnsureTagNotif(userId.Value, recevierUser.Id, currentUser.DisplayName, post.Id);
+                            post.TaggedUsers.Add(recevierUser);
+                        }
+                    }
+                }
+                _postService.SaveAsync();
             }
             catch (Exception ex)
             {
@@ -206,10 +180,13 @@ namespace UrDoggy.Website.Controllers
                     return RedirectToAction("Index");
                 }
 
+                // Cập nhật nội dung
+                existingPost.Content = content;
+
                 // Xử lý media files nếu có
-                var mediaItems = new List<(string path, string mediaType)>();
                 if (mediaFiles != null && mediaFiles.Count > 0)
                 {
+                    var mediaItems = new List<(string path, string mediaType)>();
                     foreach (var mediaFile in mediaFiles)
                     {
                         if (mediaFile.Length > 0 && await _mediaService.IsValidMediaFile(mediaFile))
@@ -219,23 +196,18 @@ namespace UrDoggy.Website.Controllers
                             mediaItems.Add((filePath, mediaType));
                         }
                     }
+                    existingPost.MediaItems ??= new List<Media>();
+                    foreach (var item in mediaItems)
+                    {
+                        existingPost.MediaItems.Add(new Media
+                        {
+                            Path = item.path,
+                            MediaType = item.mediaType,
+                        });
+                    }
                 }
 
-                // Tạo post object mới với dữ liệu updated
-                var updatedPost = new Post
-                {
-                    Id = postId,
-                    Content = content,
-                    UserId = userId.Value,
-                    MediaItems = mediaItems.Select(m => new Media
-                    {
-                        Path = m.path,
-                        MediaType = m.mediaType
-                    }).ToList()
-                };
-
-                // Gọi service để update
-                await _postService.EditPost(updatedPost);
+                await _postService.EditPost(existingPost);
                 TempData["Success"] = "Đã sửa bài viết thành công";
             }
             catch (Exception ex)
@@ -489,6 +461,71 @@ namespace UrDoggy.Website.Controllers
                     Secure = true,
                     SameSite = SameSiteMode.Strict
                 });
+        }
+
+        private async Task<IActionResult> LoadFeed()
+        {
+            var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null || userId == 0)
+                return RedirectToAction("Login", "Auth");
+
+            string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
+            List<int> hiddenIds = cookieValue
+                .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                .Select(text => int.TryParse(text, out var v) ? v : -1)
+                .Where(id => id >= 0)
+                .ToList();
+
+            try
+            {
+                // Lấy danh sách posts đã xem từ cookie
+                string viewedCookieValue = Request.Cookies[ViewedPostsCookieName] ?? "";
+                HashSet<int> viewedPostIds = viewedCookieValue
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(text => int.TryParse(text, out var v) ? v : -1)
+                    .Where(id => id >= 0)
+                    .ToHashSet();
+
+                // Lấy bài viết recommended và loại bỏ những post đã xem
+                bool isPersonalized = ViewBag.IsPersonalized is true;
+                List<Post> allPosts = (isPersonalized) ?
+                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, true) :
+                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, false);
+
+                var visiblePosts = allPosts
+                    .Where(post => !hiddenIds.Contains(post.Id))
+                    .ToList();
+
+                // Cập nhật danh sách posts đã xem
+                UpdateViewedPostsCookie(viewedPostIds, visiblePosts);
+
+                // Lấy comments cho mỗi post
+                foreach (var post in visiblePosts)
+                {
+                    post.Comments = await _commentService.GetComments(post.Id);
+                    foreach (var comment in post.Comments)
+                    {
+                        comment.User = await _userService.GetById(comment.UserId);
+                    }
+                }
+
+                var currentUser = userId.HasValue ? await _userService.GetById(userId.Value) : null;
+                int unreadCount = await _notificationService.GetUnreadCount(userId.Value);
+                var friends = userId.HasValue ? await _friendService.GetFriends(userId.Value) : new List<User>();
+
+                ViewBag.CurrentUser = currentUser;
+                ViewBag.UnreadCount = unreadCount;
+                ViewBag.Friends = friends;
+                ViewBag.HiddenPostIds = hiddenIds;
+
+                return View("NewsfeedPage", visiblePosts);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi và trả về view với danh sách rỗng
+                TempData["Error"] = "Có lỗi xảy ra khi tải bài viết: " + ex.Message;
+                return View("NewsfeedPage", new List<Post>());
+            }
         }
     }
 }

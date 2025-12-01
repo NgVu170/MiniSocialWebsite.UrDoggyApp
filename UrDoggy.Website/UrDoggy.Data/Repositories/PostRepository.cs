@@ -16,11 +16,13 @@ namespace UrDoggy.Data.Repositories
         }
 
         // READ: feed
-        public async Task<List<Post>> GetAllPost()
+        public virtual async Task<List<Post>> GetAllPost(int? groupId)
         {
             return await _context.Posts
+                .Include(p => p.MediaItems)
+                .Include(p => p.PostTags)
+                    .ThenInclude(pt => pt.Tag)
                 .OrderByDescending(p => p.CreatedAt)
-                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -36,7 +38,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // CREATE: create post + optional media list
-        public async Task CreatePost(Post post, IEnumerable<(string path, string mediaType)> media)
+        public virtual async Task CreatePost(Post post, IEnumerable<(string path, string mediaType)> media)
         {
             if (post.CreatedAt == default) post.CreatedAt = DateTime.UtcNow;
 
@@ -130,7 +132,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // DELETE: post (Media/Comments/etc cascade by FK)
-        public async Task DeletePost(int postId)
+        public virtual async Task DeletePost(int postId, int? modId)
         {
             var post = await _context.Posts.FindAsync(postId);
             if (post == null) return;
@@ -211,7 +213,7 @@ namespace UrDoggy.Data.Repositories
         }
 
         // ===== REPORT =====
-        public async Task ReportPost(int postId, int reporterId, string reason)
+        public virtual async Task ReportPost(int postId, int reporterId, string reason)
         {
             _context.Reports.Add(new Report
             {
@@ -286,6 +288,150 @@ namespace UrDoggy.Data.Repositories
                 result += 1; // Không có quan hệ
             }
             return result += (Post.UpVotes - Post.DownVotes) * 0.1f; // Điểm từ lượt vote
+        }
+
+        // Phương thức tính điểm dựa trên tags và sở thích người dùng
+        public async Task<float> CalculatePersonalizedScore(int currentUserId, Post post)
+        {
+            float score = await RankCalculate(currentUserId, post);
+
+            if (score == float.MinValue) return float.MinValue;
+
+            // Điểm từ tags phổ biến của user
+            float tagScore = await CalculateTagSimilarityScore(currentUserId, post);
+            score += tagScore;
+
+            return score;
+        }
+
+        // Tính điểm tương đồng dựa trên tags
+        private async Task<float> CalculateTagSimilarityScore(int currentUserId, Post post)
+        {
+            // Lấy tags phổ biến nhất của user (dựa trên posts đã tương tác)
+            var userFavoriteTags = await GetUserFavoriteTags(currentUserId);
+
+            // Lấy tags của post hiện tại
+            var postTags = await _context.PostTags
+                .Where(pt => pt.PostId == post.Id)
+                .Select(pt => pt.Tag.Name)
+                .ToListAsync();
+
+            if (!userFavoriteTags.Any() || !postTags.Any())
+                return 0;
+
+            // Tính điểm dựa trên số tags trùng khớp
+            int matchingTags = postTags.Count(tag => userFavoriteTags.Contains(tag));
+            return matchingTags * 3.0f; // Mỗi tag trùng khớp +3 điểm
+        }
+
+        // Lấy tags phổ biến của user
+        private async Task<HashSet<string>> GetUserFavoriteTags(int userId)
+        {
+            // Lấy tất cả posts mà user đã upvote
+            var upvotedPosts = await _context.PostVotes
+                .Where(v => v.UserId == userId && v.IsUpvote)
+                .Select(v => v.PostId)
+                .ToListAsync();
+
+            // Lấy tags từ các posts đã upvote
+            var favoriteTags = await _context.PostTags
+                .Where(pt => upvotedPosts.Contains(pt.PostId))
+                .GroupBy(pt => pt.Tag.Name)
+                .OrderByDescending(g => g.Count())
+                .Take(5) // Lấy 5 tags phổ biến nhất
+                .Select(g => g.Key)
+                .ToListAsync();
+
+            return favoriteTags.ToHashSet();
+        }
+
+        // Phương thức để extract tags từ content
+        public List<string> ExtractTagsFromContent(string content)
+        {
+            if (string.IsNullOrEmpty(content))
+                return new List<string>();
+
+            // Tìm tất cả hashtags trong content
+            var hashtagPattern = @"#\w+";
+            var matches = System.Text.RegularExpressions.Regex.Matches(content, hashtagPattern);
+
+            return matches
+                .Select(m => m.Value.TrimStart('#').ToLower())
+                .Where(tag => !string.IsNullOrWhiteSpace(tag))
+                .Distinct()
+                .ToList();
+        }
+
+        public async Task<List<string>> GetPostTags(int postId)
+        {
+            return await _context.PostTags
+                .Where(pt => pt.PostId == postId)
+                .Select(pt => pt.Tag.Name)
+                .ToListAsync();
+        }
+
+        public async Task<Tag> GetOrCreateTagAsync(string tagName)
+        {
+            tagName = tagName.Trim().TrimStart('#').ToLower();
+
+            if (string.IsNullOrWhiteSpace(tagName))
+                return null;
+
+            var tag = await _context.Tags
+                .FirstOrDefaultAsync(t => t.Name == tagName);
+
+            if (tag == null)
+            {
+                tag = new Tag { Name = tagName };
+                _context.Tags.Add(tag);
+                await _context.SaveChangesAsync();
+            }
+
+            return tag;
+        }
+
+        public async Task AddTagsToPostAsync(int postId, IEnumerable<string> tagNames)
+        {
+            if (!tagNames.Any()) return;
+
+            var uniqueTags = tagNames.Select(t => t.ToLower().Trim()).Distinct();
+
+            foreach (var tagName in uniqueTags)
+            {
+                var tag = await GetOrCreateTagAsync(tagName);
+
+                var exists = await _context.PostTags
+                    .AnyAsync(pt => pt.PostId == postId && pt.TagId == tag.Id);
+
+                if (!exists)
+                {
+                    _context.PostTags.Add(new PostTag
+                    {
+                        PostId = postId,
+                        TagId = tag.Id
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveAllTagsFromPostAsync(int postId)
+        {
+            var postTags = await _context.PostTags
+                .Where(pt => pt.PostId == postId)
+                .ToListAsync();
+
+            if (postTags.Any())
+            {
+                _context.PostTags.RemoveRange(postTags);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
