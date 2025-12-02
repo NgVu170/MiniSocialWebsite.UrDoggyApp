@@ -34,4 +34,8 @@
     <None Include="wwwroot\images\default-avatar.jpg" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
 </Project>
