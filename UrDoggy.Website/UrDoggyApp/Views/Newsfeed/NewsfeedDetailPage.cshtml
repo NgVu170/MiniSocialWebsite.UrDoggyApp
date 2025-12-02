@@ -126,7 +126,16 @@
     }
 
     ::-webkit-scrollbar {
-        display: none;
+        width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background: rgba(0, 0, 0, 0.05);
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: linear-gradient(45deg, #25D366, #0984e3);
+        border-radius: 4px;
     }
 </style>
 
@@ -212,11 +221,11 @@
 		else if (item.MediaType == "video")
 		{
 			<video controls class="w-100 rounded mb-3">
-				<source src="@item=Path" type="video/mp4" />
+				<source src="@item.Path" type="video/mp4" />
 				Your browser does not support video.
 			</video>
 		}
-	})
+	}
 
     <div class="d-flex align-items-center gap-3 mb-4">
         <form asp-controller="Newsfeed"
@@ -379,4 +388,5 @@
                     .style.display = "none";
         }
     </script>
+
 }

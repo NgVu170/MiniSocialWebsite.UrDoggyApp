@@ -1,45 +1,47 @@
-﻿let tagList = [];
-let lastQuery = null; // null để lần đầu vẫn chạy
+﻿// wwwroot/js/post-tagging.js
+let tagList = [];
+let lastQuery = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-    const input = document.getElementById("content-box");
+    const input = document.getElementById("postContent");
     const popup = document.getElementById("tag-popup");
     const hiddenField = document.getElementById("tagged-users");
 
-    console.log("post-tagging.js loaded", { inputExists: !!input, popupExists: !!popup, hiddenExists: !!hiddenField });
+    console.log("post-tagging init", {
+        inputExists: !!input,
+        popupExists: !!popup,
+        hiddenExists: !!hiddenField
+    });
 
-    if (!input || !popup) return;
+    if (!input || !popup) {
+        console.error("post-tagging STOPPED: Required elements missing.");
+        return;
+    }
 
-    input.addEventListener("keyup", async (e) => {
-        // debug nhanh
-        // console.log("key", e.key, "value:", input.value, "cursor:", input.selectionStart);
-
+    input.addEventListener("input", async () => {
         const text = input.value;
         const cursor = input.selectionStart;
 
-        // tìm vị trí @ gần nhất trước con trỏ
         const atIndex = text.lastIndexOf("@", cursor - 1);
         if (atIndex === -1) {
             popup.style.display = "none";
-            lastQuery = null; // reset
+            lastQuery = null;
             return;
         }
 
-        // Lấy từ sau dấu @ tới con trỏ
         const query = text.substring(atIndex + 1, cursor).trim();
 
-        // Nếu query không thay đổi so với lần trước thì không lặp lại request
-        if (lastQuery !== null && query === lastQuery) return;
+        if (query === lastQuery) return;
         lastQuery = query;
 
-        // nếu muốn show gợi ý ngay khi vừa gõ @ (query == ""), gọi API để lấy recommended
-        const encoded = encodeURIComponent(query);
         let res;
         try {
-            res = await fetch(`/Recommend?keyword=${encoded}`, { cache: "no-store" });
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            res = await fetch(`/Recommend?keyword=${encodeURIComponent(query)}`, {
+                cache: "no-store"
+            });
+            if (!res.ok) throw new Error(res.status);
         } catch (err) {
-            console.error("Failed to fetch Recommend:", err);
+            console.error("Recommend API error:", err);
             popup.style.display = "none";
             return;
         }
@@ -47,24 +49,21 @@ document.addEventListener("DOMContentLoaded", () => {
         let users = [];
         try {
             users = await res.json();
-        } catch (err) {
-            console.error("Invalid JSON from Recommend:", err);
+        } catch {
             users = [];
         }
 
         popup.innerHTML = "";
 
-        if (!users || users.length === 0) {
-            // nếu muốn, show message "No users"
+        if (users.length === 0) {
             const empty = document.createElement("div");
-            empty.classList.add("tag-item");
-            empty.textContent = "No results";
-            empty.style.opacity = "0.6";
+            empty.className = "tag-item text-muted";
+            empty.textContent = "No users found";
             popup.appendChild(empty);
         } else {
             users.forEach(u => {
                 const item = document.createElement("div");
-                item.classList.add("tag-item");
+                item.className = "tag-item";
                 item.textContent = u.userName;
 
                 item.onclick = () => {
@@ -72,14 +71,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
                     const newText =
                         text.substring(0, atIndex + 1) +
-                        u.userName +
-                        " " +
+                        u.userName + " " +
                         text.substring(cursor);
 
                     input.value = newText;
 
-                    // đặt con trỏ sau tên vừa chèn
-                    const newPos = (atIndex + 1) + u.userName.length + 1;
+                    const newPos = atIndex + u.userName.length + 2;
                     input.focus();
                     input.setSelectionRange(newPos, newPos);
 
@@ -90,26 +87,19 @@ document.addEventListener("DOMContentLoaded", () => {
             });
         }
 
-        // Định vị popup: tính toán lại dựa trên rect và scroll
         const rect = input.getBoundingClientRect();
         popup.style.left = rect.left + "px";
-        popup.style.top = (rect.bottom + window.scrollY) + "px";
-
-        // đảm bảo hiển thị trên cùng
-        popup.style.display = "block";
+        popup.style.top = rect.bottom + window.scrollY + "px";
         popup.style.zIndex = 99999;
+        popup.style.display = "block";
     });
 
-    // submit: nếu input.form tồn tại
-    if (input.form) {
+    if (input.form && hiddenField) {
         input.form.addEventListener("submit", () => {
-            hiddenField.value = JSON.stringify(tagList || []);
+            hiddenField.value = JSON.stringify(tagList);
         });
-    } else {
-        console.warn("Textarea has no associated form - submit tagList won't be set automatically.");
     }
 
-    // click ngoài -> ẩn popup
     document.addEventListener("click", (e) => {
         if (!popup.contains(e.target) && e.target !== input) {
             popup.style.display = "none";
