@@ -68,7 +68,7 @@
 :root {
     --nav-btn-size: 60px;
     --nav-label-size: 1.5rem;
-    --nav-text-color: var(--color-text);
+    --nav-text-color: white;
     --nav-icon-color: white;
     --nav-indicator-radius: 50%;
     --nav-indicator-border: 4px solid white;

@@ -222,7 +222,7 @@ html, body {
 
     .left-sidebar-item:hover {
         background: var(--accent-10);
-        color: var(--accent);
+        color: rgb(75, 106, 225);
         transform: translateX(8px);
     }
 
