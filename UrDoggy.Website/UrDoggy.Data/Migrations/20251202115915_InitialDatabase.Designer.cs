@@ -12,13 +12,8 @@ using UrDoggy.Data;
 namespace UrDoggy.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-<<<<<<<< HEAD:UrDoggy.Website/UrDoggy.Data/Migrations/20251202060230_UrDoggyDatabase.Designer.cs
-    [Migration("20251202060230_UrDoggyDatabase")]
-    partial class UrDoggyDatabase
-========
-    [Migration("20251201091453_InitialDatabse")]
-    partial class InitialDatabse
->>>>>>>> final2:UrDoggy.Website/UrDoggy.Data/Migrations/20251201091453_InitialDatabse.Designer.cs
+    [Migration("20251202115915_InitialDatabase")]
+    partial class InitialDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

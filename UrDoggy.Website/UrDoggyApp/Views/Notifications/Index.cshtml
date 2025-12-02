@@ -187,9 +187,7 @@
             {
                 <div class="notification-card @(!n.IsRead ? "unread" : "")">
                     <div class="d-flex align-items-center">
-                        <div class="notification-icon @GetIconType(n.Type)">
-                            <i class="@GetIconClass(n.Type)"></i>
-                        </div>
+
                         <div class="flex-grow-1">
                             <div class="notification-time">@n.CreatedAt.ToString("g")</div>
                             <div class="mt-1 h5">

@@ -6,11 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UrDoggy.Data.Migrations
 {
     /// <inheritdoc />
-<<<<<<<< HEAD:UrDoggy.Website/UrDoggy.Data/Migrations/20251202060230_UrDoggyDatabase.cs
-    public partial class UrDoggyDatabase : Migration
-========
-    public partial class InitialDatabse : Migration
->>>>>>>> final2:UrDoggy.Website/UrDoggy.Data/Migrations/20251201091453_InitialDatabse.cs
+    public partial class InitialDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
