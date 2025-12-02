@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UrDoggy.Core.Models;
+using UrDoggy.Data;
 using UrDoggy.Data.Repositories;
 using UrDoggy.Services.Interfaces;
 
@@ -29,7 +31,7 @@ namespace UrDoggy.Services.Service
             _mediaService = mediaService;
         }
 
-        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost();
+        public async Task<List<Post>> GetNewsfeed() => await _postRepository.GetAllPost(null);
 
         public async Task<Post> GetById(int postId)
         {
@@ -48,17 +50,34 @@ namespace UrDoggy.Services.Service
             };
 
             await _postRepository.CreatePost(post, mediaItems);
+
+            // Trích xuất và thêm hashtag
+            var tags = _postRepository.ExtractTagsFromContent(content);
+            if (tags.Any())
+            {
+                await _postRepository.AddTagsToPostAsync(post.Id, tags);
+            }
             return post;
         }
 
         public async Task EditPost(Post post)
         {
+            // Lưu nội dung mới
             await _postRepository.UpdatePost(post);
+            // XÓA tất cả tag cũ của post
+            await _postRepository.RemoveAllTagsFromPostAsync(post.Id);
+            // Trích xuất lại hashtag từ content mới và thêm lại
+            var tags = _postRepository.ExtractTagsFromContent(post.Content);
+            if (tags.Any())
+            {
+                await _postRepository.AddTagsToPostAsync(post.Id, tags);
+            }
         }
 
         public async Task DeletePost(int postId)
         {
-            await _postRepository.DeletePost(postId);
+            await _postRepository.RemoveAllTagsFromPostAsync(postId);
+            await _postRepository.DeletePost(postId,null);
         }
 
         public async Task Vote(int postId, int userId, bool isUpvote)
@@ -88,7 +107,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<List<Post>> GetUserPosts(int userId)
         {
-            var allPosts = await _postRepository.GetAllPost();
+            var allPosts = await _postRepository.GetAllPost(null);
             return allPosts
                 .Where(p => p.UserId == userId)
                 .OrderByDescending(p => p.CreatedAt)
@@ -97,7 +116,7 @@ namespace UrDoggy.Services.Service
 
         public async Task<int> GetPostCount(int userId)
         {
-            var allPosts = await _postRepository.GetAllPost();
+            var allPosts = await _postRepository.GetAllPost(null);
             return allPosts.Count(p => p.UserId == userId);
         }
 
@@ -110,12 +129,12 @@ namespace UrDoggy.Services.Service
             return await _postRepository.GetTotalPostCount(friendIds);
         }
 
-        public async Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<List<Post>> GetRecommendedPosts(int userId, HashSet<int> excludedPostIds = null, bool isPersonalized = true, int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 // Lấy tất cả bài viết (trừ của chính user)
-                var allPosts = await _postRepository.GetAllPost();
+                var allPosts = await _postRepository.GetAllPost(null);
 
                 if (allPosts == null || !allPosts.Any())
                     return new List<Post>();
@@ -135,7 +154,9 @@ namespace UrDoggy.Services.Service
 
                 foreach (var post in filteredPosts)
                 {
-                    var score = await _postRepository.RankCalculate(userId, post);
+                    var score = (isPersonalized) ? 
+                        await _postRepository.CalculatePersonalizedScore(userId, post):
+                        await _postRepository.RankCalculate(userId, post);
                     if (score > float.MinValue) // Loại bỏ bài viết bị rejected
                     {
                         postScores.Add((post, score));
@@ -154,10 +175,13 @@ namespace UrDoggy.Services.Service
             }
             catch (Exception ex)
             {
-                // Log lỗi và trả về danh sách rỗng
                 Console.WriteLine($"Error in GetRecommendedPosts: {ex.Message}");
                 return new List<Post>();
             }
+        }
+        public async Task SaveAsync()
+        {
+            await _postRepository.SaveChangesAsync();
         }
     }
 }

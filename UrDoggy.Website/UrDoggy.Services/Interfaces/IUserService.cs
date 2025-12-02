@@ -22,5 +22,8 @@ namespace UrDoggy.Services.Interfaces
         Task<bool> CheckEmailExists(string email);
         Task<int> GetCurrentUserId(ClaimsPrincipal user);
         Task<User> GetCurrentUser(ClaimsPrincipal user);
+
+        //Tagged user and tagged many user
+        Task<List<User>> ListRecommnedUsers(int userId, string? s);
     }
 }

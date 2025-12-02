@@ -25,7 +25,7 @@ namespace UrDoggy.Data
         public DbSet<Friend> Friends => Set<Friend>();
         public DbSet<Group> Groups => Set<Group>();
         public DbSet<GroupDetail> GroupDetails => Set<GroupDetail>();
-        public DbSet<GroupPostStatus> GroupPostStatuses => Set<GroupPostStatus>();
+        public DbSet<GroupPostStatus> GroupPostStatuses => Set<GroupPostStatus>();  
         public DbSet<GroupReport> GroupReports => Set<GroupReport>();
         protected override void OnModelCreating(ModelBuilder model)
         {
@@ -339,7 +339,7 @@ namespace UrDoggy.Data
                     .OnDelete(DeleteBehavior.Cascade);
 
                 e.HasOne(x => x.Author)
-                    .WithMany(u => u.GroupPostsCreated)
+                    .WithMany( u => u.GroupPostsCreated)
                     .HasForeignKey(x => x.AuthorId)
                     .OnDelete(DeleteBehavior.Restrict);
 
