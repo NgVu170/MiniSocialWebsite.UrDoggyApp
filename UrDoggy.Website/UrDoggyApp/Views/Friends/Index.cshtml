@@ -19,6 +19,160 @@
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
 }
 
+<style>
+    /* Friends Page Style */
+    :root {
+        --friend-primary: #25D366;
+        --friend-secondary: #0984e3;
+        --friend-bg: #f8f9fa;
+        --friend-card: #ffffff;
+        --friend-border: rgba(0, 0, 0, 0.1);
+    }
+
+    .list-group-item {
+        border: none;
+        border-radius: 1rem !important;
+        margin-bottom: 0.5rem;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .list-group-item.active {
+            background: linear-gradient(135deg, var(--friend-primary) 0%, var(--friend-secondary) 100%) !important;
+            color: white !important;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
+        }
+
+        .list-group-item:not(.active):hover {
+            transform: translateX(8px);
+            background: rgba(0, 184, 148, 0.05);
+        }
+
+    .card {
+        border: none;
+        border-radius: 1.5rem;
+        background: var(--friend-card);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.1);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(180deg, var(--friend-primary), var(--friend-secondary));
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--friend-primary) 0%, var(--friend-secondary) 100%);
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1.5rem;
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .btn-primary::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s ease;
+        }
+
+        .btn-primary:hover::after {
+            left: 120%;
+        }
+
+    .btn-danger {
+        background: #ff4757;
+        border: none;
+        border-radius: 0.75rem;
+        padding: 0.5rem 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(255, 71, 87, 0.2);
+        }
+
+
+    @@media (max-width: 768px) {
+        .card {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem;
+        }
+
+        .list-group-item {
+            border-radius: 0.75rem !important;
+        }
+
+        .rounded-circle {
+            width: 48px !important;
+            height: 48px !important;
+        }
+    }
+
+    /* Loading Animation */
+    .friend-loading {
+        position: relative;
+        overflow: hidden;
+    }
+
+        .friend-loading::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: loading 1.5s infinite;
+        }
+
+    @@keyframes loading {
+        0% {
+            transform: translateX(-100%);
+        }
+
+        100% {
+            transform: translateX(100%);
+        }
+    }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<script>
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const btn = this.querySelector('button');
+            if (btn) {
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status"></span> Processing...`;
+                btn.disabled = true;
+            }
+        });
+    });
+</script>
+
+
 @section LeftSidebar {
     <ul class="list-group">
         <li class="list-group-item @(active=="all"      ? "active" : "")">

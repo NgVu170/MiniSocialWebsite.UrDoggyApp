@@ -11,6 +11,156 @@
     var reports = (List<UrDoggy.Core.Models.Report>)ViewBag.Reports;
 }
 
+<style>
+    /* Admin Dashboard Style */
+    :root {
+        --admin-primary: #2d3436;
+        --admin-accent: #00b894;
+        --admin-danger: #e74c3c;
+        --admin-bg: #f8f9fa;
+        --admin-card: #ffffff;
+    }
+
+    body {
+        background: var(--admin-bg);
+    }
+
+    h2 {
+        color: var(--admin-primary);
+        font-weight: 700;
+        border-left: 5px solid var(--admin-accent);
+        padding-left: 1rem;
+        margin: 2rem 0;
+    }
+
+    /* Stats Cards - Modern Gradient */
+    .card {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+    .bg-primary {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%) !important;
+    }
+
+    .bg-success {
+        background: linear-gradient(135deg, #00b894 0%, #0984e3 100%) !important;
+    }
+
+    .bg-warning {
+        background: linear-gradient(135deg, #f1c40f 0%, #e67e22 100%) !important;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
+    }
+
+        .card-title:before {
+            content: "";
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            mask-size: contain;
+            -webkit-mask-size: contain;
+        }
+
+    .bg-primary .card-title:before {
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 4a4 4 0 0 1 4 4a4 4 0 0 1-4 4a4 4 0 0 1-4-4a4 4 0 0 1 4-4m0 10c4.42 0 8 1.79 8 4v2H4v-2c0-2.21 3.58-4 8-4'/%3E%3C/svg%3E");
+    }
+
+    .bg-success .card-title:before {
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M17 9H7V7h10m0 6H7v-2h10m-3 6H7v-2h7M12 3a1 1 0 0 1 1 1a1 1 0 0 1-1 1a1 1 0 0 1-1-1a1 1 0 0 1 1-1m7 0h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2'/%3E%3C/svg%3E");
+    }
+
+    .bg-warning .card-title:before {
+        mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 2L1 21h22M12 6l7.53 13H4.47M11 10v4h2v-4m-2 6v2h2v-2'/%3E%3C/svg%3E");
+    }
+
+    /* Modern Tabs */
+    .nav-tabs {
+        border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-link {
+        border: none !important;
+        color: var(--admin-primary) !important;
+        position: relative;
+        padding: 1rem 2rem;
+    }
+
+        .nav-link.active:after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--admin-accent);
+            border-radius: 2px;
+        }
+
+    /* Advanced Table Design */
+    .table {
+        border-radius: 1rem;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+
+        .table thead {
+            background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+            border-bottom: 2px solid var(--admin-accent);
+        }
+
+        .table th {
+            font-weight: 600;
+            color: var(--admin-primary);
+            padding: 1.2rem;
+        }
+
+        .table td {
+            padding: 1rem;
+            vertical-align: middle;
+            border-color: rgba(0, 0, 0, 0.03) !important;
+        }
+
+        .table tr {
+            transition: background 0.2s ease;
+        }
+
+            .table tr:hover {
+                background: rgba(0, 184, 148, 0.03) !important;
+            }
+
+    .btn-danger {
+        background: var(--admin-danger) !important;
+        border: none !important;
+        padding: 0.5rem 1.5rem !important;
+        border-radius: 0.75rem !important;
+        transition: all 0.2s ease !important;
+    }
+
+        .btn-danger:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.2);
+        }
+
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+
 <h2>Admin Dashboard</h2>
 <hr />
 
@@ -214,5 +364,33 @@
     <script>
         var trigger = document.querySelector('#adminTabs button.active');
         bootstrap.Tab.getInstance(trigger)?.show();
+
+        // Row click handler
+        document.querySelectorAll('tr[data-href]').forEach(row => {
+            row.addEventListener('click', (e) => {
+                if (!e.target.closest('button')) {
+                    window.location.href = row.dataset.href;
+                }
+            });
+        });
+
+        // Dynamic card animations
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                card.style.transform = `
+                    perspective(1000px)
+                    rotateX(${(y - rect.height/2) / 15}deg)
+                    rotateY(${-(x - rect.width/2) / 15}deg)
+                `;
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'none';
+            });
+        });
     </script>
 }

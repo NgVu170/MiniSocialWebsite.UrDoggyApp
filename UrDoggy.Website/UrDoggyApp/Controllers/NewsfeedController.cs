@@ -124,9 +124,10 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content)
+        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? taggedUsers = null)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
+            var currentUser = await _userService.GetById(userId.Value);
             if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
@@ -147,8 +148,25 @@ namespace UrDoggy.Website.Controllers
                     }
                 }
 
-                await _postService.CreatePost(userId.Value, content, mediaItems);
+                var post = await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
+                if (taggedUsers != null)
+                {
+                    List<int> tagIds = new List<int>();
+                    if (!string.IsNullOrEmpty(taggedUsers))
+                    {
+                        tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(taggedUsers);
+                    }
+                    foreach (var tagId in tagIds)
+                    {
+                        var recevierUser = await _userService.GetById(tagId);
+                        if (recevierUser != null && userId != null)
+                        {
+                            await _notificationService.EnsureTagNotif(userId.Value, recevierUser.Id, currentUser.DisplayName, post.Id);
+                            post.TaggedUsers.Add(recevierUser);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -157,6 +175,7 @@ namespace UrDoggy.Website.Controllers
 
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         [Route("/Newsfeed/Delete")]

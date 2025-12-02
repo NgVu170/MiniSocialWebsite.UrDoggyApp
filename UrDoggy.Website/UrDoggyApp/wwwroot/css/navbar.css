@@ -1,0 +1,267 @@
+﻿/* ============================================================
+   1. NAVBAR LAYOUT STRUCTURE
+   ============================================================ */
+
+.navbar-row {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    padding: 0;
+    padding-right: 2vw;
+}
+
+.navbar-area {
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.navbar-area-left {
+    flex: 1;
+    justify-content: flex-start;
+}
+
+.navbar-area-center {
+    flex: 2;
+    justify-content: center;
+}
+
+.navbar-area-right {
+    flex: 1;
+    justify-content: flex-end;
+}
+
+/* ============================================================
+   2. LEFT NAVBAR
+   ============================================================ */
+
+.navbar-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    width: auto;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transform: translateX(20px) translateY(20px);
+}
+
+    .navbar-logo img {
+        height: 100%;
+        width: 100%;
+        border-radius: 10px;
+        object-fit: contain;
+        display: block;
+    }
+
+    .navbar-logo:hover {
+        transform: scale(1.2) translateX(30px) translateY(30px);
+        box-shadow: 0 0 20px white;
+        border-radius: 10px;
+    }
+
+/* ============================================================
+   3. CENTER NAVBAR
+   ============================================================ */
+
+:root {
+    --nav-btn-size: 60px;
+    --nav-label-size: 1.5rem;
+    --nav-text-color: var(--color-text);
+    --nav-icon-color: white;
+    --nav-indicator-radius: 50%;
+    --nav-indicator-border: 4px solid white;
+    --nav-indicator-gradient: var(--color-theme);
+}
+
+/* Container UL */
+.navbar-center {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 90px;
+    position: relative;
+}
+
+/* Each Item */
+.nav-item {
+    width: var(--nav-btn-size);
+    height: var(--nav-btn-size);
+    color: var(--nav-text-color);
+    position: relative;
+    cursor: pointer;
+}
+
+/* Link Wrapper */
+.nav-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: var(--nav-text-color);
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+/* Icon wrapper */
+.nav-icon-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    top: 10px;
+    left: 17px;
+
+}
+
+/* Icon */
+.nav-icon {
+    font-size: 2.5rem;
+    transition: 0.5s ease;
+}
+
+/* Label */
+.nav-label {
+    position: absolute;
+    bottom: 15px;
+    font-size: var(--nav-label-size);
+    font-weight: 900;
+    opacity: 0;
+    transition: 0.4s ease;
+}
+
+/* When active */
+.nav-item.active .nav-icon {
+    font-size: 1.5rem;
+    transform: translateY(40px);
+}
+
+.nav-item.active .nav-label {
+    opacity: 1;
+    transform: translateY(-10px);
+}
+
+/* Indicator */
+.nav-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: var(--nav-btn-size);
+    height: var(--nav-btn-size);
+    background: var(--nav-indicator-gradient);
+    border-radius: var(--nav-indicator-radius);
+    border: var(--nav-indicator-border);
+    transform: translateY(35px);
+    transition: 0.5s ease;
+    z-index: -1; /* behind icons */
+}
+
+/* Badge alignment */
+.nav-icon-wrapper .badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+}
+
+/* ============================================================
+   4. NAVBAR RIGHT
+   ============================================================ */
+
+/* SEARCH */
+.search-container {
+    position: relative;
+}
+
+.search-wrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+    transition: 0.3s ease;
+}
+
+.search-input {
+    width: 0;
+    opacity: 0;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 20px;
+    background: white;
+    color: black;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    margin-right: 32px; /* space for button */
+}
+
+    .search-input:focus {
+        outline: none;
+    }
+
+.search-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color, white);
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.search-icon {
+    transition: opacity 0.3s ease;
+}
+
+.close-icon {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Expanded State */
+.search-container.active .search-input {
+    width: 200px;
+    opacity: 1;
+}
+
+.search-container.active .search-icon {
+    opacity: 0;
+    display: none;
+}
+
+.search-container.active .close-icon {
+    opacity: 1;
+    display: inline;
+}
+
+/* DROPDOWN */
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    z-index: 200;
+    border-radius: 10px;
+    /**/
+    position: absolute;
+    right: 0;
+    top: calc(100% +1rem);
+    background-color: var(--color-card);
+    padding: .75rem;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-10px);
+    transition: opacity 150ms ease-in-out, transform 150ms ease-in-out;
+}
+
+.dropdown.active > .dropdown-menu {
+    z-index: 200;
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+}

@@ -1,0 +1,157 @@
+﻿@using UrDoggy.Core.Models
+@using UrDoggy.Core.Models.GroupModels
+@model IEnumerable<Post>
+
+@{
+    var group = ViewBag.GroupInformation as Group;
+    var modList = ViewBag.ModList as List<GroupDetail> ?? new List<GroupDetail>();
+    var role = ViewBag.Role as GroupRole?;
+    var userId = ViewBag.UserId as int?;
+    ViewData["Title"] = group != null ? $"Bài viết - {group.GroupName}" : "Bài viết trong nhóm";
+}
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="d-flex align-items-center">
+            <img src="@(group?.Avatar ?? "/images/default-avatar.png")" class="rounded-circle me-2" style="width:48px;height:48px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+            <div>
+                <h3 class="mb-0">@group?.GroupName</h3>
+                <small class="text-muted">@group?.Description</small>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-outline-secondary" href="~/Group/Index">← Danh sách nhóm</a>
+            @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
+            {
+                <a class="btn btn-warning" href="~/Group/GroupManagement?groupId=@group?.Id">Quản trị nhóm</a>
+            }
+        </div>
+    </div>
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">@TempData["Success"]</div>
+    }
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <strong>Tạo bài trong nhóm</strong>
+        </div>
+        <div class="card-body">
+            @using (Html.BeginForm("CreatePost", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="groupId" value="@group?.Id" />
+
+                <div class="mb-3">
+                    <textarea class="form-control" name="content" rows="3" placeholder="Bạn đang nghĩ gì?" required></textarea>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Ảnh (tùy chọn)</label>
+                    <input type="file" class="form-control" name="media" multiple accept=".png,.jpg,.jpeg,.webp,.gif" />
+                    <small class="text-muted">Bạn có thể chọn nhiều ảnh.</small>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Đăng bài</button>
+            }
+        </div>
+    </div>
+
+    @if (!Model?.Any() ?? true)
+    {
+        <div class="alert alert-info">Chưa có bài viết nào trong nhóm.</div>
+    }
+    else
+    {
+        <div class="vstack gap-3">
+            @foreach (var p in Model)
+            {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <strong>Post #@p.Id</strong>
+                                <span class="text-muted ms-2">(@p.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</span>
+                                <span class="badge bg-light text-dark ms-3">Tác giả: #@p.UserId</span>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <!-- Báo cáo bài -->
+                                <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#report-@p.Id">Báo cáo</button>
+
+                                <!-- Xóa bởi chủ bài (chỉ hiện nếu là tác giả) -->
+                                @if (userId.HasValue && p.UserId == userId.Value)
+                                {
+                                    @using (Html.BeginForm("DeletePostByOwner", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài của bạn?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groupId" value="@group?.Id" />
+                                        <input type="hidden" name="postId" value="@p.Id" />
+                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Xóa bài (chủ bài)</button>
+                                    }
+                                }
+
+                                <!-- Xóa bởi Mod/Admin -->
+                                @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
+                                {
+                                    @using (Html.BeginForm("DeletePostByModerator", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài này với quyền moderator?');" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groupId" value="@group?.Id" />
+                                        <input type="hidden" name="postId" value="@p.Id" />
+                                        <button type="submit" class="btn btn-danger btn-sm">Xóa (Mod)</button>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <p class="mt-2 mb-0">@p.Content</p>
+
+                        <!-- Form báo cáo thu gọn -->
+                        <div id="report-@p.Id" class="collapse mt-3">
+                            <div class="card card-body border-danger">
+                                @using (Html.BeginForm("ReportPost", "Group", FormMethod.Post, new { @class = "vstack gap-2" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="groupId" value="@group?.Id" />
+                                    <input type="hidden" name="postId" value="@p.Id" />
+                                    <label class="form-label">Lý do báo cáo</label>
+                                    <input class="form-control" name="reason" placeholder="Nội dung phản cảm, spam, vi phạm nội quy..." required />
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-outline-danger btn-sm" type="submit">Gửi báo cáo</button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    <div class="mt-5">
+        <h5>Moderator</h5>
+        @if (!modList.Any())
+        {
+            <p class="text-muted">Chưa có moderator.</p>
+        }
+        else
+        {
+            <ul class="list-group">
+                @foreach (var m in modList)
+                {
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <span>User #@m.UserId</span>
+                        <span class="badge bg-secondary">Moderator</span>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+</div>

@@ -1,0 +1,89 @@
+﻿@{
+    bool isHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
+                   && ViewContext.RouteData.Values["action"]?.ToString() == "Index";
+
+
+    bool isTrending = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
+                       && ViewContext.RouteData.Values["action"]?.ToString() == "Index#";
+
+    bool isNotification = ViewContext.RouteData.Values["controller"]?.ToString() == "Notifications";
+    bool isMessages = ViewContext.RouteData.Values["controller"]?.ToString() == "Messages";
+
+    int unreadCount = ViewBag.UnreadCount ?? 0;
+
+    // used by indicator placement
+    int activeIndex =
+        isHome ? 0 :
+        isTrending ? 1 :
+        isNotification ? 2 :
+        isMessages ? 3 :
+        -1;
+}
+
+<ul class="navbar-center" id="navbarCenter">
+    <div class="nav-indicator" id="navIndicator"></div>
+
+    <!-- HOME -->
+    <li class="nav-item @(isHome ? "active" : "")" data-index="0">
+        <a class="nav-link" href="/Newsfeed/Index">
+            <div class="nav-icon-wrapper">
+                <i class="fas fa-home nav-icon"></i>
+            </div>
+            <span class="nav-label"
+                style="left: -6px;"
+                >HOME</span>
+        </a>
+    </li>
+
+    <!-- TRENDING -->
+    <li class="nav-item @(isTrending ? "active" : "")" data-index="1">
+        <a class="nav-link" href="#">
+            <div class="nav-icon-wrapper">
+                <i class="fas fa-fire nav-icon"></i>
+            </div>
+            <span class="nav-label"
+                  style="left: -30px;"
+                  >TRENDING</span>
+        </a>
+    </li>
+
+    <!-- NOTIFICATIONS -->
+    <li class="nav-item @(isNotification ? "active" : "")" data-index="2">
+        <a class="nav-link" href="/Notifications/Index">
+            <div class="nav-icon-wrapper">
+                <i class="fas fa-bell nav-icon"></i>
+                @if (unreadCount > 0)
+                {
+                    <span class="badge bg-danger">@unreadCount</span>
+                }
+            </div>
+            <span class="nav-label"
+                  style="left: -60px;">
+                  NOTIFICATIONS</span>
+        </a>
+    </li>
+
+    <!-- MESSAGES -->
+    <li class="nav-item @(isMessages ? "active" : "")" data-index="3">
+        <a class="nav-link" href="/Messages/Index">
+            <div class="nav-icon-wrapper">
+                <i class="fas fa-comment-dots nav-icon"></i>
+            </div>
+            <span class="nav-label"
+                  style="left: -30px;">
+                  MESSAGES</span>
+        </a>
+    </li>
+</ul>
+
+<script>
+    // Move indicator to correct location
+    const indicator = document.getElementById("navIndicator");
+    const items = document.querySelectorAll("#navbarCenter .nav-item");
+    const activeItem = [...items].find(i => i.classList.contains("active"));
+
+    if (activeItem) {
+        const index = activeItem.dataset.index;
+        indicator.style.transform = `translate(calc(${index} * 150px), 35px)`;
+    }
+</script>

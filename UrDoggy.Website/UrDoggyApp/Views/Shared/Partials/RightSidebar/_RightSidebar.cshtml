@@ -1,0 +1,45 @@
+﻿@using UrDoggy.Core.Models
+
+@{
+    Layout = null;
+
+    var friends = ViewBag.Friends as List<User> ?? new List<User>();
+}
+
+<div class="right-sidebar">
+
+    <div class="right-sidebar-section contacts-container">
+
+        <h6 class="contacts-title">Contacts</h6>
+
+        @if (!friends.Any())
+        {
+            <div class="text-center no-friends">
+                <p>You have no friends yet.</p>
+                <a href="/Friends/Index" class="btn add-friends-btn">Add Friends</a>
+            </div>
+        }
+        else
+        {
+            <ul class="contacts-list list-unstyled">
+                @foreach (var friend in friends)
+                {
+                    var friendAvatarUrl = string.IsNullOrWhiteSpace(friend.ProfilePicture)
+                    ? Url.Content("~/images/default-avatar.png")
+                    : Url.Content(friend.ProfilePicture);
+
+                    <li class="contact-item d-flex align-items-center">
+                        <a href="/Profile/@friend.Id" class="contact-avatar-link">
+                            <img src="@friendAvatarUrl" class="contact-avatar rounded-circle" />
+                        </a>
+
+                        <a href="/Profile/@friend.Id" class="contact-name">
+                            @friend.UserName
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+
+</div>

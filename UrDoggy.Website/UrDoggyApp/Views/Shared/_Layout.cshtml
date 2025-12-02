@@ -5,17 +5,33 @@
 @inject UrDoggy.Services.Interfaces.IUserService UserService
 
 @{
+    bool isHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
+                       && ViewContext.RouteData.Values["action"]?.ToString() == "Index";
+
+    bool isTrending = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
+                       && ViewContext.RouteData.Values["action"]?.ToString() == "Index#";
+
+    bool isNotification = ViewContext.RouteData.Values["controller"]?.ToString() == "Notifications";
     bool isMessages = ViewContext.RouteData.Values["controller"]?.ToString() == "Messages";
-    int? sessionUserId = Context.Session.GetInt32("UserId");
+    bool isDashboard = ViewContext.RouteData.Values["controller"]?.ToString() == "Admin";
 
     var currentUser = ViewBag.CurrentUser as User;
     int unreadCount = ViewBag.UnreadCount ?? 0;
     var friends = ViewBag.Friends as List<User> ?? new List<User>();
 
     bool isAdmin = currentUser?.IsAdmin ?? false;
+
     string currentUserAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
+
+    bool hasLeft = IsSectionDefined("LeftSidebar");
+    bool hasRight = IsSectionDefined("RightSidebar");
+
+    string layoutClass = hasLeft && hasRight ? "layout-3"
+                       : hasLeft && !hasRight ? "layout-2-left"
+                       : !hasLeft && hasRight ? "layout-2-right"
+                       : "layout-1";
 }
 
 <!DOCTYPE html>
@@ -23,226 +39,52 @@
 <head>
     <meta charset="utf-8" />
     <title>UrDoggy</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
-          rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-          rel="stylesheet" />
-    <style>
-        html, body {
-            height: 100%;
-            margin: 0;
-        }
 
-        body {
-            background: #f0f2f5;
-        }
+    <!-- Core libraries -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
-        .navbar {
-            background: #79f9aa;
-            box-shadow: 2px 2px 2px rgba(0,0,0,.1);
-        }
+    <!-- Global Layout & Token System -->
+    <link rel="stylesheet" href="~/css/layout.css" />
 
-            .navbar .fa-lg {
-                font-size: 2rem;
-            }
-
-        .sidebar {
-            padding-top: 1rem;
-            background: #fff;
-            box-shadow: 2px 2px 2px rgba(0,0,0,.1);
-        }
-
-        body.messages-page {
-            overflow: hidden;
-        }
-
-            body.messages-page .sidebar {
-                position: sticky;
-                top: 56px;
-                height: calc(100vh - 56px);
-                overflow-y: auto;
-            }
-
-            body.messages-page .main-content {
-                display: flex;
-                flex-direction: column;
-                height: calc(100vh - 56px);
-                padding: 0;
-            }
-
-                body.messages-page .main-content .chat-window {
-                    flex: 1 1 auto;
-                    overflow-y: auto;
-                    background: #fff;
-                    padding: 1rem;
-                    word-wrap: break-word;
-                    white-space: pre-wrap;
-                }
-
-                body.messages-page .main-content .send-box {
-                    flex: 0 0 auto;
-                    padding: .75rem;
-                    background: #f8f9fa;
-                    border-top: 1px solid #ddd;
-                }
-
-                    body.messages-page .main-content .send-box .form-control {
-                        height: 38px;
-                    }
-    </style>
     @RenderSection("Styles", required: false)
 </head>
-<body class="@(isMessages ? "messages-page" : "")">
 
-    <nav class="navbar navbar-expand-lg px-3">
-        <a class="navbar-brand" href="/Newsfeed/Index">
-            <img src="~/images/logo.png" alt="UrDoggy" style="height:120px;" />
-        </a>
-        <form method="get"
-              asp-controller="Profile"
-              asp-action="Search"
-              class="d-none d-md-flex mx-auto"
-              style="width:700px; box-shadow: 2px 2px 2px rgba(0,0,0,.1)">
-            <div class="input-group">
-                <button type="submit"
-                        class="btn btn-light border-0 input-group-text"
-                        style="background: #25D366; cursor:pointer;">
-                    <i class="fas fa-search"></i>
-                </button>
-                <input name="q"
-                       type="text"
-                       class="form-control border-0"
-                       placeholder="Search..." />
-            </div>
-        </form>
-        <ul class="navbar-nav ms-auto align-items-center">
-            <li class="nav-item">
-                <a class="nav-link active" href="/Newsfeed/Index">
-                    <i class="fas fa-home fa-lg"></i>
-                </a>
-            </li>
-            <li class="nav-item position-relative mx-2">
-                <a class="nav-link position-relative" href="@Url.Action("Index","Notifications")">
-                    <i class="fas fa-bell fa-lg"></i>
-                    @if (unreadCount > 0)
-                    {
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            @unreadCount
-                            <span class="visually-hidden">unread notifications</span>
-                        </span>
-                    }
-                </a>
-            </li>
-            <li class="nav-item mx-2">
-                <a class="nav-link" href="/Messages/Index">
-                    <i class="fas fa-comment-dots fa-lg"></i>
-                </a>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
-                    <img src="@currentUserAvatarUrl"
-                         class="rounded-circle"
-                         style="width:64px;height:64px;" />
-                </a>
-                <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="/Profile">Profile</a></li>
-                    <li><a class="dropdown-item" href="/Auth/Logout">Logout</a></li>
-                </ul>
-            </li>
-        </ul>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar-ui">
+        <partial name="~/Views/Shared/Partials/Navbar/_Navbar.cshtml" />
     </nav>
 
-    <div class="container-fluid">
-        <div class="row">
+    <!-- MAIN LAYOUT GRID -->
+    <div class="main-layout @layoutClass">
 
-            <div class="col-lg-2 sidebar d-none d-lg-block">
-                @if (IsSectionDefined("LeftSidebar"))
-                {
-                    @RenderSection("LeftSidebar", required: false)
-                }
-                else
-                {
+        @* LEFT SIDEBAR *@
+        @if (hasLeft)
+        {
+            <aside class="sidebar-ui scroll-hide">
+                @RenderSection("LeftSidebar", required: false)
+            </aside>
+        }
 
-                    string profileAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
-                    ? Url.Content("~/images/default-avatar.png")
-                    : Url.Content(currentUser.ProfilePicture);
+        @* FEED CONTENT *@
+        <main class="feed-ui scroll-hide @(isMessages ? "messages-view" : "")">
+            @RenderBody()
+        </main>
 
-                    <div class="text-center mb-4">
-                        <a href="/Profile">
-                            <img src="@profileAvatarUrl"
-                                 class="rounded-circle"
-                                 style="width:64px;height:64px;" />
-                        </a>
-                        <div>@(currentUser?.UserName ?? "Guest")</div>
-                    </div>
-                    <div class="list-group">
-                        <a href="/Profile" class="list-group-item list-group-item-action">
-                            <i class="fas fa-user-circle me-2 fa-lg"></i> Profile
-                        </a>
-                        <a href="/Friends/Index" class="list-group-item list-group-item-action">
-                            <i class="fas fa-user-friends me-2 fa-lg"></i> Friends
-                        </a>
-                        @if (isAdmin)
-                        {
-                            <a href="/Admin/Dashboard" class="list-group-item list-group-item-action">
-                                <i class="fas fa-tools me-2 fa-lg"></i> Admin Dashboard
-                            </a>
-                        }
-                    </div>
-                }
-            </div>
-
-            <div class="col-lg-7 px-4 @(isMessages ? "main-content" : "")">
-                @RenderBody()
-            </div>
-
-            <div class="col-lg-3 d-none d-lg-block px-4">
-                @if (IsSectionDefined("RightSidebar"))
-                {
-                    @RenderSection("RightSidebar", required: false)
-                }
-                else
-                {
-                    <div class="contacts border rounded bg-white p-3">
-                        <h6>Contacts</h6>
-                        
-                        @if (!friends.Any())
-                        {
-                            <div class="text-center">
-                                <p>You have no friends yet.</p>
-                                <a href="/Friends/Index" class="btn btn-success">Add Friends</a>
-                            </div>
-                        }
-                        else
-                        {
-                            <ul class="list-unstyled">
-                                @foreach (var friend in friends)
-                                {
-                                    var friendAvatarUrl = string.IsNullOrWhiteSpace(friend.ProfilePicture)
-                                    ? Url.Content("~/images/default-avatar.png")
-                                    : Url.Content(friend.ProfilePicture);
-
-                                    <li class="d-flex align-items-center mb-3">
-                                        <a href="/Profile/@friend.Id">
-                                            <img src="@friendAvatarUrl"
-                                                 class="rounded-circle"
-                                                 style="width:64px;height:64px;" />
-                                        </a>
-                                        <a href="/Profile/@friend.Id" class="text-dark ms-2">
-                                            @friend.UserName
-                                        </a>
-                                    </li>
-                                }
-                            </ul>
-                        }
-                    </div>
-                }
-            </div>
-
-        </div>
+        @* RIGHT SIDEBAR *@
+        @if (hasRight)
+        {
+            <aside class="sidebar-ui scroll-hide">
+                @RenderSection("RightSidebar", required: false)
+            </aside>
+        }
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
     @RenderSection("Scripts", required: false)
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

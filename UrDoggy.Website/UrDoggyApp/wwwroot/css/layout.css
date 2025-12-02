@@ -1,0 +1,291 @@
+﻿/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+
+:root {
+    /* Colors */
+    --color-text: white;
+    --color-card: #ffffff;
+    /* Background system (will be replaced by user selection later) */
+    --color-bg: #d9ffe7;
+    /* App theme (gradient/logo theme) */
+    --color-theme: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+    /* Sizing */
+    --navbar-height: 10vh;
+    --sidebar-width: 20%;
+    /* Visual */
+    --radius: 12px;
+    --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    /* Accent opacity helper */
+    --accent-10: rgba(0, 184, 148, 0.1);
+}
+
+
+/* ============================================================
+   2. GLOBAL BODY & HTML
+   ============================================================ */
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}
+
+
+/* ============================================================
+   3. NAVBAR BASE WRAPPER
+   (The internal content will be styled inside the partial file)
+   ============================================================ */
+
+.navbar-ui {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: var(--navbar-height);
+    width: 100%;
+    z-index: 100;
+    background: var(--color-theme);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow);
+}
+
+
+/* ============================================================
+   4. MAIN LAYOUT GRID
+   ============================================================ */
+
+.main-layout {
+    display: grid;
+    margin-top: calc(0vh + var(--navbar-height));
+    height: calc(100vh - var(--navbar-height));
+}
+
+
+    /* Three columns */
+    .main-layout.layout-3 {
+        grid-template-columns: var(--sidebar-width) 1fr var(--sidebar-width);
+    }
+
+    /* Two columns left */
+    .main-layout.layout-2-left {
+        grid-template-columns: var(--sidebar-width) 1fr;
+    }
+
+    /* Two columns right */
+    .main-layout.layout-2-right {
+        grid-template-columns: 1fr var(--sidebar-width);
+    }
+
+    /* One column */
+    .main-layout.layout-1 {
+        grid-template-columns: 1fr;
+    }
+
+
+/* ============================================================
+   5. SIDEBARS & FEED
+   ============================================================ */
+
+.sidebar-ui {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.feed-ui {
+    padding: 1rem;
+    overflow-y: auto;
+}
+
+.messages-view {
+    /* If messages need special styling later */
+}
+
+/* Hide scrollbars (but keep scroll working) */
+.scroll-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scroll-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+
+/* ============================================================
+   6. CARD BASE STYLES (used globally)
+   ============================================================ */
+
+.card-ui {
+    background: var(--color-card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1rem;
+}
+
+
+/* ============================================================
+   7. UTILITY CLASSES
+   ============================================================ */
+
+.rounded-ui {
+    border-radius: var(--radius);
+}
+
+.shadow-ui {
+    box-shadow: var(--shadow);
+}
+
+.p-ui {
+    padding: 1rem;
+}
+
+.m-ui {
+    margin: 1rem;
+}
+
+/* ============================================================
+   8. SIDEBARS
+   ============================================================ */
+
+/* ===========================
+   LEFT SIDEBAR
+   =========================== */
+
+.left-sidebar {
+    width: 100%;
+    padding: 1rem;
+    color: var(--color-text);
+}
+
+.left-sidebar-user {
+    margin-bottom: 1.5rem;
+}
+
+/* Avatar */
+.left-sidebar-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    padding: 2px;
+    transition: all 0.3s ease;
+}
+
+    .left-sidebar-avatar:hover {
+        transform: rotate(10deg) scale(1.08);
+        box-shadow: var(--shadow);
+    }
+
+/* Username */
+.left-sidebar-username {
+    margin-top: 0.5rem;
+    font-weight: 600;
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+/* List items */
+.left-sidebar-item {
+    border: none !important;
+    margin: 0.5rem 0;
+    border-radius: 0.75rem !important;
+    background: var(--color-card);
+    box-shadow: var(--shadow);
+    transition: all 0.25s ease;
+}
+
+    .left-sidebar-item:hover {
+        background: var(--accent-10);
+        color: var(--accent);
+        transform: translateX(8px);
+    }
+
+/* ===========================
+   RIGHT SIDEBAR
+   =========================== */
+
+.right-sidebar {
+    width: 100%;
+    padding: 1rem;
+}
+
+/* Contact Card Section */
+.contacts-container {
+    background: var(--color-card);
+    padding: 1.5rem;
+    border-radius: 1.5rem;
+    box-shadow: var(--shadow);
+}
+
+/* Title */
+.contacts-title {
+    color: var(--secondary);
+    font-weight: 600;
+    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+}
+
+/* No friends text/button */
+.no-friends p {
+    margin-bottom: 1rem;
+    color: var(--text);
+}
+
+.add-friends-btn {
+    background: var(--color-theme);
+    border: none;
+    padding: 0.45rem 1.4rem;
+    border-radius: 2rem;
+    color: white;
+    font-weight: 500;
+    transition: 0.25s ease;
+}
+
+    .add-friends-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+    }
+
+/* Friend list */
+.contacts-list .contact-item {
+    padding: 0.55rem 0.25rem;
+    border-radius: 0.75rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+    .contacts-list .contact-item:hover {
+        background: var(--accent-10);
+        transform: scale(1.02);
+    }
+
+/* Avatar */
+.contact-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    border: 2px solid var(--accent);
+    padding: 2px;
+    margin-right: 10px;
+    transition: 0.25s ease;
+}
+
+.contact-item:hover .contact-avatar {
+    transform: rotate(8deg) scale(1.08);
+    box-shadow: var(--shadow);
+}
+
+/* Name */
+.contact-name {
+    color: var(--color-text);
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.contact-item:hover .contact-name {
+    color: var(--accent);
+}
+

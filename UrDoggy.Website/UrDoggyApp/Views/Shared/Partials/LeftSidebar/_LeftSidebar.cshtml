@@ -1,0 +1,38 @@
+﻿@using UrDoggy.Core.Models
+@inject UrDoggy.Services.Interfaces.IUserService UserService
+
+@{
+    Layout = null;
+
+    var currentUser = ViewBag.CurrentUser as User;
+
+    string profileAvatarUrl = string.IsNullOrWhiteSpace(currentUser?.ProfilePicture)
+        ? Url.Content("~/images/default-avatar.png")
+        : Url.Content(currentUser.ProfilePicture);
+}
+
+<div class="left-sidebar">
+    <div class="left-sidebar-user text-center">
+        <a href="/Profile">
+            <img src="@profileAvatarUrl" class="left-sidebar-avatar rounded-circle" />
+        </a>
+
+        <div class="left-sidebar-username">
+            @(currentUser?.UserName ?? "Guest")
+        </div>
+    </div>
+
+    <div class="left-sidebar-menu list-group">
+
+        <a href="/Friends/Index" class="list-group-item left-sidebar-item">
+            <i class="fas fa-user-friends me-2 fa-lg"></i>
+            Friends
+        </a>
+
+        <a href="#" class="list-group-item left-sidebar-item">
+            <i class="fas fa-users me-2 fa-lg"></i>
+            Groups
+        </a>
+
+    </div>
+</div>

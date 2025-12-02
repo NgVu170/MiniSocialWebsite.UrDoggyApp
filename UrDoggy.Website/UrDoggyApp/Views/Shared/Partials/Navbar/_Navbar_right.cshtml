@@ -1,0 +1,53 @@
+﻿@using UrDoggy.Core.Models
+
+@{
+    var currentUser = ViewBag.CurrentUser as User;
+    bool isAdmin = currentUser?.IsAdmin ?? false;
+    bool isDashboard = ViewContext.RouteData.Values["controller"]?.ToString() == "Admin";
+}
+
+<div class="navbar-right d-flex align-items-center gap-3">
+
+    <!-- SEARCH BAR -->
+    <div class="navbar-right-item search-container">
+        <form method="get" asp-controller="Profile" asp-action="Search" class="search-form">
+            <div class="search-wrapper">
+                <input name="q" type="text" class="search-input" placeholder="Search on UrDoggy..." />
+                <button type="button" class="search-toggle">
+                    <i class="fas fa-search search-icon"></i>
+                    <i class="fas fa-times close-icon"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- DROPDOWN -->
+    <div class="navbar-right-item dropdown" data-dropdown>
+        <button class="nav-link text-white" data-dropdown-button>
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <ul class="dropdown-menu">
+
+            @if (isAdmin)
+            {
+                <li><a class="dropdown-item" href="/Admin/Dashboard">Admin Dashboard</a></li>
+            }
+
+            @if (isDashboard)
+            {
+                <li><a class="dropdown-item" href="/Newsfeed/Index">Exit Dashboard</a></li>
+            }
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li>
+                <a class="dropdown-item" href="#">Theme Customization</a>
+            </li>
+
+            <li><hr class="dropdown-divider" /></li>
+
+            <li><a class="dropdown-item" href="/Auth/Logout">Logout</a></li>
+        </ul>
+    </div>
+</div>
