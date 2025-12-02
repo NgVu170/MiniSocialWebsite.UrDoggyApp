@@ -82,8 +82,11 @@
     const items = document.querySelectorAll("#navbarCenter .nav-item");
     const activeItem = [...items].find(i => i.classList.contains("active"));
 
-    if (activeItem) {
-        const index = activeItem.dataset.index;
-        indicator.style.transform = `translate(calc(${index} * 150px), 35px)`;
+    if (!activeItem) {
+        indicator.style.display = "none";   // hide when no active item
+    } else {
+        const index = parseInt(activeItem.dataset.index, 10);
+        indicator.style.display = "block";  // show when active
+        indicator.style.transform = `translate(${index * 150}px, 35px)`;
     }
 </script>

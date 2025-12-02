@@ -26,28 +26,43 @@
         <button class="nav-link text-white" data-dropdown-button>
             <i class="fas fa-bars"></i>
         </button>
+        <div class="dropdown-position-wrapper">
+            <ul class="dropdown-menu">
+                @if (isAdmin)
+                {
+                    <li>
+                        <a class="dropdown-item" href="/Admin/Dashboard">
+                            <i class="fas fa-tachometer-alt"></i>Admin Dashboard
+                        </a>
+                    </li>
+                }
 
-        <ul class="dropdown-menu">
+                @if (isDashboard)
+                {
+                    <li>
+                        <a class="dropdown-item" href="/Newsfeed/Index">
+                            <i class="fas fa-sign-out-alt"></i>Exit Dashboard
+                        </a>
+                    </li>
+                }
 
-            @if (isAdmin)
-            {
-                <li><a class="dropdown-item" href="/Admin/Dashboard">Admin Dashboard</a></li>
-            }
+                <li><hr class="dropdown-divider" /></li>
 
-            @if (isDashboard)
-            {
-                <li><a class="dropdown-item" href="/Newsfeed/Index">Exit Dashboard</a></li>
-            }
+                <li>
+                    <a class="dropdown-item" href="#">
+                        <i class="fas fa-palette"></i>Theme Customization
+                    </a>
+                </li>
 
-            <li><hr class="dropdown-divider" /></li>
+                <li><hr class="dropdown-divider" /></li>
 
-            <li>
-                <a class="dropdown-item" href="#">Theme Customization</a>
-            </li>
-
-            <li><hr class="dropdown-divider" /></li>
-
-            <li><a class="dropdown-item" href="/Auth/Logout">Logout</a></li>
-        </ul>
+                <li>
+                    <a class="dropdown-item" href="/Auth/Logout">
+                        <i class="fas fa-sign-out-alt"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
     </div>
 </div>

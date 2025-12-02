@@ -10,6 +10,161 @@
     ViewData["Title"] = group != null ? $"Bài viết - {group.GroupName}" : "Bài viết trong nhóm";
 }
 
+<style>
+    /* Header Section */
+    .container.mt-4 {
+        animation: slideIn 0.4s ease-out;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+
+    .d-flex.justify-content-between {
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.05) 0%, rgba(9, 132, 227, 0.05) 100%);
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .rounded-circle[style*="48px"] {
+        border: 3px solid var(--secondary);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .rounded-circle:hover {
+        transform: scale(1.05);
+    }
+
+    /* Post Creation Card */
+    .card.mb-4 {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        color: white;
+        font-size: 1.1rem;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        textarea.form-control:focus {
+            border-color: #25D366;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+        }
+
+    /* Post Cards */
+    .vstack .card {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        transition: all 0.3s ease;
+    }
+
+        .vstack .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+    /* Report Form */
+    .collapse {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .card.card-body.border-danger {
+        border: 2px solid #dc3545 !important;
+        border-radius: 1rem;
+        background: rgba(220, 53, 69, 0.03);
+    }
+
+    /* Moderator List */
+    .list-group-item {
+        border-radius: 1rem !important;
+        margin-bottom: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+        .list-group-item:hover {
+            transform: translateX(5px);
+            background: rgba(9, 132, 227, 0.03);
+        }
+
+    /* Button Enhancements */
+    .btn-outline-danger {
+        border-width: 2px;
+    }
+
+    .btn-danger.btn-sm {
+        background: linear-gradient(135deg, #ff6b6b 0%, #dc3545 100%);
+        border: none;
+    }
+
+    /* Loading States */
+    button[type="submit"]:disabled {
+        opacity: 0.7;
+        position: relative;
+    }
+
+        button[type="submit"]:disabled::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+    /* Mobile Optimization */
+    @@media (max-width: 768px) {
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-warning {
+            width: 100%;
+        }
+
+        .vstack .card {
+            margin-bottom: 1rem;
+        }
+    }
+
+    @@keyframes slideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @@keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+</style>
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="d-flex align-items-center">
