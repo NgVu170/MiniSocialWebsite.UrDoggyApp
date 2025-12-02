@@ -27,8 +27,7 @@ namespace UrDoggy.Website.Controllers
         private bool CheckLogin()
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId == null || userId == 0) return false;
-            return true;
+            return userId != null;
         }
 
         // ====================== USER ZONE ======================
@@ -36,6 +35,7 @@ namespace UrDoggy.Website.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
+            var userId = HttpContext.Session.GetInt32("UserId");
             if (!CheckLogin())
                 return RedirectToAction("Login", "Auth");
             var userId = HttpContext.Session.GetInt32("UserId");
@@ -67,7 +67,7 @@ namespace UrDoggy.Website.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             Avatar = string.IsNullOrWhiteSpace(Avatar) ? "/images/default-avatar.png" : Avatar.Trim();
             CoverImage = string.IsNullOrWhiteSpace(CoverImage) ? "/images/default-cover.png" : CoverImage.Trim();
-
+            var userId = HttpContext.Session.GetInt32("UserId");
             var newGroup = new Group
             {
                 GroupName = GroupName,
@@ -112,7 +112,7 @@ namespace UrDoggy.Website.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!CheckLogin())
                 return RedirectToAction("Login", "Auth");
-
+            var userId = HttpContext.Session.GetInt32("UserId");
             var posts = await _groupUserService.GetAllPost(groupId);
             var groupInfo = await _groupUserService.GetGroupByIdWithOwner(groupId);
             var modList = await _groupUserService.GetModerators(groupId);
@@ -132,6 +132,7 @@ namespace UrDoggy.Website.Controllers
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!CheckLogin()) return RedirectToAction("Login", "Auth");
 
+            var userId = HttpContext.Session.GetInt32("UserId");
             var isActiveMember = await _groupUserService.IsActiveMember(userId.Value, groupId);
             if (!isActiveMember)
             {
@@ -230,7 +231,7 @@ namespace UrDoggy.Website.Controllers
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             if (!CheckLogin()) return RedirectToAction("Login", "Auth");
-
+            var userId = HttpContext.Session.GetInt32("UserId");
             var post = await _groupUserService.GetPostById(postId);
             if (post == null)
             {
@@ -345,7 +346,6 @@ namespace UrDoggy.Website.Controllers
         public async Task<IActionResult> EditGroupInformation(int groupId)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
-            if (userId.Value == null) { return Forbid(); }
             var group = await _groupUserService.getGroupById(groupId);
             var isAdmin = await _groupUserService.IsAdmin(userId.Value, groupId);
 
