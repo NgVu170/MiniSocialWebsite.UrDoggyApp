@@ -23,6 +23,5 @@ namespace UrDoggy.Services.Interfaces
         Task DeleteNotificationsForPost(int postId);
         Task<bool> MarkAsRead(int notificationId, int userId);
         Task ClearAllNotifications(int userId);
-        Task EnsureTagNotif(int userId, int receiverId, string senderName, int postId);
     }
 }

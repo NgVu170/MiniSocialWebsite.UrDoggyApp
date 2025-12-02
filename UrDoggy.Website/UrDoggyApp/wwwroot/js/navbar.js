@@ -48,4 +48,28 @@
             if (d !== currentDropdown) d.classList.remove("active");
         });
     });
+
+    document.addEventListener("click", e => {
+        const dropdowns = document.querySelectorAll('[data-dropdown]');
+        dropdowns.forEach(dropdown => {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    });
+
+    // THÊM PHẦN DEBUG
+    document.addEventListener("click", (e) => {
+        const dropdownButton = e.target.closest("[data-dropdown-button]");
+        if (dropdownButton) {
+            console.log('Dropdown button clicked');
+            console.log('Current active state:',
+                dropdownButton.closest("[data-dropdown]").classList.contains('active'));
+        }
+    });
+
+    // THÊM RESET Z-INDEX
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.style.zIndex = '9999';
+    });
 });

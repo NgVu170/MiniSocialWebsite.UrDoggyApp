@@ -4,10 +4,11 @@
 
 :root {
     /* Colors */
-    --color-text: white;
+    --color-text: black;
     --color-card: #ffffff;
     /* Background system (will be replaced by user selection later) */
     --color-bg: #d9ffe7;
+    --bs-body-bg: --color-bg;
     /* App theme (gradient/logo theme) */
     --color-theme: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
     /* Sizing */
@@ -50,6 +51,26 @@ html, body {
     background: var(--color-theme);
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow);
+    overflow: visible !important;
+}
+
+.dropdown-menu {
+    z-index: 1000 !important;
+}
+
+.dropdown-position-wrapper {
+    position: fixed;
+    top: var(--navbar-height) !important;
+    right: 20px;
+    z-index: 9999;
+}
+
+@media (max-width: 768px) {
+    .dropdown-position-wrapper {
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90vw;
+    }
 }
 
 
@@ -59,8 +80,8 @@ html, body {
 
 .main-layout {
     display: grid;
-    margin-top: calc(0vh + var(--navbar-height));
-    height: calc(100vh - var(--navbar-height));
+    margin-top: calc(2vh + var(--navbar-height));
+    height: calc(98vh - var(--navbar-height));
 }
 
 
@@ -163,7 +184,9 @@ html, body {
 .left-sidebar-user {
     margin-bottom: 1.5rem;
 }
-
+.left-sidebar-username {
+    color: var(--color-text);
+}
 /* Avatar */
 .left-sidebar-avatar {
     width: 64px;
@@ -199,7 +222,7 @@ html, body {
 
     .left-sidebar-item:hover {
         background: var(--accent-10);
-        color: var(--accent);
+        color: rgb(75, 106, 225);
         transform: translateX(8px);
     }
 
