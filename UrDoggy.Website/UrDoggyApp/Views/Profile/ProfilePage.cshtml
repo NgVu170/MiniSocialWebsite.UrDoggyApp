@@ -254,6 +254,10 @@ else
                         }
                     </a>
                     <small class="text-muted ms-2">@post.CreatedAt:g</small>
+                    @foreach(var media in post.MediaItems)
+                    {
+                        <img src="./media"/>
+                    }
                 </div>
 
                 @if (isOwnPost)

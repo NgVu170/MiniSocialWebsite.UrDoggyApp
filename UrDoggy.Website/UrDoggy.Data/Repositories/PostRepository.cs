@@ -18,10 +18,17 @@ namespace UrDoggy.Data.Repositories
         // READ: feed
         public virtual async Task<List<Post>> GetAllPost(int? groupId)
         {
-            return await _context.Posts
+            var query = _context.Posts
+                .Include(p => p.User)
                 .Include(p => p.MediaItems)
                 .Include(p => p.PostTags)
                     .ThenInclude(pt => pt.Tag)
+                .AsNoTracking();
+
+            if (groupId.HasValue)
+                query = query.Where(p => p.GroupId == groupId);
+
+            return await query
                 .OrderByDescending(p => p.CreatedAt)
                 .ToListAsync();
         }
@@ -30,10 +37,12 @@ namespace UrDoggy.Data.Repositories
         public async Task<Post?> GetById(int postId)
         {
             return await _context.Posts
-                .AsNoTracking()
+                .Include(p => p.User)
                 .Include(p => p.MediaItems)
                 .Include(p => p.Comments)
-                .Include(p => p.PostTags).ThenInclude(pt => pt.Tag)
+                .Include(p => p.PostTags)
+                    .ThenInclude(pt => pt.Tag)
+                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == postId);
         }
 

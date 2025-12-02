@@ -16,30 +16,23 @@ namespace UrDoggy.Data.Repositories
             _context = context;
         }
 
-        public async Task AddMediatems(int PostId, IEnumerable<(string path, string mediaType)> mediaItems)
+        public async Task AddMediatems(int postId, IEnumerable<(string path, string mediaType)> mediaItems)
         {
-            var findPost = await _context.Posts.FindAsync(PostId);
-            if (findPost != null)
-            {
-                if (findPost.MediaItems == null)
+            var mediaEntities = mediaItems
+                .Where(m => !string.IsNullOrWhiteSpace(m.path) && !string.IsNullOrWhiteSpace(m.mediaType))
+                .Select(m => new Media
                 {
-                    findPost.MediaItems = new List<Media>();
-                    foreach (var item in mediaItems)
-                    {
-                        if (!string.IsNullOrWhiteSpace(item.path) && !string.IsNullOrWhiteSpace(item.mediaType))
-                        {
-                            findPost.MediaItems.Add(new Media
-                            {
-                                PostId = PostId,
-                                Path = item.path,
-                                MediaType = item.mediaType,
-                                CreatedAt = DateTime.UtcNow
-                            });
-                        }
-                    }
-                    _context.Posts.Update(findPost);
-                    await _context.SaveChangesAsync();
-                }
+                    PostId = postId,
+                    Path = m.path,
+                    MediaType = m.mediaType,
+                    CreatedAt = DateTime.UtcNow
+                })
+                .ToList();
+
+            if (mediaEntities.Any())
+            {
+                _context.Media.AddRange(mediaEntities);
+                await _context.SaveChangesAsync();
             }
         }
 

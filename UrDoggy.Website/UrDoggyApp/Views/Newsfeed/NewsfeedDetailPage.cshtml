@@ -212,11 +212,11 @@
 		else if (item.MediaType == "video")
 		{
 			<video controls class="w-100 rounded mb-3">
-				<source src="@item=Path" type="video/mp4" />
+				<source src="@item.Path" type="video/mp4" />
 				Your browser does not support video.
 			</video>
 		}
-	})
+	}
 
     <div class="d-flex align-items-center gap-3 mb-4">
         <form asp-controller="Newsfeed"
@@ -379,4 +379,5 @@
                     .style.display = "none";
         }
     </script>
+
 }

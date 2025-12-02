@@ -45,8 +45,6 @@ namespace UrDoggy.Services.Service
                 UserId = userId,
                 Content = content,
                 CreatedAt = DateTime.UtcNow,
-                UpVotes = 0,
-                DownVotes = 0
             };
 
             await _postRepository.CreatePost(post, mediaItems);
