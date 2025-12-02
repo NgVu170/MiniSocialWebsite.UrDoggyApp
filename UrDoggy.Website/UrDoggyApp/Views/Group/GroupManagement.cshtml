@@ -10,6 +10,161 @@
     ViewData["Title"] = $"Quản trị nhóm - {Model.GroupName}";
 }
 
+<style>
+    /* Global Scrollbar Hide */
+    .container,
+    .card-body,
+    .vstack,
+    table {
+        overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+
+    /* Container Animation */
+    .container.mt-4 {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Header Section */
+    .d-flex.justify-content-between {
+        background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(9, 132, 227, 0.05) 100%);
+        padding: 1.5rem;
+        border-radius: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ff6b6b 0%, #dc3545 100%);
+        border: none;
+    }
+
+    /* Approval Cards */
+    .vstack .border.rounded {
+        border-radius: 1rem !important;
+        border: 2px solid rgba(0, 0, 0, 0.05) !important;
+        transition: all 0.3s ease;
+    }
+
+        .vstack .border.rounded:hover {
+            transform: translateX(5px);
+            border-color: #25D366 !important;
+        }
+
+    .btn-success.btn-sm {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        border: none;
+    }
+
+    /* Member Table */
+    .table {
+        --bs-table-bg: transparent;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+        .table tr {
+            transition: all 0.2s ease;
+        }
+
+            .table tr:hover {
+                background: rgba(9, 132, 227, 0.03) !important;
+            }
+
+        .table td,
+        .table th {
+            padding: 0.75rem 1rem;
+            border-color: rgba(0, 0, 0, 0.05);
+        }
+
+    /* Report Table */
+    .table-striped tbody tr:nth-of-type(odd) {
+        background: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Action Buttons */
+    .btn-sm {
+        padding: 0.3rem 0.8rem;
+        border-radius: 0.8rem;
+        min-width: 80px;
+    }
+
+    .btn-outline-primary.btn-sm {
+        border: 2px solid var(--primary);
+    }
+
+    /* Card Enhancements */
+    .card {
+        border: none;
+        border-radius: 1.5rem;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        color: white;
+        font-weight: 500;
+    }
+
+    /* Mobile Optimization */
+    @@media (max-width: 992px) {
+        .row.g-4 {
+            gap: 1.5rem !important;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .btn {
+            white-space: nowrap;
+        }
+    }
+
+    /* Loading States */
+    button[type="submit"]:disabled {
+        opacity: 0.7;
+        position: relative;
+    }
+
+        button[type="submit"]:disabled::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+    @@keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+</style>
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="d-flex align-items-center">

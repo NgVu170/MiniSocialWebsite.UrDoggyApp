@@ -5,6 +5,159 @@
     ViewData["Title"] = "Tạo nhóm";
 }
 
+<style>
+    /* Global Scrollbar Hide */
+    .container {
+        overflow: hidden;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+
+    /* Container Animation */
+    .container.mt-4 {
+        animation: fadeInUp 0.5s cubic-bezier(0.22, 0.61, 0.36, 1);
+        max-width: 700px;
+        padding: 2.5rem;
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 1.5rem;
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+    }
+
+    @@keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Form Enhancements */
+    .form-control {
+        border: 2px solid rgba(0, 0, 0, 0.08);
+        padding: 0.9rem 1.3rem;
+        border-radius: 1rem;
+        transition: all 0.3s ease;
+        background: #f8f9fa;
+    }
+
+        .form-control:focus {
+            border-color: #25D366;
+            box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.15);
+            background: white;
+        }
+
+    textarea.form-control {
+        min-height: 120px;
+    }
+
+    /* Image Upload Preview */
+    .image-preview-container {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .image-preview {
+        width: 120px;
+        height: 120px;
+        border: 2px dashed rgba(37, 211, 102, 0.3);
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        position: relative;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background-size: cover;
+        background-position: center;
+    }
+
+        .image-preview:hover {
+            border-color: #25D366;
+            transform: scale(1.03);
+        }
+
+        .image-preview::after {
+            content: '🖼️ Click để tải lên';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.8);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            text-align: center;
+            padding: 0.5rem;
+        }
+
+        .image-preview:hover::after {
+            opacity: 1;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            display: none;
+        }
+
+    /* Button Enhancements */
+    .btn-success {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        border: none;
+        padding: 0.9rem 2.5rem;
+        border-radius: 2rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-success::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient( 45deg, transparent, rgba(255, 255, 255, 0.3), transparent );
+            transform: rotate(45deg);
+            animation: shine 1.5s infinite;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.25);
+        }
+
+    /* Mobile Optimization */
+    @@media (max-width: 768px) {
+        .container.mt-4 {
+            padding: 1.5rem;
+            margin: 1rem;
+        }
+
+        .image-preview-container {
+            flex-direction: column;
+            align-items: center;
+        }
+    }
+
+    @@keyframes shine {
+        to {
+            left: 150%;
+        }
+    }
+</style>
+
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Tạo nhóm mới</h2>
@@ -21,14 +174,51 @@
             <label class="form-label">Mô tả</label>
             <textarea class="form-control" name="Description" rows="3"></textarea>
         </div>
-        <div class="mb-3">
-            <label class="form-label">Avatar URL (tùy chọn)</label>
-            <input class="form-control" name="Avatar" placeholder="/images/default-avatar.png" />
-        </div>
-        <div class="mb-3">
-            <label class="form-label">Cover URL (tùy chọn)</label>
-            <input class="form-control" name="CoverImage" placeholder="/images/default-cover.png" />
+        <div class="image-preview-container">
+            <div class="image-preview avatar-preview">
+                <img src="/images/default-avatar.png" alt="Avatar Preview">
+            </div>
+            <div class="image-preview cover-preview">
+                <img src="/images/default-cover.png" alt="Cover Preview">
+            </div>
         </div>
         <button type="submit" class="btn btn-success">Tạo nhóm</button>
     }
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Xử lý preview ảnh
+      const avatarPreview = document.querySelector('.avatar-preview');
+      const coverPreview = document.querySelector('.cover-preview');
+      const avatarInput = document.querySelector('input[name="Avatar"]');
+      const coverInput = document.querySelector('input[name="CoverImage"]');
+
+      // Tạo input file ẩn
+      const createHiddenInput = (previewElement, originalInput) => {
+        const fileInput = document.createElement('input');
+        fileInput.type = 'file';
+        fileInput.accept = 'image/*';
+        fileInput.style.display = 'none';
+
+        fileInput.addEventListener('change', function(e) {
+          if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewElement.style.backgroundImage = `url(${e.target.result})`;
+              previewElement.querySelector('img').style.display = 'none';
+              // Cập nhật giá trị cho input gốc nếu cần
+              originalInput.value = 'custom_upload';
+            }
+            reader.readAsDataURL(this.files[0]);
+          }
+        });
+
+        previewElement.addEventListener('click', () => fileInput.click());
+        document.body.appendChild(fileInput);
+      };
+
+      createHiddenInput(avatarPreview, avatarInput);
+      createHiddenInput(coverPreview, coverInput);
+    });
+</script>
