@@ -358,6 +358,7 @@
 <div class="post-create rounded-ui">
     <form method="post" asp-action="Create" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
+        
         <div class="d-flex align-items-start">
             <img src="@currentUserAvatarUrl" class="rounded-circle shadow-sm me-3" style="width:50px;height:50px; object-fit: cover;" alt="Your Avatar" />
 
@@ -368,6 +369,7 @@
                           rows="3"
                           placeholder="What's on your mind, @(currentUser?.UserName ?? "friend")?"
                           required></textarea>
+                <input type="hidden" name="TaggedUserIds" id="tagged-users" />
 
                 @* Tag Popups (Logic retained) *@
                 <div style="position: fixed; z-index: 1000; background: #f5feff; width: 70%; padding-left: 15px; border-radius: 11px;">
@@ -379,7 +381,6 @@
                          style=" max-height: 90px; overflow-y: auto;">
                     </div>
                 </div>
-                
             </div>
         </div>
 

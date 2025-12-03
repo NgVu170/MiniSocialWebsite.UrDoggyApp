@@ -81,7 +81,7 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? taggedUsers = null)
+        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? TaggedUserIds = null)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             var currentUser = await _userService.GetById(userId.Value);
@@ -107,19 +107,22 @@ namespace UrDoggy.Website.Controllers
 
                 var post = await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
-                if (taggedUsers != null )
+                if (!string.IsNullOrEmpty(TaggedUserIds))
                 {
-                    List<int> tagIds = new List<int>();
-                    if (!string.IsNullOrEmpty(taggedUsers))
-                    {
-                        tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(taggedUsers);
-                    }
-                    foreach(var tagId in tagIds)
+                    var tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(TaggedUserIds);
+
+                    foreach (var tagId in tagIds)
                     {
                         var recevierUser = await _userService.GetById(tagId);
-                        if (recevierUser != null && userId != null)
+                        if (recevierUser != null)
                         {
-                            await _notificationService.EnsureTagNotif(userId.Value, recevierUser.Id, currentUser.DisplayName, post.Id);
+                            await _notificationService.EnsureTagNotif(
+                                userId.Value,
+                                recevierUser.Id,
+                                currentUser.DisplayName,
+                                post.Id
+                            );
+
                             post.TaggedUsers.Add(recevierUser);
                         }
                     }
