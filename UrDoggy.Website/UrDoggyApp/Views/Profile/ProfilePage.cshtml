@@ -75,8 +75,6 @@
     .post-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: 1px solid rgba(0, 0, 0, 0.05);
-        margin-left: 10vw !important;
-        margin-right: 10vw !important;
     }
 
         .post-card:hover {
@@ -84,24 +82,28 @@
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
+    /* post content */
+
+    .post-content {
+        width: 1fr;
+        height: 90px;
+        overflow: auto;
+        overflow-wrap: break-word;
+    }
+
+
     /* media display */
     .media-display {
         margin: 5px;
-        max-height: 360px;
         overflow: hidden;
         
         
         border: solid 2px red;
     }
-    .testing-video {
-        align-items: !center;
-        justify-content: !center;
-    }
 
     .media-display .img, .media-display .video {
         align-items: center;
         justify-content: center;
-        border: solid 2px red;
     }
 
     /* Comment Section */
@@ -249,6 +251,13 @@
     }
 </div>
 
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
+}
+
+@section RightSidebar {
+    <partial name="~/Views/Shared/Partials/RightSidebar/_RightSidebar.cshtml" />
+}
 
 @if (!posts.Any())
 {
@@ -262,7 +271,7 @@ else
         string editPostDivId = "edit-post-" + post.Id;
         <div class="post-card mb-4 p-3 bg-white rounded shadow-sm">
 
-            <div class="tesing-video">
+            <div class="d-flex justify-content-between">
                 <div class="">
                     <a asp-controller="Profile"
                     asp-action="Index"
@@ -276,25 +285,7 @@ else
                             }
                         }
                     </a>
-                    <small class="text-muted ms-2">@post.CreatedAt:g</small>
-
-                    
-                    <div class="media-display">
-                        @foreach (var item in post.MediaItems)
-                        {
-                            if (item.MediaType == "image")
-                            {
-                                <img src="@Url.Content(item.Path)" class="img-fluid rounded mb-3" alt="Post image" />
-                            }
-                            else if (item.MediaType == "video")
-                            {
-                                <video controls class="w-100 rounded mb-3">
-                                    <source src="@Url.Content(item.Path)" type="video/mp4" />
-                                </video>
-                            }
-                        }
-                    </div>
-                    
+                    <small class="text-muted ms-2">@post.CreatedAt:g</small>                    
                 </div>
 
                 @if (isOwnPost)
@@ -321,7 +312,25 @@ else
                 }
             </div>
 
-            <p>@post.Content</p>
+            <div class="post-content">
+                <p>@post.Content</p>
+            </div>
+
+            <div class="media-display">
+                @foreach (var item in post.MediaItems)
+                {
+                    if (item.MediaType == "image")
+                    {
+                        <img src="@Url.Content(item.Path)" class="img-fluid rounded mb-3" alt="Post image" />
+                    }
+                    else if (item.MediaType == "video")
+                    {
+                        <video controls class="w-100 rounded mb-3">
+                            <source src="@Url.Content(item.Path)" type="video/mp4" />
+                        </video>
+                    }
+                }
+            </div>
 
             <div class="d-flex align-items-center gap-2 mb-3">
                 <form asp-controller="Newsfeed"
