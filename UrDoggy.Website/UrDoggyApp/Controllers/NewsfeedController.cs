@@ -472,35 +472,16 @@ namespace UrDoggy.Website.Controllers
             if (userId == null || userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
-            List<int> hiddenIds = cookieValue
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(text => int.TryParse(text, out var v) ? v : -1)
-                .Where(id => id >= 0)
-                .ToList();
-
             try
             {
-                // Lấy danh sách posts đã xem từ cookie
-                string viewedCookieValue = Request.Cookies[ViewedPostsCookieName] ?? "";
-                HashSet<int> viewedPostIds = viewedCookieValue
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(text => int.TryParse(text, out var v) ? v : -1)
-                    .Where(id => id >= 0)
-                    .ToHashSet();
-
                 // Lấy bài viết recommended và loại bỏ những post đã xem
                 bool isPersonalized = ViewBag.IsPersonalized is true;
                 List<Post> allPosts = (isPersonalized) ?
-                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, true) :
-                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, false);
+                    await _postService.GetRecommendedPosts(userId.Value, null, true) :
+                    await _postService.GetRecommendedPosts(userId.Value, null, false);
 
                 var visiblePosts = allPosts
-                    .Where(post => !hiddenIds.Contains(post.Id))
                     .ToList();
-
-                // Cập nhật danh sách posts đã xem
-                UpdateViewedPostsCookie(viewedPostIds, visiblePosts);
 
                 // Lấy comments cho mỗi post
                 foreach (var post in visiblePosts)
@@ -519,13 +500,11 @@ namespace UrDoggy.Website.Controllers
                 ViewBag.CurrentUser = currentUser;
                 ViewBag.UnreadCount = unreadCount;
                 ViewBag.Friends = friends;
-                ViewBag.HiddenPostIds = hiddenIds;
 
                 return View("NewsfeedPage", visiblePosts);
             }
             catch (Exception ex)
             {
-                // Log lỗi và trả về view với danh sách rỗng
                 TempData["Error"] = "Có lỗi xảy ra khi tải bài viết: " + ex.Message;
                 return View("NewsfeedPage", new List<Post>());
             }
