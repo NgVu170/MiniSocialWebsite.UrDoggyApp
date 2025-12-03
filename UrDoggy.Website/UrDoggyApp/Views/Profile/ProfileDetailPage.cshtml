@@ -7,6 +7,9 @@
     string profileAvatarUrl = string.IsNullOrWhiteSpace(profile.ProfilePicture)
         ? defaultAvatar
         : Url.Content(profile.ProfilePicture);
+
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
 <style>
@@ -41,7 +44,7 @@
     }
 
         .btn-primary:not(:disabled):hover {
-            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+            background: var(--color-theme);
             transform: translateY(-2px);
         }
 
@@ -144,11 +147,15 @@
 
     /* ================= Profile Header ================= */
     .profile-header-card {
-        background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(9, 132, 227, 0.1) 100%);
-        border-radius: var(--radius);
-        padding: 2.5rem 1.5rem;
-        box-shadow: var(--shadow);
-        border: none;
+        background: var(--bg-theme);
+        border-radius: 1.5rem;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0,0,0,0.03);
+        position: relative;
+        overflow: hidden;
     }
 
     .profile-avatar-lg {
@@ -229,7 +236,7 @@
 
 </style>
 
-<div class="text-center mb-5">
+<div class="text-center mb-5 profile-header-card">
     <img src="@profileAvatarUrl"
          class="rounded-circle mb-3"
          width="240" height="240" />

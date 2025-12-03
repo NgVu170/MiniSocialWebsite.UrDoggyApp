@@ -1,9 +1,12 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    // Assuming ViewBag.PostId is set by the Controller
     var postId = ViewBag.PostId;
+    ViewData["Title"] = "Report Post";
 }
 
 <style>
+    /* ... (CSS is retained as provided) ... */
     form[asp-controller="Report"] {
         max-width: 600px;
         margin: 2rem auto;
@@ -19,15 +22,19 @@
             transform: translateY(-2px);
         }
 
-    .form-select {
+    .form-select, .form-control { /* Added .form-control for textarea */
         border: 2px solid var(--secondary);
         border-radius: 1rem;
         padding: 0.75rem 1.25rem;
         transition: all 0.3s ease;
+        /* Only apply background image to select, not textarea */
+    }
+
+    .form-select {
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%230984e3' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
     }
 
-        .form-select:focus {
+        .form-select:focus, .form-control:focus { /* Added .form-control:focus */
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.15);
         }
@@ -57,6 +64,9 @@
         background: linear-gradient(135deg, #f1f2f6 0%, #dfe4ea 100%);
         border: none;
         color: #2d3436;
+        border-radius: 2rem; /* Ensure secondary button also has rounded edges */
+        padding: 0.6rem 1.75rem;
+        font-weight: 600;
     }
 
     button[type="submit"]:disabled {
@@ -101,27 +111,116 @@
     }
 </style>
 
-<h2>Report Post</h2>
+<div class="container py-4">
+    <h2 class="display-6 fw-bold mb-4">Report Post</h2>
 
-<form method="post"
-      asp-controller="Report"
-      asp-action="CreatePost">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="postId" value="@postId" />
+    <form method="post"
+          asp-controller="Report"
+          asp-action="CreatePost"
+          id="reportForm">
+        @* Added ID for JavaScript *@
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="postId" value="@postId" />
 
-    <div class="mb-3">
-        <label for="reason" class="form-label">Select Reason</label>
-        <select id="reason" name="reason" class="form-select" required>
-            <option value="">-- Choose a reason --</option>
-            <option value="Inappropriate content">Inappropriate content</option>
-            <option value="Spam">Spam</option>
-            <option value="Harassment">Harassment</option>
-            <option value="Other">Other</option>
-        </select>
-    </div>
+        <div class="alert alert-danger d-none" role="alert" id="validationAlert">
+            Please select a reason and provide a description for 'Other'.
+        </div>
 
-    <button type="submit" class="btn btn-danger">Submit Report</button>
-    <a asp-controller="Newsfeed"
-       asp-action="Index"
-       class="btn btn-secondary ms-2">Cancel</a>
-</form>
+        <div class="mb-3">
+            <label for="reason" class="form-label fw-bold">Select Reason for Reporting</label>
+            <select id="reason" name="reason" class="form-select" required>
+                <option value="">-- Choose a reason --</option>
+                <option value="Inappropriate content">Inappropriate content (Nudity, Hate Speech, etc.)</option>
+                <option value="Spam">Spam / Misleading Content</option>
+                <option value="Harassment">Harassment or Bullying</option>
+                <option value="Violence">Promoting Violence or Self-Harm</option>
+                <option value="Other">Other (Please describe below)</option>
+            </select>
+        </div>
+
+        @* REVISED: Add Textarea for description *@
+        <div class="mb-3" id="descriptionGroup">
+            <label for="description" class="form-label fw-bold">Details (Required for 'Other')</label>
+            <textarea id="description" name="description" class="form-control" rows="3"
+                      placeholder="Please provide details to help us review this report."></textarea>
+            <div class="form-text">
+                Your report is anonymous. Providing details helps us take faster action.
+            </div>
+        </div>
+        @* END REVISED *@
+
+        <div class="d-flex justify-content-end mt-4">
+            <a asp-controller="Newsfeed"
+               asp-action="Index"
+               class="btn btn-secondary me-2">Cancel</a> @* Changed ms-2 to me-2 for better spacing *@
+
+            <button type="submit" class="btn btn-danger" id="submitButton">
+                <i class="fas fa-flag me-1"></i> Submit Report
+            </button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('reportForm');
+            const reasonSelect = document.getElementById('reason');
+            const descriptionTextarea = document.getElementById('description');
+            const submitButton = document.getElementById('submitButton');
+            const validationAlert = document.getElementById('validationAlert');
+
+            // Function to check if description is required based on reason
+            function updateDescriptionRequirement() {
+                const isOther = reasonSelect.value === 'Other';
+
+                // For 'Other', set required. For others, it's optional but still recommended.
+                descriptionTextarea.required = isOther;
+
+                // Visually update the label (optional)
+                const label = document.querySelector('label[for="description"]');
+                if (label) {
+                    label.textContent = isOther
+                        ? 'Details (Required for \'Other\')'
+                        : 'Details (Optional)';
+                }
+            }
+
+            // Initial check and event listener
+            updateDescriptionRequirement();
+            reasonSelect.addEventListener('change', updateDescriptionRequirement);
+
+            // Handle form submission
+            form.addEventListener('submit', function (e) {
+                let isValid = true;
+
+                // 1. Check if 'Other' is selected but description is empty
+                if (reasonSelect.value === 'Other' && descriptionTextarea.value.trim() === '') {
+                    isValid = false;
+                    descriptionTextarea.classList.add('is-invalid');
+                } else {
+                    descriptionTextarea.classList.remove('is-invalid');
+                }
+
+                // 2. Check if no reason is selected
+                if (reasonSelect.value === '') {
+                     isValid = false;
+                     reasonSelect.classList.add('is-invalid');
+                } else {
+                     reasonSelect.classList.remove('is-invalid');
+                }
+
+                if (!isValid) {
+                    e.preventDefault();
+                    validationAlert.classList.remove('d-none');
+                } else {
+                    validationAlert.classList.add('d-none');
+
+                    // Prevent multiple submissions and show loading state
+                    submitButton.disabled = true;
+                    submitButton.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Sending...';
+                }
+            });
+        });
+    </script>
+}

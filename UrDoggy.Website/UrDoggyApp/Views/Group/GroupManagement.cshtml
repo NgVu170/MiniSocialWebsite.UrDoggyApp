@@ -8,7 +8,15 @@
     var reports = ViewBag.ReportList as List<GroupReport> ?? new List<GroupReport>();
     var role = ViewBag.Role as GroupRole?;
     ViewData["Title"] = $"Quản trị nhóm - {Model.GroupName}";
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
+
+
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
+}
+
 
 <style>
     /* Global Scrollbar Hide */

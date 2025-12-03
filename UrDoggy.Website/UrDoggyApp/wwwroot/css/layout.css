@@ -11,7 +11,7 @@
     --bs-body-bg: --color-bg;
     /* App theme (gradient/logo theme) */
     --color-theme: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
-    --bg-theme: url('./images/default-bg-login.jpg') no-repeat;
+    --bg-theme: url('~/images/default-bg-login.jpg') no-repeat;
     /* Sizing */
     --navbar-height: 10vh;
     --sidebar-width: 20%;
@@ -82,7 +82,7 @@ html, body {
 .main-layout {
     display: grid;
     margin-top: calc(2vh + var(--navbar-height));
-    height: calc(100vh);
+    height: calc(90vh);
 }
 
 
@@ -215,6 +215,7 @@ html, body {
 .left-sidebar-item {
     border: none !important;
     margin: 0.5rem 0;
+    color: white;
     border-radius: 0.75rem !important;
     background: var(--color-theme);
     box-shadow: var(--shadow);
@@ -222,8 +223,6 @@ html, body {
 }
 
     .left-sidebar-item:hover {
-        background: var(--accent-10);
-        color: rgb(75, 106, 225);
         transform: translateX(8px);
     }
 

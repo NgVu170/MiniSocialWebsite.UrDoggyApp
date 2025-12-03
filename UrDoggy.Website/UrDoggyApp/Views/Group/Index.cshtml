@@ -7,6 +7,8 @@
     var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
     var userId = ViewBag.UserId as int?;
     var userGroupIds = userInGroups.Select(g => g.GroupId).ToHashSet();
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
 <style>
@@ -144,6 +146,11 @@
         }
     }
 </style>
+
+
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
+}
 
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">

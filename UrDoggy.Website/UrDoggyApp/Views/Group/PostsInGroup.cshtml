@@ -8,8 +8,14 @@
     var role = ViewBag.Role as GroupRole?;
     var userId = ViewBag.UserId as int?;
     ViewData["Title"] = group != null ? $"Bài viết - {group.GroupName}" : "Bài viết trong nhóm";
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
+
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
+}
 <style>
     /* Header Section */
     .container.mt-4 {

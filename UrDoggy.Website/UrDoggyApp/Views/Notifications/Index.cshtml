@@ -5,6 +5,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
     // Assuming the Notification model now includes a 'Type' string property (e.g., "like", "comment", "friend").
     // If PostService.GetById is not an awaitable Task<T>, calling it directly inside the Razor loop is synchronous.
+
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
 <style>
@@ -12,7 +15,7 @@
     :root {
         --noti-primary: #25D366;
         --noti-secondary: #0984e3;
-        --noti-bg: #f8f9fa;
+        --noti-bg: var(--color-bg);
         --noti-card: #ffffff;
         --noti-border: rgba(0, 0, 0, 0.1);
     }
