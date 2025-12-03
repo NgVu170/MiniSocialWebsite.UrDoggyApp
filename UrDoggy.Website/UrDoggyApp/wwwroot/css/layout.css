@@ -8,7 +8,7 @@
     --color-card: #ffffff;
     /* Background system (will be replaced by user selection later) */
     --color-bg: #d9ffe7;
-    --bs-body-bg: --color-bg;
+    --bs-body-bg: var(--color-bg) !important;
     /* App theme (gradient/logo theme) */
     --color-theme: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
     /* Sizing */
@@ -31,9 +31,14 @@ html, body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background-color: var(--color-bg);
+    background-color: var(--color-bg) !important; /* Force override */
+    background: var(--color-bg) !important; /* Dự phòng */
     color: var(--color-text);
 }
+
+    body.main-layout {
+        background: var(--color-bg) !important;
+    }
 
 
 /* ============================================================
@@ -312,3 +317,12 @@ html, body {
     color: var(--accent);
 }
 
+
+
+/**/
+/* Thêm vào cuối file layout.css */
+body:not(#\9 ) {
+    /* Hack specificity cho IE/Edge */
+    background-color: var(--color-bg) !important;
+    background: var(--color-bg) !important;
+}
