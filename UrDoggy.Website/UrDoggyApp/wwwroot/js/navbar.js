@@ -1,7 +1,38 @@
-﻿document.addEventListener("DOMContentLoaded", () => {
-/* ============================================================
-   1. NAVBAR RIGHT
+﻿/* ============================================================
+   GLOBAL FUNCTIONS FOR THEME COLOR PICKER
    ============================================================ */
+
+function setColor(input) {
+    const lightness = getLightnessFromHex(input.value);
+    document.body.setAttribute(
+        "style",
+        `--color-bg: ${input.value};
+         --color-text: ${lightness > 60 ? 'black' : 'white'}`
+    );
+}
+
+function getLightnessFromHex(hex) {
+    hex = hex.replace(/^#/, "");
+
+    const r = parseInt(hex.substr(0, 2), 16);
+    const g = parseInt(hex.substr(2, 2), 16);
+    const b = parseInt(hex.substr(4, 2), 16);
+
+    const brightness = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+
+    return +(brightness * 100).toFixed(2);
+}
+
+
+/* ============================================================
+   PAGE INTERACTIONS
+   ============================================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    /* ============================================================
+       1. NAVBAR RIGHT
+       ============================================================ */
 
     /* SEARCH */
 
@@ -58,7 +89,7 @@
         });
     });
 
-    // THÊM PHẦN DEBUG
+    // DEBUG
     document.addEventListener("click", (e) => {
         const dropdownButton = e.target.closest("[data-dropdown-button]");
         if (dropdownButton) {
@@ -68,8 +99,9 @@
         }
     });
 
-    // THÊM RESET Z-INDEX
+    // FORCE HIGH Z-INDEX
     document.querySelectorAll('.dropdown-menu').forEach(menu => {
         menu.style.zIndex = '9999';
     });
+
 });

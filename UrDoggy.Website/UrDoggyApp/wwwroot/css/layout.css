@@ -2,12 +2,18 @@
    1. DESIGN TOKENS
    ============================================================ */
 
-:root {
+/* ============================================================
+   2. GLOBAL BODY & HTML
+   ============================================================ */
+
+html, body {
+    /* Base Color */
+    --color-bg: #edfff4;
     /* Colors */
     --color-text: black;
-    --color-card: #ffffff;
+    --color-card: oklch(from var(--color-bg) calc(l * 1.35) c h);
     /* Background system (will be replaced by user selection later) */
-    --color-bg: #d9ffe7;
+
     --bs-body-bg: --color-bg;
     /* App theme (gradient/logo theme) */
     --color-theme: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
@@ -20,14 +26,7 @@
     --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     /* Accent opacity helper */
     --accent-10: rgba(0, 184, 148, 0.1);
-}
-
-
-/* ============================================================
-   2. GLOBAL BODY & HTML
-   ============================================================ */
-
-html, body {
+    /**/
     height: 100%;
     margin: 0;
     padding: 0;
@@ -81,7 +80,7 @@ html, body {
 
 .main-layout {
     display: grid;
-    margin-top: calc(2vh + var(--navbar-height));
+    margin-top: var(--navbar-height);
     height: calc(90vh);
 }
 
