@@ -59,20 +59,57 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateGroup(string GroupName, string Description, string Avatar, string CoverImage)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateGroup(
+            string GroupName,
+            string Description,
+            IFormFile? Avatar,
+            IFormFile? CoverImage)
         {
             if (!CheckLogin())
                 return RedirectToAction("Login", "Auth");
 
-            Avatar = string.IsNullOrWhiteSpace(Avatar) ? "/images/default-avatar.png" : Avatar.Trim();
-            CoverImage = string.IsNullOrWhiteSpace(CoverImage) ? "/images/default-cover.png" : CoverImage.Trim();
             var userId = HttpContext.Session.GetInt32("UserId");
+            if (userId == null) return RedirectToAction("Login", "Auth");
+
+            string avatarPath = "/images/default-avatar.png";
+            string coverPath = "/images/default-cover.png";
+
+            var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", $"user_{userId}");
+
+            if (!Directory.Exists(uploadDir))
+                Directory.CreateDirectory(uploadDir);
+
+            if (Avatar != null && Avatar.Length > 0)
+            {
+                var ext = Path.GetExtension(Avatar.FileName).ToLowerInvariant();
+                var fname = $"group_avatar_{Guid.NewGuid()}{ext}";
+                var fpath = Path.Combine(uploadDir, fname);
+
+                using (var stream = new FileStream(fpath, FileMode.Create))
+                    await Avatar.CopyToAsync(stream);
+
+                avatarPath = $"/uploads/user_{userId}/{fname}";
+            }
+
+            if (CoverImage != null && CoverImage.Length > 0)
+            {
+                var ext = Path.GetExtension(CoverImage.FileName).ToLowerInvariant();
+                var fname = $"group_cover_{Guid.NewGuid()}{ext}";
+                var fpath = Path.Combine(uploadDir, fname);
+
+                using (var stream = new FileStream(fpath, FileMode.Create))
+                    await CoverImage.CopyToAsync(stream);
+
+                coverPath = $"/uploads/user_{userId}/{fname}";
+            }
+
             var newGroup = new Group
             {
                 GroupName = GroupName,
                 Description = Description,
-                Avatar = Avatar,
-                CoverImage = CoverImage,
+                Avatar = avatarPath,
+                CoverImage = coverPath,
                 OwnerId = userId.Value,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
@@ -80,8 +117,10 @@ namespace UrDoggy.Website.Controllers
             };
 
             await _adminGroupService.CreateGroup(newGroup, userId.Value);
+
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         public async Task<IActionResult> LeaveGroup(int groupId)
