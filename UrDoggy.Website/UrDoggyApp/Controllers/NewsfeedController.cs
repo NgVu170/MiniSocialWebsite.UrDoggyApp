@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
@@ -10,6 +11,7 @@ using UrDoggy.Services.Service;
 
 namespace UrDoggy.Website.Controllers
 {
+
     [Authorize]
     public class NewsfeedController : Controller
     {
