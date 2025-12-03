@@ -449,7 +449,7 @@
 
                     @if (!isOwnPost)
                     {
-                        <form asp-controller="Newsfeed" asp-action="Report" method="post" class="d-inline ms-auto">
+                        <form asp-controller="Report" asp-action="Create" method="post" class="d-inline ms-auto">
                             @Html.AntiForgeryToken()
                             <input type="hidden" name="postId" value="@post.Id" />
                             <input type="hidden" name="reason" value="Inappropriate content" />

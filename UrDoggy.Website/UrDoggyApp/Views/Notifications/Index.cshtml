@@ -3,6 +3,8 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    // Assuming the Notification model now includes a 'Type' string property (e.g., "like", "comment", "friend").
+    // If PostService.GetById is not an awaitable Task<T>, calling it directly inside the Razor loop is synchronous.
 }
 
 <style>
@@ -25,6 +27,7 @@
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         position: relative;
         overflow: hidden;
+        cursor: pointer; /* Added cursor pointer for clickable cards */
     }
 
         .notification-card::before {
@@ -56,6 +59,7 @@
         margin-right: 1rem;
     }
 
+        /* --- Icon color logic moved to GetIconType for consistency --- */
         .notification-icon.like {
             background: rgba(255, 71, 87, 0.1);
             color: #ff4757;
@@ -81,6 +85,7 @@
         opacity: 1;
     }
 
+    /* Actions are positioned absolutely relative to card, so we need to prevent event propagation */
     .notification-actions {
         position: absolute;
         right: 1rem;
@@ -88,6 +93,7 @@
         transform: translateY(-50%);
         opacity: 0;
         transition: all 0.3s ease;
+        z-index: 10; /* Ensure button is clickable over card background */
     }
 
     .notification-card:hover .notification-actions {
@@ -146,32 +152,46 @@
         <div class="notification-list">
             @foreach (var n in Model)
             {
-                <div class="notification-card @(!n.IsRead ? "unread" : "")">
+                string iconClass = GetIconClass(n.Type.ToString());
+                string iconType = GetIconType(n.Type.ToString());
+
+                // Determine the target URL based on PostId or default to the Notifications list
+                string targetUrl = n.PostId.HasValue
+                ? Url.Action("Details", "Newsfeed", new { id = n.PostId.Value })
+                : Url.Action("Index", "Notifications");
+
+                // Synchronous call to PostService.GetById inside the loop might be slow if the service performs DB queries.
+                // Assuming PostService.GetById is defined to be synchronous or called asynchronously elsewhere if needed.
+                // var post = n.PostId.HasValue ? await PostService.GetById(n.PostId.Value) : null;
+
+                // Add data-id and markAsRead on card click for non-action elements
+                <div class="notification-card @(!n.IsRead ? "unread" : "")"
+                     data-id="@n.Id"
+                     onclick="navigateToNotification('@targetUrl', @n.Id, event)">
+
                     <div class="d-flex align-items-center">
+
+                        @* REVISED: Add Icon container *@
+                        <div class="notification-icon @iconType">
+                            <i class="@iconClass"></i>
+                        </div>
+                        @* END REVISED: Icon container *@
 
                         <div class="flex-grow-1">
                             <div class="notification-time">@n.CreatedAt.ToString("g")</div>
-                            <div class="mt-1 h5">
-                                @if (n.PostId.HasValue && PostService.GetById(n.PostId.Value) != null)
-                                {
-                                    <a asp-controller="Newsfeed"
-                                       asp-action="Details"
-                                       asp-route-id="@n.PostId"
-                                       class="text-decoration-none text-dark">
-                                        @n.Message
-                                    </a>
-                                }
-                                else
-                                {
-                                    @n.Message
-                                }
+                            <div class="mt-1 h5 text-dark">
+                                @n.Message
                             </div>
                         </div>
+
                         <div class="notification-actions">
-                            <button class="btn btn-sm btn-link text-muted"
-                                    onclick="deleteNotification(@n.Id)">
-                                <i class="fas fa-times"></i>
-                            </button>
+                            @* Use a wrapper element to stop click propagation from interfering with card click *@
+                            <div onclick="event.stopPropagation()">
+                                <button class="btn btn-sm btn-link text-muted"
+                                        onclick="deleteNotification(@n.Id)">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,66 +200,146 @@
     }
 </div>
 
-<script>
-    // Real-time updates
-    const eventSource = new EventSource('/notifications/stream');
-    eventSource.onmessage = function(e) {
-        const notification = JSON.parse(e.data);
-        prependNotification(notification);
-    };
+@section Scripts {
+    <script>
+        // --- Utility function for getting icon class (Mirrors C# logic for consistency in real-time updates) ---
+        function getIconClass(type) {
+            switch (type) {
+                case "like": return "fas fa-heart";
+                case "comment": return "fas fa-comment";
+                case "friend": return "fas fa-user-plus";
+                default: return "fas fa-bell";
+            }
+        }
 
-    function prependNotification(noti) {
-        const list = document.querySelector('.notification-list');
-        const newCard = document.createElement('div');
-        newCard.className = `notification-card unread`;
-        newCard.innerHTML = `
-            <div class="d-flex align-items-center">
-                <div class="notification-icon ${noti.type}">
-                    <i class="${getIconClass(noti.type)}"></i>
+        // --- Utility function for getting icon type (Mirrors C# logic) ---
+        function getIconType(type) {
+             switch (type) {
+                case "like": return "like";
+                case "comment": return "comment";
+                case "friend": return "friend";
+                default: return "";
+            }
+        }
+
+        // --- Real-time updates (Retained) ---
+        const eventSource = new EventSource('/notifications/stream');
+        eventSource.onmessage = function(e) {
+            const notification = JSON.parse(e.data);
+            prependNotification(notification);
+        };
+
+        function prependNotification(noti) {
+            const list = document.querySelector('.notification-list');
+            if (!list) return;
+
+            const newCard = document.createElement('div');
+            newCard.className = `notification-card unread`;
+            newCard.setAttribute('data-id', noti.id);
+            newCard.setAttribute('onclick', `MapsToNotification('${noti.targetUrl}', ${noti.id}, event)`);
+            newCard.innerHTML = `
+                <div class="d-flex align-items-center">
+                    <div class="notification-icon ${getIconType(noti.type)}">
+                        <i class="${getIconClass(noti.type)}"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="notification-time">${new Date().toLocaleString()}</div>
+                        <div class="mt-1 h5 text-dark">${noti.message}</div>
+                    </div>
+                    <div class="notification-actions">
+                        <div onclick="event.stopPropagation()">
+                            <button class="btn btn-sm btn-link text-muted"
+                                    onclick="deleteNotification(${noti.id})">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex-grow-1">
-                    <div class="notification-time">${new Date().toLocaleString()}</div>
-                    <div class="mt-1 h5">${noti.message}</div>
-                </div>
-                <div class="notification-actions">
-                    <button class="btn btn-sm btn-link text-muted"
-                            onclick="deleteNotification(${noti.id})">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </div>
-            </div>
-        `;
-        list.insertBefore(newCard, list.firstChild);
-        animateNotification(newCard);
-    }
+            `;
+            list.insertBefore(newCard, list.firstChild);
+            animateNotification(newCard);
+        }
 
-    function animateNotification(element) {
-        anime({
-            targets: element,
-            opacity: [0, 1],
-            translateY: [-20, 0],
-            duration: 300,
-            easing: 'easeOutExpo'
-        });
-    }
+        // --- Animation (Retained) ---
+        function animateNotification(element) {
+            // NOTE: Assuming 'anime' library is available globally for this animation
+            if (typeof anime !== 'undefined') {
+                anime({
+                    targets: element,
+                    opacity: [0, 1],
+                    translateY: [-20, 0],
+                    duration: 300,
+                    easing: 'easeOutExpo'
+                });
+            }
+        }
 
-    async function markAllAsRead() {
-        await fetch('/notifications/mark-all-read', { method: 'POST' });
-        document.querySelectorAll('.notification-card').forEach(card => {
-            card.classList.remove('unread');
-        });
-    }
+        // --- NEW: Function to handle card click and navigation ---
+        async function navigateToNotification(url, id, event) {
+            // Prevent navigation if the click came from a child action element (like the delete button)
+            if (event.target.closest('.notification-actions')) {
+                 return;
+            }
 
-    async function deleteNotification(id) {
-        await fetch(`/notifications/delete/${id}`, { method: 'DELETE' });
-        document.querySelector(`notification-card[data-id="${id}"]`).remove();
-    }
-</script>
+            // 1. Mark as read
+            const card = document.querySelector(`.notification-card[data-id="${id}"]`);
+            if (card && card.classList.contains('unread')) {
+                await markAsRead(id);
+                card.classList.remove('unread');
+            }
+
+            // 2. Navigate
+            if (url) {
+                window.location.href = url;
+            }
+        }
+
+        // --- NEW: Mark a single notification as read ---
+        async function markAsRead(id) {
+            try {
+                await fetch(`/notifications/mark-read/${id}`, { method: 'POST' });
+            } catch (error) {
+                console.error('Failed to mark notification as read:', error);
+            }
+        }
+
+        // --- Mark All As Read (Retained and Enhanced) ---
+        async function markAllAsRead() {
+            // Note: The /notifications/mark-all-read endpoint needs to be implemented on the backend.
+            try {
+                await fetch('/notifications/mark-all-read', { method: 'POST' });
+                document.querySelectorAll('.notification-card').forEach(card => {
+                    card.classList.remove('unread');
+                });
+            } catch (error) {
+                 console.error('Failed to mark all as read:', error);
+            }
+        }
+
+        // --- Delete Notification (Retained and Fixed selector) ---
+        async function deleteNotification(id) {
+            // Note: The /notifications/delete/{id} endpoint needs to be implemented on the backend.
+            try {
+                await fetch(`/notifications/delete/${id}`, { method: 'DELETE' });
+                const card = document.querySelector(`.notification-card[data-id="${id}"]`);
+                if (card) {
+                    card.remove();
+                }
+            } catch (error) {
+                console.error('Failed to delete notification:', error);
+            }
+        }
+    </script>
+}
 
 @functions {
-    string GetIconClass(string type)
+    // NOTE: C# function is needed to handle the synchronous call in the loop
+    // Assumes UrDoggy.Core.Models.Notification has a string property named 'Type'
+
+    // Maps notification type string to the Font Awesome class name.
+    public string GetIconClass(string type)
     {
-        return type switch
+        return type?.ToLowerInvariant() switch
         {
             "like" => "fas fa-heart",
             "comment" => "fas fa-comment",
@@ -248,9 +348,10 @@
         };
     }
 
-    string GetIconType(string type)
+    // Maps notification type string to the CSS class for coloring (e.g., 'like', 'comment').
+    public string GetIconType(string type)
     {
-        return type switch
+        return type?.ToLowerInvariant() switch
         {
             "like" => "like",
             "comment" => "comment",

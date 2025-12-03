@@ -141,6 +141,92 @@
     ::-webkit-scrollbar {
         display: none;
     }
+
+    /* ================= Profile Header ================= */
+    .profile-header-card {
+        background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(9, 132, 227, 0.1) 100%);
+        border-radius: var(--radius);
+        padding: 2.5rem 1.5rem;
+        box-shadow: var(--shadow);
+        border: none;
+    }
+
+    .profile-avatar-lg {
+        border: 3px solid var(--color-card);
+        box-shadow: 0 8px 24px rgba(0, 184, 148, 0.15);
+    }
+
+    /* ================= Post Cards ================= */
+    .post-card {
+        background: var(--color-card);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .post-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px rgba(37, 211, 102, 0.1);
+        }
+
+    /* ================= Action Buttons ================= */
+    .btn-profile-action {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        color: white !important;
+        border: none;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .btn-profile-action::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .btn-profile-action:hover::after {
+            opacity: 1;
+        }
+
+    /* ================= Comment Section ================= */
+    .comment-section {
+        background: rgba(240, 242, 245, 0.4);
+        border-radius: 0 0 var(--radius) var(--radius);
+    }
+
+    .comment-box {
+        background: var(--color-card);
+        border-radius: calc(var(--radius) - 4px);
+        border: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* ================= Empty State ================= */
+    .empty-posts {
+        background: rgba(255,255,255,0.8);
+        backdrop-filter: blur(4px);
+        border-radius: var(--radius);
+    }
+
+    /* ================= Animation Additions ================= */
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .post-card {
+        animation: fadeIn 0.6s ease forwards;
+    }
+
 </style>
 
 <div class="text-center mb-5">
@@ -257,5 +343,34 @@
                 .then(() => alert('Link copied to clipboard'))
                 .catch(() => alert('Failed to copy URL'));
         }
+    </script>
+
+    <script>
+                // Smooth button interactions
+        document.querySelectorAll('.btn-action, .btn-profile-action').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.currentTarget.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    e.currentTarget.style.transform = '';
+                }, 200);
+            });
+        });
+
+        // Enhanced dropdown animation
+        document.querySelectorAll('.post-menu-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const menu = this.nextElementSibling;
+                menu.style.display = 'block';
+                menu.style.opacity = '0';
+                menu.style.transform = 'translateY(-10px)';
+
+                requestAnimationFrame(() => {
+                    menu.style.transition = 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+                    menu.style.opacity = '1';
+                    menu.style.transform = 'translateY(0)';
+                });
+            });
+        });
+
     </script>
 }
