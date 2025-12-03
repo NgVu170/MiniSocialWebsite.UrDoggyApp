@@ -1,10 +1,10 @@
 ﻿@{
     bool isHome = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
-                   && ViewContext.RouteData.Values["action"]?.ToString() == "Index";
+                   && ViewContext.RouteData.Values["action"]?.ToString() == "PersonalizedFeed";
 
 
     bool isTrending = ViewContext.RouteData.Values["controller"]?.ToString() == "Newsfeed"
-                       && ViewContext.RouteData.Values["action"]?.ToString() == "Index#";
+                       && ViewContext.RouteData.Values["action"]?.ToString() == "Index";
 
     bool isNotification = ViewContext.RouteData.Values["controller"]?.ToString() == "Notifications";
     bool isMessages = ViewContext.RouteData.Values["controller"]?.ToString() == "Messages";
@@ -25,7 +25,7 @@
 
     <!-- HOME -->
     <li class="nav-item @(isHome ? "active" : "")" data-index="0">
-        <a class="nav-link" href="/Newsfeed/Index">
+        <a class="nav-link" href="/Newsfeed/PersonalizedFeed">
             <div class="nav-icon-wrapper">
                 <i class="fas fa-home nav-icon"></i>
             </div>
@@ -37,7 +37,7 @@
 
     <!-- TRENDING -->
     <li class="nav-item @(isTrending ? "active" : "")" data-index="1">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="/Newsfeed/Index">
             <div class="nav-icon-wrapper">
                 <i class="fas fa-fire nav-icon"></i>
             </div>

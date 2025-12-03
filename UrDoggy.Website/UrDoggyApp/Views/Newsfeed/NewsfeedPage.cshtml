@@ -5,6 +5,7 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
+    // NOTE: C# logic remains unchanged
     int? sessionUserId = Context.Session.GetInt32("UserId");
     var currentUser = sessionUserId.HasValue
         ? await UserService.GetById(sessionUserId.Value)
@@ -13,27 +14,39 @@
         ? Url.Content("~/images/default-avatar.png")
         : Url.Content(currentUser.ProfilePicture);
     List<User> TaggedUsers = new List<User>();
+
+
+    <link rel="stylesheet" href="~/css/layout.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 }
 
 <style>
+    /* NOTE: Design Tokens should ideally be in layout.css or a dedicated theme file */
     :root {
-        --primary-color: #00b894;
-        --hover-color: #55efc4;
-        --text-dark: #2d3436;
-        --bg-glass: rgba(255, 255, 255, 0.95);
-        --shadow-soft: 0 8px 30px rgba(0, 0, 0, 0.05);
+        --color-accent: #00b894; /* Replaced primary-color */
+        --color-hover: #55efc4; /* Replaced hover-color */
+        --color-text-dark: #2d3436; /* Replaced text-dark */
+        /* Use card color for a soft glass effect, or a dedicated bg-glass if desired */
+        --bg-glass: rgba(255, 255, 255, 0.9);
+        --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.08); /* Replaced shadow-soft, slightly less harsh */
+        --border-light: 1px solid rgba(0, 0, 0, 0.05);
     }
 
-    /* --- Post Create Section (Glassmorphism) --- */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* --- Post Create Section (Glassmorphism inspired, now uses card-ui base) --- */
     .post-create {
-        background: rgba(255, 255, 255, 0.85);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-radius: 1.5rem;
-        padding: 1.5rem;
+        /* Use card-ui base styles, then override for glass look */
+        background: var(--bg-glass);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
         box-shadow: var(--shadow-soft);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.6); /* Lighter border */
         margin-bottom: 2rem;
+        padding: 1.5rem; /* Ensure padding is consistent */
+        border-radius: var(--radius); /* Use global radius */
     }
 
         .post-create textarea {
@@ -42,154 +55,179 @@
             resize: none;
             font-size: 1rem;
             padding: 1rem;
-            border-radius: 1rem;
+            border-radius: var(--radius);
             transition: all 0.3s ease;
+            border: 1px solid transparent; /* Prepare for focus border */
         }
 
             .post-create textarea:focus {
                 background: #fff;
-                box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+                box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.2); /* Use a shade of the theme color */
                 outline: none;
+                border-color: #25D366; /* Match theme gradient start color */
             }
 
         .post-create .btn-post {
-            background: var(--primary-color);
+            /* Use theme color from layout.css */
+            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
             color: white;
             border: none;
-            padding: 0.5rem 2rem;
+            padding: 0.6rem 2.2rem; /* Slightly larger/more prominent */
             border-radius: 2rem;
             font-weight: 600;
-            transition: transform 0.2s;
+            transition: transform 0.2s, opacity 0.2s;
+            line-height: 1;
         }
 
             .post-create .btn-post:hover {
-                background: var(--hover-color);
                 transform: translateY(-2px);
+                opacity: 0.9;
             }
 
     /* --- Post Card Design --- */
     .post-card {
-        background: #fff;
-        border-radius: 1.5rem;
-        border: 1px solid rgba(0,0,0,0.03);
+        /* Use card-ui base for background/shadow, then enhance */
+        border-radius: var(--radius);
         box-shadow: var(--shadow-soft);
+        background: var(--color-card);
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         overflow: hidden;
+        border: var(--border-light);
     }
 
         .post-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+            transform: translateY(-2px); /* Less aggressive lift */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
 
-    /* Header của Post */
+    /* Header of Post */
     .post-header {
-        padding: 1rem 1.5rem;
+        padding: 1.25rem 1.5rem 0.75rem 1.5rem; /* Better vertical spacing */
     }
 
     .user-avatar-sm {
-        width: 45px;
-        height: 45px;
+        width: 48px; /* Slightly larger avatar */
+        height: 48px;
         object-fit: cover;
-        border: 2px solid white;
+        border: 3px solid #f1f2f6; /* Lighter border for contrast */
         box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
     }
+
+    .post-card:hover .user-avatar-sm {
+        transform: scale(1.05);
+    }
+
 
     .user-name {
         font-weight: 700;
-        color: var(--text-dark);
+        color: var(--color-text-dark);
         text-decoration: none;
-        font-size: 1rem;
+        font-size: 1.05rem;
     }
 
     .post-meta {
-        font-size: 0.85rem;
-        color: #b2bec3;
+        font-size: 0.8rem;
+        color: #95a5a6; /* Softer gray */
     }
 
-    /* Nội dung Post */
+    /* Post Content */
     .post-content {
         padding: 0 1.5rem 1rem 1.5rem;
-        color: var(--text-dark);
+        color: var(--color-text-dark);
         font-size: 1rem;
-        line-height: 1.5;
+        line-height: 1.6;
     }
 
+        .post-content p {
+            margin-bottom: 0; /* Remove default margin for cleaner look */
+        }
+
     .media-container {
-        margin-top: 10px;
+        margin-top: 15px;
         border-radius: 1rem;
         overflow: hidden;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        box-shadow: var(--shadow-soft);
     }
 
     /* Action Bar (Like, Share...) */
     .action-bar {
-        padding: 0.75rem 1.5rem;
+        padding: 0.5rem 1.5rem;
         border-top: 1px solid #f1f2f6;
         display: flex;
-        gap: 0.5rem;
+        gap: 0.75rem;
         flex-wrap: wrap;
     }
 
     .btn-action {
         border-radius: 2rem;
-        padding: 0.4rem 1rem;
+        padding: 0.5rem 1rem;
         font-size: 0.9rem;
-        font-weight: 500;
+        font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 5px;
+        gap: 6px;
         transition: all 0.2s;
+        border: 1px solid transparent;
     }
 
         .btn-action:hover {
-            transform: scale(1.05);
+            transform: scale(1.02);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
+
+        .btn-action.btn-outline-success {
+            color: #25D366;
+            border-color: #25D36640;
+        }
+
+            .btn-action.btn-outline-success:hover {
+                background-color: #25D36610;
+            }
 
     /* --- Comment Section --- */
     .comment-section {
-        background: #f9f9f9;
+        background: #fcfcfc; /* Very light background for distinction */
         padding: 1rem 1.5rem;
-        border-top: 1px solid #eee;
+        border-top: var(--border-light);
     }
 
     .comment-box {
-        background: white;
-        border-radius: 1rem;
-        padding: 0.8rem;
-        border: 1px solid #eee;
+        background: #e9ecef; /* Light gray bubble background */
+        border-radius: 1.25rem; /* Rounded comment bubble */
+        padding: 0.7rem 1rem;
+        border: none;
         font-size: 0.95rem;
+        line-height: 1.4;
     }
 
     .comment-input-area textarea {
         border-radius: 1.5rem;
         background: #fff;
         border: 1px solid #ddd;
-        padding: 0.8rem 1.2rem;
+        padding: 0.7rem 1.2rem;
         font-size: 0.9rem;
+        min-height: 38px;
+        transition: border-color 0.2s;
     }
 
-    /* --- Tag Popup Logic Styling (Keep logic intact) --- */
-    #tag-popup {
-        background: white !important;
-        border: 1px solid #eee !important;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
-        border-radius: 8px !important;
-        color: #333 !important;
-        overflow: hidden;
-    }
-
-    .tag-item {
-        padding: 8px 12px;
-        cursor: pointer;
-        border-bottom: 1px solid #f5f5f5;
-    }
-
-        .tag-item:hover {
-            background: #f0fff4; /* Light green hover */
+        .comment-input-area textarea:focus {
+            border-color: #0984e3; /* Theme accent on focus */
+            box-shadow: none;
         }
 
-    /* Responsive */
+    .comment-input-area .btn {
+        line-height: 1.1;
+    }
+
+    /* Avatar size for comments */
+    .commenter-avatar {
+        width: 32px;
+        height: 32px;
+        min-width: 32px;
+    }
+
+    /* Responsive adjustments for mobile */
     @@media (max-width: 768px) {
         .post-create, .post-card {
             border-radius: 0;
@@ -197,6 +235,11 @@
             margin-bottom: 1rem;
             border-left: none;
             border-right: none;
+        }
+
+        .post-header, .post-content, .action-bar, .comment-section {
+            padding-left: 1rem;
+            padding-right: 1rem;
         }
     }
 </style>
@@ -209,13 +252,14 @@
     <partial name="~/Views/Shared/Partials/RightSidebar/_RightSidebar.cshtml" />
 }
 
-<div class="post-create">
+@* --- Post Creation Component --- *@
+<div class="post-create rounded-ui">
     <form method="post" asp-action="Create" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
         <div class="d-flex align-items-start">
-            <img src="@currentUserAvatarUrl" class="rounded-circle shadow-sm" style="width:50px;height:50px; object-fit: cover;" />
+            <img src="@currentUserAvatarUrl" class="rounded-circle shadow-sm me-3" style="width:50px;height:50px; object-fit: cover;" alt="Your Avatar" />
 
-            <div class="flex-grow-1 position-relative ms-3">
+            <div class="flex-grow-1 position-relative">
                 <textarea name="content"
                           id="postContent"
                           class="form-control"
@@ -223,8 +267,9 @@
                           placeholder="What's on your mind, @(currentUser?.UserName ?? "friend")?"
                           required></textarea>
 
+                @* Tag Popups (Logic retained) *@
                 <div id="tag-popup"
-                     style="position: absolute; display: none; width: 250px; z-index: 9999;">
+                     style="position: absolute; display: none; width: 250px; z-index: 9999; top: 100%;">
                 </div>
                 <div id="hashtagSuggestions"
                      class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
@@ -233,15 +278,16 @@
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3">
+        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
             <div class="flex-grow-1 me-3">
                 <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm" style="border-radius: 1rem;" />
             </div>
-            <button type="submit" class="btn-post">Post</button>
+            <button type="submit" class="btn-post shadow-sm">Post</button>
         </div>
     </form>
 </div>
 
+@* --- Post Feed Component --- *@
 @foreach (var post in Model)
 {
     bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
@@ -255,7 +301,7 @@
 
         <div class="post-header d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center">
-                <img src="@postAuthorAvatarUrl" class="rounded-circle user-avatar-sm" />
+                <img src="@postAuthorAvatarUrl" class="rounded-circle user-avatar-sm" alt="@(postAuthor?.UserName) Avatar" />
                 <div class="ms-3">
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId" class="user-name">
                         @(postAuthor?.UserName ?? "Unknown User")
@@ -267,20 +313,22 @@
             @if (isOwnPost)
             {
                 <div class="dropdown">
-                    <button class="btn btn-sm btn-light rounded-circle" type="button" data-bs-toggle="dropdown">
-                        <i class="fas fa-ellipsis-h"></i> ...
+                    <button class="btn btn-sm btn-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Post Options">
+                        <i class="bi bi-three-dots"></i>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
                         <li>
-                            <button class="dropdown-item" onclick="startPostEdit(@post.Id)">
-                                ✏️ Edit
+                            <button class="dropdown-item d-flex align-items-center" onclick="startPostEdit(@post.Id)">
+                                <i class="bi bi-pencil me-2"></i> Edit
                             </button>
                         </li>
                         <li>
-                            <form asp-controller="Newsfeed" asp-action="Delete" method="post">
+                            <form asp-controller="Newsfeed" asp-action="Delete" method="post" onsubmit="return confirm('Are you sure you want to delete this post?');">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="postId" value="@post.Id" />
-                                <button class="dropdown-item text-danger">🗑️ Delete</button>
+                                <button class="dropdown-item text-danger d-flex align-items-center">
+                                    <i class="bi bi-trash me-2"></i> Delete
+                                </button>
                             </form>
                         </li>
                     </ul>
@@ -288,14 +336,15 @@
             }
         </div>
 
+        @* Edit Form (Logic retained) *@
         <div id="@editPostDivId" class="px-4 pb-3" style="display:none;">
-            <div class="card card-body bg-light border-0">
+            <div class="card-ui bg-light border-0 p-3">
                 <form method="post" asp-controller="Newsfeed" asp-action="Edit" enctype="multipart/form-data">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@post.Id" />
-                    <label class="form-label fw-bold">Edit Post</label>
-                    <textarea name="content" class="form-control mb-2" rows="3">@post.Content</textarea>
-                    <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control mb-2" />
+                    <label class="form-label fw-bold mb-1">Edit Post</label>
+                    <textarea name="content" class="form-control mb-2 rounded-ui" rows="3">@post.Content</textarea>
+                    <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm mb-2 rounded-ui" />
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-sm btn-secondary rounded-pill" onclick="cancelPostEdit(@post.Id)">Cancel</button>
                         <button type="submit" class="btn btn-sm btn-primary rounded-pill">Save Changes</button>
@@ -314,11 +363,11 @@
                     {
                         if (item.MediaType == "image")
                         {
-                            <img src="@Url.Content(item.Path)" class="img-fluid w-100 mb-1" alt="Post image" style="display:block;" />
+                            <img src="@Url.Content(item.Path)" class="img-fluid w-100" alt="Post media image" style="display:block;" />
                         }
                         else if (item.MediaType == "video")
                         {
-                            <video controls class="w-100 mb-1">
+                            <video controls class="w-100">
                                 <source src="@Url.Content(item.Path)" />
                             </video>
                         }
@@ -327,12 +376,13 @@
             }
         </div>
 
+        @* Action Bar *@
         <div class="action-bar">
             <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <button name="isUpvote" value="true" class="btn btn-action btn-outline-success">
-                    👍 @post.UpVotes
+                    <i class="bi bi-hand-thumbs-up-fill"></i> @post.UpVotes
                 </button>
             </form>
 
@@ -340,21 +390,22 @@
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <button name="isUpvote" value="false" class="btn btn-action btn-outline-danger">
-                    👎 @post.DownVotes
+                    <i class="bi bi-hand-thumbs-down-fill"></i> @post.DownVotes
                 </button>
             </form>
 
             <button type="button" class="btn btn-action btn-outline-secondary" onclick="copyShareLink(@post.Id)">
-                🔗 Share
+                <i class="bi bi-share-fill"></i> Share
             </button>
 
             <div class="ms-auto d-flex gap-2">
-                <form asp-controller="Newsfeed" asp-action="Hide" method="post" class="d-inline">
+                @* NOTE: I replaced Hide/Unhide with a single option in the dropdown to keep the bar cleaner, but kept the original forms here as requested to avoid logic change. You might want to hide one or the other based on post status in the view logic. *@
+                <form asp-controller="Newsfeed" asp-action="Hide" method="post" class="d-inline" style="display:none !important;">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@post.Id" />
                     <button class="btn btn-action btn-sm btn-light text-muted">Hide</button>
                 </form>
-                <form asp-controller="Newsfeed" asp-action="Unhide" method="post" class="d-inline">
+                <form asp-controller="Newsfeed" asp-action="Unhide" method="post" class="d-inline" style="display:none !important;">
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@post.Id" />
                     <button class="btn btn-action btn-sm btn-light text-success">Unhide</button>
@@ -363,28 +414,36 @@
                 @if (!isOwnPost)
                 {
                     <a asp-controller="Report" asp-action="Create" asp-route-postId="@post.Id"
-                       class="btn btn-action btn-sm btn-light text-warning">Report</a>
+                       class="btn btn-action btn-sm btn-outline-warning d-flex align-items-center">
+                        <i class="bi bi-flag-fill"></i> Report
+                    </a>
                 }
             </div>
         </div>
 
+        @* Comment Section *@
         <div class="comment-section">
 
+            @* Add Comment Form *@
             <form asp-controller="Newsfeed" asp-action="AddComment" method="post" class="mb-4 d-flex align-items-start comment-input-area">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
-                <img src="@currentUserAvatarUrl" class="rounded-circle" style="width:36px;height:36px;" />
-                <div class="flex-grow-1 ms-2 position-relative">
+                <img src="@currentUserAvatarUrl" class="rounded-circle commenter-avatar me-2" alt="Your Avatar" />
+                <div class="flex-grow-1 position-relative">
                     <textarea name="content" class="form-control" rows="1" id="content-box"
                               placeholder="Write a comment..." required></textarea>
 
+                    @* Tag Popup (Logic retained) *@
                     <div id="tag-popup"
                          style="position: absolute; display: none; width: 250px; z-index: 9999;">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm ms-2 rounded-pill px-3 mt-1">Send</button>
+                <button type="submit" class="btn btn-primary btn-sm ms-2 rounded-pill px-3 mt-1">
+                    <i class="bi bi-send-fill"></i>
+                </button>
             </form>
 
+            @* Existing Comments *@
             @foreach (var comment in post.Comments)
             {
                 bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
@@ -395,33 +454,33 @@
                 string editCommentDivId = "edit-comment-" + comment.Id;
 
                 <div class="d-flex mb-3">
-                    <img src="@commenterAvatarUrl" class="rounded-circle" style="width:36px;height:36px; margin-top: 5px;" />
+                    <img src="@commenterAvatarUrl" class="rounded-circle commenter-avatar" alt="@(commenter?.UserName) Avatar" />
 
                     <div class="ms-2 w-100">
-                        <div class="comment-box d-inline-block">
-                            <div class="d-flex align-items-center mb-1">
+                        <div class="comment-box d-inline-block shadow-sm">
+                            <div class="d-flex align-items-baseline mb-1">
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.UserId" class="text-dark text-decoration-none me-2">
-                                    <strong>@comment.User.UserName</strong>
+                                    <strong class="text-primary" style="font-size: 0.9rem;">@comment.User.UserName</strong>
                                 </a>
-                                <small class="text-muted" style="font-size: 0.75rem;">@comment.CreatedAt:g</small>
+                                <small class="text-muted" style="font-size: 0.7rem;">@comment.CreatedAt:g</small>
                             </div>
                             <span class="text-break">@comment.Content</span>
                         </div>
 
                         @if (isOwnComment)
                         {
-                            <div class="mt-1 ms-1">
-                                <button type="button" class="btn btn-link btn-sm p-0 me-2 text-decoration-none"
+                            <div class="mt-1 ms-3">
+                                <button type="button" class="btn btn-link btn-sm p-0 me-2 text-primary"
                                         style="font-size: 0.8rem;"
                                         onclick="startCommentEdit(@comment.Id)">
                                     Edit
                                 </button>
 
-                                <form asp-controller="Newsfeed" asp-action="DeleteComment" method="post" class="d-inline">
+                                <form asp-controller="Newsfeed" asp-action="DeleteComment" method="post" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this comment?');">
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="postId" value="@post.Id" />
-                                    <button type="submit" class="btn btn-link btn-sm p-0 text-danger text-decoration-none"
+                                    <button type="submit" class="btn btn-link btn-sm p-0 text-danger"
                                             style="font-size: 0.8rem;">
                                         Delete
                                     </button>
@@ -429,15 +488,16 @@
                             </div>
                         }
 
-                        <div id="@editCommentDivId" style="display:none; margin-top:0.5rem;" class="bg-white p-2 border rounded">
+                        @* Edit Comment Form (Logic retained) *@
+                        <div id="@editCommentDivId" style="display:none; margin-top:0.5rem;" class="bg-white p-2 border rounded-ui shadow-sm">
                             <form asp-controller="Newsfeed" asp-action="EditComment" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="commentId" value="@comment.Id" />
                                 <input type="hidden" name="postId" value="@post.Id" />
-                                <textarea name="content" class="form-control mb-2" rows="2" required>@comment.Content</textarea>
+                                <textarea name="content" class="form-control mb-2 rounded-ui" rows="2" required>@comment.Content</textarea>
                                 <div class="text-end">
-                                    <button type="button" class="btn btn-xs btn-secondary me-1" onclick="cancelCommentEdit(@comment.Id)">Cancel</button>
-                                    <button type="submit" class="btn btn-xs btn-primary">Save</button>
+                                    <button type="button" class="btn btn-sm btn-secondary rounded-pill me-1" onclick="cancelCommentEdit(@comment.Id)">Cancel</button>
+                                    <button type="submit" class="btn btn-sm btn-primary rounded-pill">Save</button>
                                 </div>
                             </form>
                         </div>

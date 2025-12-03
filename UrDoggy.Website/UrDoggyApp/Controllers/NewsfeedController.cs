@@ -49,7 +49,7 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpGet]
-        [Route("/PersonalizedFeed")]
+        [Route("/Newsfeed/PersonalizedFeed")]
         public async Task<IActionResult> PersonalizedFeed()
         {
             ViewBag.IsPersonalized = true;
