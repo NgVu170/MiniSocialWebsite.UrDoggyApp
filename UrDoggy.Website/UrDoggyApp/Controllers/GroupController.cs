@@ -148,8 +148,11 @@ namespace UrDoggy.Website.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreatePost(int groupId, string content, List<IFormFile>? media)
         {
-            if (!CheckLogin()) return RedirectToAction("Login", "Auth");
+            if (!CheckLogin())
+                return RedirectToAction("Login", "Auth");
+
             var userId = HttpContext.Session.GetInt32("UserId");
+
             var isActiveMember = await _groupUserService.IsActiveMember(userId.Value, groupId);
             if (!isActiveMember)
             {
@@ -170,10 +173,10 @@ namespace UrDoggy.Website.Controllers
                 Content = content.Trim(),
                 Status = StateOfPost.Pending,
                 UploaddAt = DateTime.UtcNow,
+                StatusUpdate = DateTime.UtcNow,
                 MediaItems = new List<Media>()
             };
-
-            if (media != null && media.Count > 0)
+            if (media?.Any() == true)
             {
                 var uploadBase = Path.Combine(
                     Directory.GetCurrentDirectory(),
@@ -188,18 +191,27 @@ namespace UrDoggy.Website.Controllers
 
                 foreach (var file in media)
                 {
+                    if (file.Length == 0)
+                        continue;
+
                     var ext = Path.GetExtension(file.FileName).ToLowerInvariant();
-                    if (!new[] { ".png", ".jpg", ".jpeg", ".webp", ".gif" }.Contains(ext)) continue;
+
+                    var allowed = new[] { ".png", ".jpg", ".jpeg", ".webp", ".gif" };
+                    if (!allowed.Contains(ext))
+                        continue;
 
                     var fname = $"{Guid.NewGuid()}{ext}";
                     var fpath = Path.Combine(uploadBase, fname);
 
-                    using var stream = new FileStream(fpath, FileMode.Create);
-                    await file.CopyToAsync(stream);
+                    using (var stream = new FileStream(fpath, FileMode.Create))
+                    {
+                        await file.CopyToAsync(stream);
+                    }
 
                     status.MediaItems.Add(new Media
                     {
                         Path = $"/group_uploads/group_{groupId}/posts/{fname}",
+                        MediaType = "image",
                         CreatedAt = DateTime.UtcNow
                     });
                 }
@@ -210,6 +222,7 @@ namespace UrDoggy.Website.Controllers
             TempData["Success"] = "Đã gửi bài để kiểm duyệt.";
             return RedirectToAction(nameof(PostsInGroup), new { groupId });
         }
+
 
         [HttpPost]
         public async Task<IActionResult> ReportPost(int groupId, int postId, string reason)
