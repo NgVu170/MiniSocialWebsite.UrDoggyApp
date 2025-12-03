@@ -134,13 +134,15 @@ namespace UrDoggy.Services.Service
             if (file == null || file.Length == 0)
                 return false;
 
-            // Kiểm tra kích thước file (max 10MB)
-            if (file.Length > 10 * 1024 * 1024)
+            // Kiểm tra kích thước file
+            const long MaxFileSize = 2L * 1024 * 1024 * 1024;
+
+            if (file.Length > MaxFileSize)
                 return false;
 
             // Kiểm tra loại file
             var validImageTypes = new[] { "image/jpeg", "image/png", "image/gif", "image/webp" };
-            var validVideoTypes = new[] { "video/mp4", "video/quicktime", "video/x-msvideo" };
+            var validVideoTypes = new[] { "video/mp4", "video/quicktime", "video/x-msvideo", "video/webm", "video/x-matroska" };
 
             return validImageTypes.Contains(file.ContentType) || validVideoTypes.Contains(file.ContentType);
         }
