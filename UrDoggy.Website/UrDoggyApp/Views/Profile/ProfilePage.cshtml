@@ -31,6 +31,8 @@
 
 <style>
     /* Profile Header */
+
+
     .text-center.mb-4 {
         background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(9, 132, 227, 0.1) 100%);
         padding: 2rem;
@@ -73,12 +75,34 @@
     .post-card {
         transition: transform 0.3s ease, box-shadow 0.3s ease;
         border: 1px solid rgba(0, 0, 0, 0.05);
+        margin-left: 10vw !important;
+        margin-right: 10vw !important;
     }
 
         .post-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
+
+    /* media display */
+    .media-display {
+        margin: 5px;
+        max-height: 360px;
+        overflow: hidden;
+        
+        
+        border: solid 2px red;
+    }
+    .testing-video {
+        align-items: !center;
+        justify-content: !center;
+    }
+
+    .media-display .img, .media-display .video {
+        align-items: center;
+        justify-content: center;
+        border: solid 2px red;
+    }
 
     /* Comment Section */
     .bg-light.rounded.p-2 {
@@ -225,7 +249,6 @@
     }
 </div>
 
-<h4>@Model.UserName’s Posts</h4>
 
 @if (!posts.Any())
 {
@@ -239,8 +262,8 @@ else
         string editPostDivId = "edit-post-" + post.Id;
         <div class="post-card mb-4 p-3 bg-white rounded shadow-sm">
 
-            <div class="d-flex justify-content-between mb-2">
-                <div>
+            <div class="tesing-video">
+                <div class="">
                     <a asp-controller="Profile"
                     asp-action="Index"
                     asp-route-id="@post.UserId"
@@ -255,19 +278,23 @@ else
                     </a>
                     <small class="text-muted ms-2">@post.CreatedAt:g</small>
 
-                    @foreach (var item in post.MediaItems)
-                    {
-                        if (item.MediaType == "image")
+                    
+                    <div class="media-display">
+                        @foreach (var item in post.MediaItems)
                         {
-                            <img src="@Url.Content(item.Path)" class="img-fluid rounded mb-3" alt="Post image" />
+                            if (item.MediaType == "image")
+                            {
+                                <img src="@Url.Content(item.Path)" class="img-fluid rounded mb-3" alt="Post image" />
+                            }
+                            else if (item.MediaType == "video")
+                            {
+                                <video controls class="w-100 rounded mb-3">
+                                    <source src="@Url.Content(item.Path)" type="video/mp4" />
+                                </video>
+                            }
                         }
-                        else if (item.MediaType == "video")
-                        {
-                            <video controls class="w-100 rounded mb-3">
-                                <source src="@Url.Content(item.Path)" type="video/mp4" />
-                            </video>
-                        }
-                    }
+                    </div>
+                    
                 </div>
 
                 @if (isOwnPost)
