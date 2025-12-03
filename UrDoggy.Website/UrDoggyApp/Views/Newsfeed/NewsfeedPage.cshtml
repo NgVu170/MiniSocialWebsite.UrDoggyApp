@@ -143,6 +143,29 @@
             margin-bottom: 0; /* Remove default margin for cleaner look */
         }
 
+    /* --- NEW: Truncation Styles --- */
+    .post-text-container {
+        position: relative;
+    }
+
+    .post-content-truncated {
+        max-height: 90px; /* Limit to approx 3-4 lines of text */
+        overflow: hidden;
+        /* Optional fade effect */
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    }
+
+    .read-more-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #0984e3; /* Use a distinct theme color */
+        padding-top: 5px;
+    }
+    /* --- END NEW: Truncation Styles --- */
+
     .media-container {
         margin-top: 15px;
         border-radius: 1rem;
@@ -227,6 +250,31 @@
         min-width: 32px;
     }
 
+    /* --- Custom Post Menu Styling (For stable dropdown) --- */
+    .post-options {
+        position: relative;
+    }
+
+    .post-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 1000;
+        display: none; /* Controlled by JS */
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        font-size: 1rem;
+        background-color: #fff;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
+    }
+
+        .post-menu.show {
+            display: block;
+        }
+    /* --- End Custom Post Menu Styling --- */
+
     /* Responsive adjustments for mobile */
     @@media (max-width: 768px) {
         .post-create, .post-card {
@@ -306,17 +354,18 @@
                     <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId" class="user-name">
                         @(postAuthor?.UserName ?? "Unknown User")
                     </a>
-                    <div class="post-meta">@post.CreatedAt:g</div>
+                    <div class="post-meta">@post.CreatedAt.ToString("g")</div>
                 </div>
             </div>
 
-            @if (isOwnPost)
-            {
-                <div class="dropdown">
-                    <button class="btn btn-sm btn-light rounded-circle" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="Post Options">
-                        <i class="bi bi-three-dots"></i>
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+            @* REVISED: Custom Dropdown Menu for Post Options *@
+            <div class="post-options">
+                <button class="btn btn-sm btn-light rounded-circle post-menu-toggle" type="button" data-post-id="@post.Id" aria-expanded="false" title="Post Options">
+                    <i class="bi bi-three-dots"></i>
+                </button>
+                <ul class="post-menu dropdown-menu-end border-0 shadow" id="postMenu_@post.Id">
+                    @if (isOwnPost)
+                    {
                         <li>
                             <button class="dropdown-item d-flex align-items-center" onclick="startPostEdit(@post.Id)">
                                 <i class="bi bi-pencil me-2"></i> Edit
@@ -331,9 +380,32 @@
                                 </button>
                             </form>
                         </li>
-                    </ul>
-                </div>
-            }
+                    }
+                    else
+                    {
+                        @* Assuming the Hide/Unhide logic depends on post status, here are placeholder forms *@
+                        <li>
+                            <form asp-controller="Newsfeed" asp-action="Hide" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="postId" value="@post.Id" />
+                                <button class="dropdown-item d-flex align-items-center">
+                                    <i class="bi bi-eye-slash me-2"></i> Hide Post
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <form asp-controller="Newsfeed" asp-action="Unhide" method="post">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="postId" value="@post.Id" />
+                                <button class="dropdown-item d-flex align-items-center">
+                                    <i class="bi bi-eye me-2"></i> Unhide Post
+                                </button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+            @* END REVISED Dropdown Menu *@
         </div>
 
         @* Edit Form (Logic retained) *@
@@ -353,8 +425,19 @@
             </div>
         </div>
 
+        @* REVISED: Post Content with Show More/Less *@
         <div class="post-content">
-            <p class="mb-2">@post.Content</p>
+            <div id="postContent_@post.Id" class="post-text-container post-content-truncated">
+                <p>@post.Content</p>
+            </div>
+
+            @* Check if content is long enough to warrant a toggle (e.g., > 200 chars) *@
+            @if (post.Content.Length > 200)
+            {
+                <a href="javascript:void(0)" class="read-more-toggle" data-post-id="@post.Id" onclick="togglePostContent(@post.Id)">
+                    ...more
+                </a>
+            }
 
             @if (post.MediaItems != null && post.MediaItems.Any())
             {
@@ -375,6 +458,7 @@
                 </div>
             }
         </div>
+        @* END REVISED: Post Content *@
 
         @* Action Bar *@
         <div class="action-bar">
@@ -444,7 +528,7 @@
             </form>
 
             @* Existing Comments *@
-            @foreach (var comment in post.Comments)
+            @foreach (var comment in post.Comments.OrderByDescending(c => c.CreatedAt))
             {
                 bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
                 var commenter = comment.User;
@@ -462,7 +546,7 @@
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.UserId" class="text-dark text-decoration-none me-2">
                                     <strong class="text-primary" style="font-size: 0.9rem;">@comment.User.UserName</strong>
                                 </a>
-                                <small class="text-muted" style="font-size: 0.7rem;">@comment.CreatedAt:g</small>
+                                <small class="text-muted" style="font-size: 0.7rem;">@comment.CreatedAt.ToString("g")</small>
                             </div>
                             <span class="text-break">@comment.Content</span>
                         </div>
@@ -531,5 +615,64 @@
         function cancelCommentEdit(commentId) {
             document.getElementById('edit-comment-' + commentId).style.display = 'none';
         }
+
+        // --- NEW: Toggle Post Content Function ---
+        function togglePostContent(postId) {
+            const contentContainer = document.getElementById(`postContent_${postId}`);
+            const toggleButton = document.querySelector(`.read-more-toggle[data-post-id="${postId}"]`);
+
+            if (contentContainer.classList.contains('post-content-truncated')) {
+                // Show full content
+                contentContainer.classList.remove('post-content-truncated');
+                toggleButton.textContent = '...less';
+            } else {
+                // Truncate content
+                contentContainer.classList.add('post-content-truncated');
+                toggleButton.textContent = '...more';
+            }
+        }
+        // --- End Toggle Post Content Function ---
+
+
+        // --- NEW: Custom Dropdown Logic (for stability) ---
+        document.addEventListener('click', function(event) {
+            const toggleButton = event.target.closest('.post-menu-toggle');
+
+            // 1. Handle toggle button click
+            if (toggleButton) {
+                event.preventDefault();
+                event.stopPropagation(); // Stop event from propagating to the document listener
+
+                const postId = toggleButton.getAttribute('data-post-id');
+                const menu = document.getElementById(`postMenu_${postId}`);
+
+                // Close all other menus first
+                document.querySelectorAll('.post-menu.show').forEach(openMenu => {
+                    if (openMenu !== menu) {
+                        openMenu.classList.remove('show');
+                    }
+                });
+
+                // Toggle the clicked menu
+                menu.classList.toggle('show');
+            }
+            // 2. Handle clicks outside the menu to close it
+            else if (!event.target.closest('.post-options')) {
+                document.querySelectorAll('.post-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+
+        // Prevent menu closure when clicking inside a form element within the menu
+        document.querySelectorAll('.post-menu form').forEach(form => {
+            form.addEventListener('click', function(event) {
+                // If it's a click on the submit button, let the form submit, otherwise do nothing
+                if (event.target.type !== 'submit') {
+                    event.stopPropagation();
+                }
+            });
+        });
+        // --- End Custom Dropdown Logic ---
     </script>
 }
