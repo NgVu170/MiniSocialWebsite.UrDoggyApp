@@ -122,6 +122,7 @@ using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await AccountSeeder.SeedUsers(services);
+    await FriendSeeder.SeedFriends(services);
 }
 
 // Configure the HTTP request pipeline.
