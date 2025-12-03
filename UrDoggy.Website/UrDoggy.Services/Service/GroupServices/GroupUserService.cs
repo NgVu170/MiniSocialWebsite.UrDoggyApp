@@ -129,6 +129,7 @@ namespace UrDoggy.Services.Service.GroupServices
                 .Where(p => p.GroupId == groupId)
                 .OrderByDescending(p => p.CreatedAt)
                 .Include(p => p.User)
+                .Include(p => p.MediaItems)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -141,16 +142,39 @@ namespace UrDoggy.Services.Service.GroupServices
                 .FirstOrDefaultAsync(p => p.Id == postId);
         }
 
-        // ✅ NEW: CREATE PENDING POST (REPLACES OLD CreatePost)
         public async Task CreatePendingPostAsync(GroupPostStatus post)
         {
+            if (post == null)
+                throw new ArgumentNullException(nameof(post));
+
+            // Set default values for the post
             post.UploaddAt = DateTime.UtcNow;
             post.Status = StateOfPost.Pending;
             post.StatusUpdate = DateTime.UtcNow;
 
+            // Ensure MediaItems is initialized
+            post.MediaItems ??= new List<Media>();
+
+            // Set GroupPostStatusId for each media before adding
+            foreach (var media in post.MediaItems)
+            {
+                if (string.IsNullOrWhiteSpace(media.MediaType))
+                    media.MediaType = "image"; // safety fallback
+
+                if (media.CreatedAt == default)
+                    media.CreatedAt = DateTime.UtcNow;
+
+                // Assign the navigation property correctly
+                media.GroupPostStatus = post;
+            }
+
+            // Add the post with its media; EF will handle the FK automatically
             _context.GroupPostStatuses.Add(post);
+
+            // Only one SaveChangesAsync needed; EF will insert both post and media
             await _context.SaveChangesAsync();
         }
+
 
         public async Task DeletePost(int postId, int? moderatorId = null)
         {

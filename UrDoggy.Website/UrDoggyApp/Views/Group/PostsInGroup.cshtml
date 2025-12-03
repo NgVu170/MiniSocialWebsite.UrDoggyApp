@@ -8,7 +8,6 @@
     var role = ViewBag.Role as GroupRole?;
     var userId = ViewBag.UserId as int?;
     ViewData["Title"] = group != null ? $"Bài viết - {group.GroupName}" : "Bài viết trong nhóm";
-
     <link rel="stylesheet" href="~/css/layout.css" />
 }
 
@@ -174,7 +173,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="d-flex align-items-center">
-            <img src="@(group?.Avatar ?? "/images/default-avatar.png")" class="rounded-circle me-2" style="width:48px;height:48px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+            <img src="@(group?.Avatar ?? "/images/default-avatar.png")" 
+            class="rounded-circle me-2" 
+            style="width:48px;height:48px;object-fit:cover;" 
+            onerror="this.src='/images/default-avatar.png';" />
             <div>
                 <h3 class="mb-0">@group?.GroupName</h3>
                 <small class="text-muted">@group?.Description</small>
@@ -272,6 +274,19 @@
                         </div>
 
                         <p class="mt-2 mb-0">@p.Content</p>
+
+                        @if (p.MediaItems != null && p.MediaItems.Any())
+                        {
+                            <div class="mt-2 d-flex flex-wrap gap-2">
+                                @foreach (var media in p.MediaItems)
+                                {
+                                    @if (!string.IsNullOrEmpty(media.Path))
+                                    {
+                                        <img src="@Url.Content(media.Path)" class="img-fluid rounded" style="max-width:150px; max-height:150px;" />
+                                    }
+                                }
+                            </div>
+                        }
 
                         <!-- Form báo cáo thu gọn -->
                         <div id="report-@p.Id" class="collapse mt-3">

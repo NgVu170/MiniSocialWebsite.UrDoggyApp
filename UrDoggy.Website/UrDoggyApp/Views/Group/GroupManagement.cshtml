@@ -176,7 +176,10 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="d-flex align-items-center">
-            <img src="@(Model.Avatar ?? "/images/default-avatar.png")" class="rounded-circle me-2" style="width:48px;height:48px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
+            <img src="@(Model.Avatar ?? "/images/default-avatar.png")" 
+            class="rounded-circle me-2" 
+            style="width:48px;height:48px;object-fit:cover;"
+            onerror="this.src='/images/default-avatar.png';" />
             <div>
                 <h3 class="mb-0">@Model.GroupName</h3>
                 <small class="text-muted">@Model.Description</small>
@@ -231,6 +234,14 @@
                                         </div>
                                     </div>
                                     <div class="mt-2">@s.Content</div>
+									@foreach (var img in s.MediaItems)
+									{
+										<img src="@Url.Content(img.Path)" 
+                                        alt="post image" 
+                                        class="img-fluid mt-2 rounded" 
+                                        style="max-height:200px;object-fit:cover;" 
+                                        onerror="this.style.display='none';" />
+									})
                                 </div>
                             }
                         </div>
