@@ -254,9 +254,27 @@ else
                         }
                     </a>
                     <small class="text-muted ms-2">@post.CreatedAt:g</small>
-                    @foreach(var media in post.MediaItems)
+                    @* @foreach(var media in post.MediaItems) *@
+                    @* { *@
+                    @*     <img src="@Url.Content(media.Path)" /> *@
+                    @* } *@
+                    @* @if (post.MediaItems != null && post.MediaItems.Any()) *@
+                    @* { *@
+                        
+                    @* } *@
+
+                    @foreach (var item in post.MediaItems)
                     {
-                        <img src="@Url.Content(media.Path)" />
+                        if (item.MediaType == "image")
+                        {
+                            <img src="@Url.Content(item.Path)" class="img-fluid rounded mb-3" alt="Post image" />
+                        }
+                        else if (item.MediaType == "video")
+                        {
+                            <video controls class="w-100 rounded mb-3">
+                                <source src="@Url.Content(item.Path)" type="video/mp4" />
+                            </video>
+                        }
                     }
                 </div>
 
