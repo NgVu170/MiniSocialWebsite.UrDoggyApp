@@ -1,0 +1,27 @@
+﻿@using UrDoggy.Core.Models
+@model Post
+
+@{
+    var userId = Context.Session.GetInt32("UserId");
+    var hasUpvoted = Model.PostVotes.Any(v => v.UserId == userId && v.IsUpvote);
+    var hasDownvoted = Model.PostVotes.Any(v => v.UserId == userId && !v.IsUpvote);
+}
+
+<button class="btn-action vote-btn upvote @(hasUpvoted ? "active" : "")"
+        hx-post="/Newsfeed/Vote"
+        hx-vals='{"postId": @Model.Id, "isUpvote": true}'
+        hx-target="closest .vote-container"
+        hx-swap="outerHTML"
+        hx-indicator="#loading">
+    <i class="bi bi-hand-thumbs-up-fill"></i>
+    <span>@Model.UpVotes</span>
+</button>
+
+<button class="btn-action vote-btn downvote @(hasDownvoted ? "active" : "")"
+        hx-post="/Newsfeed/Vote"
+        hx-vals='{"postId": @Model.Id, "isUpvote": false}'
+        hx-target="closest .vote-container"
+        hx-swap="outerHTML">
+    <i class="bi bi-hand-thumbs-down-fill"></i>
+    <span>@Model.DownVotes</span>
+</button>

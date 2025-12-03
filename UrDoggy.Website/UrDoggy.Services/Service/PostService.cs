@@ -83,6 +83,11 @@ namespace UrDoggy.Services.Service
             await _postRepository.Vote(postId, userId, isUpvote);
         }
 
+        public async Task<List<PostVote>> GetPostVoteByPost(int postId)
+        {
+            return await _postRepository.GetPostVoteByPost(postId);
+        }
+
         public async Task<int> GetVoteCount(int postId)
         {
             return await _postRepository.GetVoteCount(postId);

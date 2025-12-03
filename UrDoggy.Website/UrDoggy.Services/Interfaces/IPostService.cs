@@ -18,6 +18,7 @@ namespace UrDoggy.Services.Interfaces
         Task Vote(int postId, int userId, bool isUpvote);
         Task<int> GetVoteCount(int postId);
         Task<bool> HasVoted(int postId, int userId);
+        Task<List<PostVote>> GetPostVoteByPost(int postId);
         Task ReportPost(int postId, int reporterId, string reason);
         Task SharePost(int postId, int userId);
         Task<List<Post>> GetUserPosts(int userId);

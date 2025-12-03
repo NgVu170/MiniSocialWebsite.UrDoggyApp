@@ -257,7 +257,7 @@
     <form method="post" asp-action="Create" enctype="multipart/form-data">
         @Html.AntiForgeryToken()
         <div class="d-flex align-items-start">
-            <img src="@currentUserAvatarUrl" class="rounded-circle shadow-sm me-3" style="width:50px;height:50px; object-fit: cover;" alt="Your Avatar" />
+            <img src="@currentUserAvatarUrl" class="rounded-circle me-3 shadow-sm" style="width:50px;height:50px; object-fit: cover;" alt="Your Avatar" />
 
             <div class="flex-grow-1 position-relative">
                 <textarea name="content"
@@ -272,13 +272,13 @@
                      style="position: absolute; display: none; width: 250px; z-index: 9999; top: 100%;">
                 </div>
                 <div id="hashtagSuggestions"
-                     class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
+                     class="position-absolute d-none end-0 start-0 mt-1 rounded border bg-white shadow-lg"
                      style="z-index: 1000; max-height: 300px; overflow-y: auto; top: 100%;">
                 </div>
             </div>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
+        <div class="d-flex justify-content-between align-items-center border-top border-light mt-3 pt-3">
             <div class="flex-grow-1 me-3">
                 <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm" style="border-radius: 1rem;" />
             </div>
@@ -343,8 +343,8 @@
                     @Html.AntiForgeryToken()
                     <input type="hidden" name="postId" value="@post.Id" />
                     <label class="form-label fw-bold mb-1">Edit Post</label>
-                    <textarea name="content" class="form-control mb-2 rounded-ui" rows="3">@post.Content</textarea>
-                    <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm mb-2 rounded-ui" />
+                    <textarea name="content" class="form-control rounded-ui mb-2" rows="3">@post.Content</textarea>
+                    <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm rounded-ui mb-2" />
                     <div class="d-flex justify-content-end gap-2">
                         <button type="button" class="btn btn-sm btn-secondary rounded-pill" onclick="cancelPostEdit(@post.Id)">Cancel</button>
                         <button type="submit" class="btn btn-sm btn-primary rounded-pill">Save Changes</button>
@@ -378,27 +378,31 @@
 
         @* Action Bar *@
         <div class="action-bar">
-            <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="postId" value="@post.Id" />
-                <button name="isUpvote" value="true" class="btn btn-action btn-outline-success">
-                    <i class="bi bi-hand-thumbs-up-fill"></i> @post.UpVotes
-                </button>
-            </form>
+            @* <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline"> *@
+            @*     @Html.AntiForgeryToken() *@
+            @*     <input type="hidden" name="postId" value="@post.Id" /> *@
+            @*     <button name="isUpvote" value="true" class="btn btn-action btn-outline-success"> *@
+            @*         <i class="bi bi-hand-thumbs-up-fill"></i> @post.UpVotes *@
+            @*     </button> *@
+            @* </form> *@
 
-            <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="postId" value="@post.Id" />
-                <button name="isUpvote" value="false" class="btn btn-action btn-outline-danger">
-                    <i class="bi bi-hand-thumbs-down-fill"></i> @post.DownVotes
-                </button>
-            </form>
+            @* <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline"> *@
+            @*     @Html.AntiForgeryToken() *@
+            @*     <input type="hidden" name="postId" value="@post.Id" /> *@
+            @*     <button name="isUpvote" value="false" class="btn btn-action btn-outline-danger"> *@
+            @*         <i class="bi bi-hand-thumbs-down-fill"></i> @post.DownVotes *@
+            @*     </button> *@
+            @* </form> *@
+
+            <div class="vote-container d-flex gap-3">
+                @await Html.PartialAsync("_VoteButtons", post)
+            </div>
 
             <button type="button" class="btn btn-action btn-outline-secondary" onclick="copyShareLink(@post.Id)">
                 <i class="bi bi-share-fill"></i> Share
             </button>
 
-            <div class="ms-auto d-flex gap-2">
+            <div class="d-flex ms-auto gap-2">
                 @* NOTE: I replaced Hide/Unhide with a single option in the dropdown to keep the bar cleaner, but kept the original forms here as requested to avoid logic change. You might want to hide one or the other based on post status in the view logic. *@
                 <form asp-controller="Newsfeed" asp-action="Hide" method="post" class="d-inline" style="display:none !important;">
                     @Html.AntiForgeryToken()
@@ -425,7 +429,7 @@
         <div class="comment-section">
 
             @* Add Comment Form *@
-            <form asp-controller="Newsfeed" asp-action="AddComment" method="post" class="mb-4 d-flex align-items-start comment-input-area">
+            <form asp-controller="Newsfeed" asp-action="AddComment" method="post" class="d-flex align-items-start comment-input-area mb-4">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="postId" value="@post.Id" />
                 <img src="@currentUserAvatarUrl" class="rounded-circle commenter-avatar me-2" alt="Your Avatar" />
@@ -438,7 +442,7 @@
                          style="position: absolute; display: none; width: 250px; z-index: 9999;">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-sm ms-2 rounded-pill px-3 mt-1">
+                <button type="submit" class="btn btn-primary btn-sm rounded-pill ms-2 mt-1 px-3">
                     <i class="bi bi-send-fill"></i>
                 </button>
             </form>
@@ -456,7 +460,7 @@
                 <div class="d-flex mb-3">
                     <img src="@commenterAvatarUrl" class="rounded-circle commenter-avatar" alt="@(commenter?.UserName) Avatar" />
 
-                    <div class="ms-2 w-100">
+                    <div class="w-100 ms-2">
                         <div class="comment-box d-inline-block shadow-sm">
                             <div class="d-flex align-items-baseline mb-1">
                                 <a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.UserId" class="text-dark text-decoration-none me-2">
@@ -469,8 +473,8 @@
 
                         @if (isOwnComment)
                         {
-                            <div class="mt-1 ms-3">
-                                <button type="button" class="btn btn-link btn-sm p-0 me-2 text-primary"
+                            <div class="ms-3 mt-1">
+                                <button type="button" class="btn btn-link btn-sm text-primary me-2 p-0"
                                         style="font-size: 0.8rem;"
                                         onclick="startCommentEdit(@comment.Id)">
                                     Edit
@@ -480,7 +484,7 @@
                                     @Html.AntiForgeryToken()
                                     <input type="hidden" name="commentId" value="@comment.Id" />
                                     <input type="hidden" name="postId" value="@post.Id" />
-                                    <button type="submit" class="btn btn-link btn-sm p-0 text-danger"
+                                    <button type="submit" class="btn btn-link btn-sm text-danger p-0"
                                             style="font-size: 0.8rem;">
                                         Delete
                                     </button>
@@ -489,12 +493,12 @@
                         }
 
                         @* Edit Comment Form (Logic retained) *@
-                        <div id="@editCommentDivId" style="display:none; margin-top:0.5rem;" class="bg-white p-2 border rounded-ui shadow-sm">
+                        <div id="@editCommentDivId" style="display:none; margin-top:0.5rem;" class="rounded-ui border bg-white p-2 shadow-sm">
                             <form asp-controller="Newsfeed" asp-action="EditComment" method="post">
                                 @Html.AntiForgeryToken()
                                 <input type="hidden" name="commentId" value="@comment.Id" />
                                 <input type="hidden" name="postId" value="@post.Id" />
-                                <textarea name="content" class="form-control mb-2 rounded-ui" rows="2" required>@comment.Content</textarea>
+                                <textarea name="content" class="form-control rounded-ui mb-2" rows="2" required>@comment.Content</textarea>
                                 <div class="text-end">
                                     <button type="button" class="btn btn-sm btn-secondary rounded-pill me-1" onclick="cancelCommentEdit(@comment.Id)">Cancel</button>
                                     <button type="submit" class="btn btn-sm btn-primary rounded-pill">Save</button>

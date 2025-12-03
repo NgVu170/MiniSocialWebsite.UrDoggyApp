@@ -19,21 +19,21 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<IISServerOptions>(options =>
 {
-    options.MaxRequestBodySize = 2_000_000_000; // 2GB
+    options.MaxRequestBodySize = 2_000_000_000;
     options.AllowSynchronousIO = true;
 });
 
 builder.Services.Configure<KestrelServerOptions>(options =>
 {
-    options.Limits.MaxRequestBodySize = 2_000_000_000; // 2GB
+    options.Limits.MaxRequestBodySize = 2_000_000_000;
     options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
 });
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 2_000_000_000; // 2GB
+    options.MultipartBodyLengthLimit = 2_000_000_000;
     options.ValueCountLimit = 100;
-    options.MultipartHeadersLengthLimit = 1024 * 1024; // 1MB header
+    options.MultipartHeadersLengthLimit = 1024 * 1024;
 });
 
 // Add services to the container.

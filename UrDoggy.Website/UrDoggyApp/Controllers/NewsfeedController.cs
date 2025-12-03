@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
 using UrDoggy.Core.Models;
@@ -229,32 +230,27 @@ namespace UrDoggy.Website.Controllers
             if (userId == null)
                 return RedirectToAction("Login", "Auth");
 
-            try
+            await _postService.Vote(postId, userId, isUpvote);
+
+            // Gửi notification
+            var post = await _postService.GetById(postId);
+            var voter = await _userService.GetById(userId);
+
+            if (post != null && voter != null)
             {
-                await _postService.Vote(postId, userId, isUpvote);
-
-                // Gửi notification
-                var post = await _postService.GetById(postId);
-                var voter = await _userService.GetById(userId);
-
-                if (post != null && voter != null)
+                if (isUpvote)
                 {
-                    if (isUpvote)
-                    {
-                        await _notificationService.EnsureUpvoteNotif(post.UserId, postId, userId, voter.UserName);
-                    }
-                    else
-                    {
-                        await _notificationService.EnsureDownvoteNotif(post.UserId, postId, userId, voter.UserName);
-                    }
+                    await _notificationService.EnsureUpvoteNotif(post.UserId, postId, userId, voter.UserName);
+                }
+                else
+                {
+                    await _notificationService.EnsureDownvoteNotif(post.UserId, postId, userId, voter.UserName);
                 }
             }
-            catch (Exception ex)
-            {
-                TempData["Error"] = "Vote thất bại: " + ex.Message;
-            }
 
-            return RedirectToAction("Index");
+            post.PostVotes = await _postService.GetPostVoteByPost(postId);
+
+            return PartialView("_VoteButtons", post);
         }
 
         [HttpPost]

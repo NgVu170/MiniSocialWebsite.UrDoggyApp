@@ -246,6 +246,13 @@ namespace UrDoggy.Data.Repositories
             return row == null ? 0 : row.UpVotes - row.DownVotes;
         }
 
+        public async Task<List<PostVote>> GetPostVoteByPost(int postId)
+        {
+            return await _context.PostVotes
+                        .Where(v => v.PostId == postId)
+                        .ToListAsync();
+        }
+
         // ===== READ: has voted =====
         public async Task<bool> HasVoted(int postId, int userId)
         {
