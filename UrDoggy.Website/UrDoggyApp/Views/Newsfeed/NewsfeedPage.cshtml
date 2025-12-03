@@ -30,6 +30,7 @@
         --bg-glass: rgba(255, 255, 255, 0.9);
         --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.08); /* Replaced shadow-soft, slightly less harsh */
         --border-light: 1px solid rgba(0, 0, 0, 0.05);
+        
     }
 
     ::-webkit-scrollbar {
@@ -69,7 +70,7 @@
 
         .post-create .btn-post {
             /* Use theme color from layout.css */
-            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+            background: var(--color-theme);
             color: white;
             border: none;
             padding: 0.6rem 2.2rem; /* Slightly larger/more prominent */
@@ -290,6 +291,59 @@
             padding-right: 1rem;
         }
     }
+
+
+    /* Custom styles */
+    .btn-media-upload {
+        cursor: pointer;
+    }
+
+    .media-preview-scroll {
+        overflow-x: auto;
+        min-height: 100px;
+        padding-bottom: 8px;
+    }
+
+    .media-preview-item {
+        position: relative;
+        flex: 0 0 90px;
+        height: 90px;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease;
+    }
+
+        .media-preview-item:hover {
+            transform: scale(1.03);
+            z-index: 1;
+        }
+
+        .media-preview-item video,
+        .media-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .remove-media-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        width: 24px;
+        height: 24px;
+        background: rgba(255,255,255,0.9);
+        border-radius: 50%;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .media-preview-item:hover .remove-media-btn {
+        opacity: 1;
+    }
 </style>
 
 @section LeftSidebar {
@@ -316,21 +370,43 @@
                           required></textarea>
 
                 @* Tag Popups (Logic retained) *@
-                <div id="tag-popup"
-                     style="position: absolute; display: none; width: 250px; z-index: 9999; top: 100%;">
+                <div style="position: fixed; z-index: 1000; background: #f5feff; width: 70%; padding-left: 15px; border-radius: 11px;">
+                    <div id="tag-popup"
+                         style="display: none;max-height: 90px; overflow-y: auto;">
+                    </div>
+                    <div id="hashtagSuggestions"
+                         class="start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
+                         style=" max-height: 90px; overflow-y: auto;">
+                    </div>
                 </div>
-                <div id="hashtagSuggestions"
-                     class="position-absolute start-0 end-0 bg-white border rounded shadow-lg mt-1 d-none"
-                     style="z-index: 1000; max-height: 300px; overflow-y: auto; top: 100%;">
-                </div>
+                
             </div>
         </div>
 
         <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top border-light">
-            <div class="flex-grow-1 me-3">
-                <input type="file" name="mediaFiles" multiple accept="image/*,video/*" class="form-control form-control-sm" style="border-radius: 1rem;" />
+            <div class="media-upload-container position-relative">
+                <!-- Hidden file input -->
+                <input type="file"
+                       name="mediaFiles"
+                       multiple
+                       accept="image/*,video/*"
+                       class="d-none"
+                       id="mediaUpload" />
+
             </div>
-            <button type="submit" class="btn-post shadow-sm">Post</button>
+                <!-- Preview container -->
+                <div class="media-preview-scroll d-flex gap-2 mt-3" style="position: fixed;"></div>
+               
+
+            <!-- Custom upload button -->
+            <div>
+                <label for="mediaUpload"
+                       class="btn-media-upload btn p-3">
+                    <i class="fa-solid fa-image text-primary"></i>
+                </label>
+
+                <button type="submit" class="btn-post shadow-sm">Post</button>
+            </div>
         </div>
     </form>
 </div>
@@ -674,5 +750,37 @@
             });
         });
         // --- End Custom Dropdown Logic ---
+                document.getElementById('mediaUpload').addEventListener('change', function(e) {
+            const previewContainer = document.querySelector('.media-preview-scroll');
+            previewContainer.innerHTML = ''; // Clear previous previews
+
+            Array.from(e.target.files).forEach((file, index) => {
+                const reader = new FileReader();
+                const previewItem = document.createElement('div');
+                previewItem.className = 'media-preview-item';
+                previewItem.innerHTML = `
+                    <div class="remove-media-btn" onclick="this.parentElement.remove()">
+                        <i class="fas fa-times text-danger fs-6"></i>
+                    </div>
+                `;
+
+                if (file.type.startsWith('image/')) {
+                    reader.onload = (e) => {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        previewItem.prepend(img);
+                    }
+                    reader.readAsDataURL(file);
+                }
+                else if (file.type.startsWith('video/')) {
+                    const video = document.createElement('video');
+                    video.controls = true;
+                    video.src = URL.createObjectURL(file);
+                    previewItem.prepend(video);
+                }
+
+                previewContainer.appendChild(previewItem);
+            });
+        });
     </script>
 }
