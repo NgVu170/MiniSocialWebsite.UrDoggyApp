@@ -57,6 +57,11 @@ namespace UrDoggy.Services.Service
             return await _userRepository.GetAllUsers();
         }
 
+        public async Task<string> GetByIdTracked(int userId)
+        {
+            return await _userRepository.GetByIdTracked(userId);
+        }
+
         public async Task DeleteUser(int userId)
         {
             await _userRepository.DeleteUser(userId);

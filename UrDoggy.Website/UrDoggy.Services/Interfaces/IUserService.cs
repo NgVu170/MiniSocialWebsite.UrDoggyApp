@@ -14,6 +14,7 @@ namespace UrDoggy.Services.Interfaces
         Task UpdateProfile(int userId, string displayName, string bio, string profilePicture);
         Task<List<User>> Search(string searchTerm);
         Task<User> GetById(int userId);
+        Task<string> GetByIdTracked(int userId);
         Task<User> GetByUsername(string username);
         Task<List<User>> GetAllUsers();
         Task DeleteUser(int userId);

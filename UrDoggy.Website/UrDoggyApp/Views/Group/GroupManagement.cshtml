@@ -1,7 +1,7 @@
 ﻿@using UrDoggy.Core.Models
 @using UrDoggy.Core.Models.GroupModels
+@inject UrDoggy.Services.Interfaces.IUserService UserService
 @model Group
-
 @{
     var pending = ViewBag.PendingPostList as List<GroupPostStatus> ?? new List<GroupPostStatus>();
     var members = ViewBag.MemberList as List<GroupDetail> ?? new List<GroupDetail>();
@@ -12,180 +12,102 @@
     <link rel="stylesheet" href="~/css/layout.css" />
 }
 
-
 @section LeftSidebar {
     <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
 }
 
-
 <style>
-    /* Global Scrollbar Hide */
-    .container,
-    .card-body,
-    .vstack,
-    table {
-        overflow: hidden;
+
+    .admin-glass {
+        background: rgba(255,255,255,0.85);
+        backdrop-filter: blur(12px);
+        border-radius: 20px;
+        padding: 1.8rem;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+        border: 1px solid rgba(0,0,0,0.04);
     }
 
-    ::-webkit-scrollbar {
-        width: 0;
-        background: transparent;
-    }
-
-    /* Container Animation */
-    .container.mt-4 {
-        animation: fadeIn 0.4s ease-out;
-    }
-
-    @@keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* Header Section */
-    .d-flex.justify-content-between {
-        background: linear-gradient(135deg, rgba(255, 107, 107, 0.05) 0%, rgba(9, 132, 227, 0.05) 100%);
+    .admin-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         padding: 1.5rem;
-        border-radius: 1.5rem;
+        border-radius: 20px;
+        background: linear-gradient(135deg, rgba(37,211,102,0.12), rgba(9,132,227,0.12));
         margin-bottom: 2rem;
     }
 
-    .btn-danger {
-        background: linear-gradient(135deg, #ff6b6b 0%, #dc3545 100%);
-        border: none;
-    }
-
-    /* Approval Cards */
-    .vstack .border.rounded {
-        border-radius: 1rem !important;
-        border: 2px solid rgba(0, 0, 0, 0.05) !important;
-        transition: all 0.3s ease;
-    }
-
-        .vstack .border.rounded:hover {
-            transform: translateX(5px);
-            border-color: #25D366 !important;
-        }
-
-    .btn-success.btn-sm {
-        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
-        border: none;
-    }
-
-    /* Member Table */
-    .table {
-        --bs-table-bg: transparent;
-        border-radius: 1rem;
-        overflow: hidden;
-    }
-
-        .table tr {
-            transition: all 0.2s ease;
-        }
-
-            .table tr:hover {
-                background: rgba(9, 132, 227, 0.03) !important;
-            }
-
-        .table td,
-        .table th {
-            padding: 0.75rem 1rem;
-            border-color: rgba(0, 0, 0, 0.05);
-        }
-
-    /* Report Table */
-    .table-striped tbody tr:nth-of-type(odd) {
-        background: rgba(0, 0, 0, 0.02);
-    }
-
-    /* Action Buttons */
-    .btn-sm {
-        padding: 0.3rem 0.8rem;
-        border-radius: 0.8rem;
-        min-width: 80px;
-    }
-
-    .btn-outline-primary.btn-sm {
-        border: 2px solid var(--primary);
-    }
-
-    /* Card Enhancements */
     .card {
+        border-radius: 18px;
         border: none;
-        border-radius: 1.5rem;
-        box-shadow: var(--shadow);
+        box-shadow: 0 14px 30px rgba(0,0,0,0.06);
         overflow: hidden;
     }
 
     .card-header {
-        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        background: linear-gradient(135deg, #25D366, #0984e3);
         color: white;
-        font-weight: 500;
+        font-weight: 600;
+        padding: 1rem 1.5rem;
     }
 
-    /* Mobile Optimization */
-    @@media (max-width: 992px) {
-        .row.g-4 {
-            gap: 1.5rem !important;
-        }
-
-        .table-responsive {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .btn {
-            white-space: nowrap;
-        }
+    .border.rounded {
+        border-radius: 14px !important;
+        border: 2px solid rgba(0,0,0,0.05) !important;
+        transition: 0.25s;
+        background: white;
     }
 
-    /* Loading States */
-    button[type="submit"]:disabled {
-        opacity: 0.7;
-        position: relative;
+        .border.rounded:hover {
+            transform: translateX(6px);
+            border-color: #25D366 !important;
+        }
+
+    .table {
+        border-radius: 14px;
+        overflow: hidden;
     }
 
-        button[type="submit"]:disabled::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255,255,255,0.3);
-            border-top-color: transparent;
-            border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            transform: translate(-50%, -50%);
+        .table tr:hover {
+            background: rgba(9,132,227,0.04);
         }
 
-    @@keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
+    .btn-sm {
+        border-radius: 10px;
+        padding: 0.35rem 0.9rem;
+    }
+
+    .btn-success {
+        background: linear-gradient(135deg, #25D366, #0984e3);
+        border: none;
+    }
+
+    .btn-danger {
+        background: linear-gradient(135deg, #ff7675, #d63031);
+        border: none;
+    }
+
+    .avatar-lg {
+        width: 54px;
+        height: 54px;
+        object-fit: cover;
+        border-radius: 50%;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     }
 </style>
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
+<div class="container mt-4 admin-glass">
+    <div class="admin-header">
         <div class="d-flex align-items-center">
-            <img src="@(Model.Avatar ?? "/images/default-avatar.png")" 
-            class="rounded-circle me-2" 
-            style="width:48px;height:48px;object-fit:cover;"
-            onerror="this.src='/images/default-avatar.png';" />
+            <img src="@(Model.Avatar ?? "/images/default-avatar.png")"
+                 class="avatar-lg me-3"
+                 onerror="this.src='/images/default-avatar.png';" />
             <div>
                 <h3 class="mb-0">@Model.GroupName</h3>
                 <small class="text-muted">@Model.Description</small>
             </div>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
             <a class="btn btn-outline-secondary" href="~/Group/PostsInGroup?groupId=@Model.Id">← Xem bài</a>
             <a class="btn btn-primary" href="~/Group/EditGroupInformation?groupId=@Model.Id">Sửa thông tin nhóm</a>
             @using (Html.BeginForm("ReleaseGroup", "Group", FormMethod.Post, new { onsubmit = "return confirm('Xóa (soft delete) nhóm này?');" }))
@@ -197,11 +119,10 @@
     </div>
 
     <div class="row g-4">
+        <!-- ✅ PENDING POSTS -->
         <div class="col-lg-6">
             <div class="card">
-                <div class="card-header">
-                    <strong>Bài chờ duyệt (@pending.Count)</strong>
-                </div>
+                <div class="card-header">Bài chờ duyệt (@pending.Count)</div>
                 <div class="card-body">
                     @if (!pending.Any())
                     {
@@ -223,25 +144,24 @@
                                             {
                                                 <input type="hidden" name="postId" value="@s.Id" />
                                                 <input type="hidden" name="groupId" value="@Model.Id" />
-                                                <button class="btn btn-success btn-sm" type="submit">Duyệt</button>
+                                                <button class="btn btn-success btn-sm">Duyệt</button>
                                             }
                                             @using (Html.BeginForm("RejectPost", "Group", FormMethod.Post))
                                             {
                                                 <input type="hidden" name="postId" value="@s.Id" />
                                                 <input type="hidden" name="groupId" value="@Model.Id" />
-                                                <button class="btn btn-outline-danger btn-sm" type="submit">Từ chối</button>
+                                                <button class="btn btn-outline-danger btn-sm">Từ chối</button>
                                             }
                                         </div>
                                     </div>
                                     <div class="mt-2">@s.Content</div>
-									@foreach (var img in s.MediaItems)
-									{
-										<img src="@Url.Content(img.Path)" 
-                                        alt="post image" 
-                                        class="img-fluid mt-2 rounded" 
-                                        style="max-height:200px;object-fit:cover;" 
-                                        onerror="this.style.display='none';" />
-									})
+                                    @foreach (var img in s.MediaItems)
+                                    {
+                                        <img src="@Url.Content(img.Path)"
+                                             class="img-fluid mt-2 rounded"
+                                             style="max-height:200px;object-fit:cover;"
+                                             onerror="this.style.display='none';" />
+                                    }
                                 </div>
                             }
                         </div>
@@ -250,112 +170,54 @@
             </div>
         </div>
 
+        <!-- ✅ MEMBERS -->
         <div class="col-lg-6">
             <div class="card">
-                <div class="card-header">
-                    <strong>Thành viên (@members.Count)</strong>
-                </div>
+                <div class="card-header">Thành viên (@members.Count)</div>
                 <div class="card-body">
-                    @if (!members.Any())
-                    {
-                        <div class="text-muted">Chưa có thành viên.</div>
-                    }
-                    else
-                    {
-                        <table class="table table-sm align-middle">
-                            <thead>
+                    <table class="table table-sm align-middle">
+                        <tbody>
+                            @foreach (var m in members)
+                            {
                                 <tr>
-                                    <th>User</th>
-                                    <th>Role</th>
-                                    <th>Status</th>
-                                    <th class="text-end">Hành động</th>
+                                    <td>@await UserService.GetByIdTracked(m.UserId)</td>
+                                    <td>@m.Role</td>
+                                    <td>@m.MemberStatus</td>
+                                    <td class="text-end">
+                                        @using (Html.BeginForm("KickMember", "Group", FormMethod.Post))
+                                        {
+                                            <input type="hidden" name="targetUserId" value="@m.UserId" />
+                                            <input type="hidden" name="groupId" value="@Model.Id" />
+                                            <button class="btn btn-outline-danger btn-sm">Kick</button>
+                                        }
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var m in members)
-                                {
-                                    <tr>
-                                        <td>#@m.UserId</td>
-                                        <td>@m.Role</td>
-                                        <td>@m.MemberStatus</td>
-                                        <td class="text-end">
-                                            @if (m.Role == GroupRole.Member)
-                                            {
-                                                @using (Html.BeginForm("PromoteToModerator", "Group", FormMethod.Post, new { @class = "d-inline" }))
-                                                {
-                                                    <input type="hidden" name="targetUserId" value="@m.UserId" />
-                                                    <input type="hidden" name="groupId" value="@Model.Id" />
-                                                    <button class="btn btn-outline-primary btn-sm" type="submit">Thăng Mod</button>
-                                                }
-                                            }
-                                            else if (m.Role == GroupRole.Moderator)
-                                            {
-                                                @using (Html.BeginForm("DemoteToMember", "Group", FormMethod.Post, new { @class = "d-inline" }))
-                                                {
-                                                    <input type="hidden" name="targetUserId" value="@m.UserId" />
-                                                    <input type="hidden" name="groupId" value="@Model.Id" />
-                                                    <button class="btn btn-outline-secondary btn-sm" type="submit">Giáng Member</button>
-                                                }
-                                            }
-
-                                            @using (Html.BeginForm("BanMember", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Cấm thành viên này?');" }))
-                                            {
-                                                <input type="hidden" name="targetUserId" value="@m.UserId" />
-                                                <input type="hidden" name="groupId" value="@Model.Id" />
-                                                <button class="btn btn-danger btn-sm" type="submit">Cấm</button>
-                                            }
-                                            @using (Html.BeginForm("KickMember", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa thành viên khỏi nhóm?');" }))
-                                            {
-                                                <input type="hidden" name="targetUserId" value="@m.UserId" />
-                                                <input type="hidden" name="groupId" value="@Model.Id" />
-                                                <button class="btn btn-outline-danger btn-sm" type="submit">Kick</button>
-                                            }
-                                        </td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
+        <!-- ✅ REPORTS -->
         <div class="col-12">
             <div class="card">
-                <div class="card-header">
-                    <strong>Báo cáo vi phạm (@reports.Count)</strong>
-                </div>
+                <div class="card-header">Báo cáo vi phạm (@reports.Count)</div>
                 <div class="card-body">
-                    @if (!reports.Any())
-                    {
-                        <div class="text-muted">Chưa có báo cáo.</div>
-                    }
-                    else
-                    {
-                        <table class="table table-striped table-sm">
-                            <thead>
+                    <table class="table table-striped table-sm">
+                        <tbody>
+                            @foreach (var r in reports)
+                            {
                                 <tr>
-                                    <th>ReportId</th>
-                                    <th>PostId</th>
-                                    <th>Reporter</th>
-                                    <th>Reason</th>
-                                    <th>Time</th>
+                                    <td>@await UserService.GetByIdTracked(r.Id)</td>
+                                    <td>@r.GroupPostId</td>
+                                    <td>@await UserService.GetByIdTracked(r.ReporterId)</td>
+                                    <td>@r.Reason</td>
+                                    <td>@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (var r in reports)
-                                {
-                                    <tr>
-                                        <td>@r.Id</td>
-                                        <td>@r.GroupPostId</td>
-                                        <td>@r.ReporterId</td>
-                                        <td>@r.Reason</td>
-                                        <td>@r.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm")</td>
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
