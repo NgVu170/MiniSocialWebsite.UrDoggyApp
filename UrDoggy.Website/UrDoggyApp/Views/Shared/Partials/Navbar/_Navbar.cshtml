@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+
+    <!-- Global CSS -->
+    <link href="~/css/layout.css" rel="stylesheet" />
+    <link href="~/css/navbar.css" rel="stylesheet" />
+
+    <!-- Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+</head>
+
+<body>
+
+    <nav class="navbar-ui">
+        <div class="navbar-row">
+            <div class="navbar-area navbar-area-left">
+                @await Html.PartialAsync("~/Views/Shared/Partials/Navbar/_Navbar_left.cshtml")
+            </div>
+
+            <div class="navbar-area navbar-area-center">
+                @await Html.PartialAsync("~/Views/Shared/Partials/Navbar/_Navbar_center.cshtml")
+            </div>
+
+            <div class="navbar-area navbar-area-right">
+                @await Html.PartialAsync("~/Views/Shared/Partials/Navbar/_Navbar_right.cshtml")
+            </div>
+        </div>
+    </nav>
+
+    <!-- Spacer below navbar -->
+    <div style="height: var(--navbar-height);"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

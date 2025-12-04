@@ -12,7 +12,7 @@ namespace UrDoggy.Core.Models
 {
     public class User : IdentityUser<int>
     {
-        public string ProfilePicture { get; set; } = "./UrDoggy.Webtisite/wwwroot/images/default-avatar.png";
+        public string ProfilePicture { get; set; } = "/images/default-avatar.png";
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public bool IsAdmin { get; set; } = false;
         public string DisplayName { get; set; } = string.Empty;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.Extensions.Hosting;
 using System.Security.Claims;
@@ -10,6 +11,7 @@ using UrDoggy.Services.Service;
 
 namespace UrDoggy.Website.Controllers
 {
+
     [Authorize]
     public class NewsfeedController : Controller
     {
@@ -49,7 +51,7 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpGet]
-        [Route("/PersonalizedFeed")]
+        [Route("/Newsfeed/PersonalizedFeed")]
         public async Task<IActionResult> PersonalizedFeed()
         {
             ViewBag.IsPersonalized = true;
@@ -79,7 +81,7 @@ namespace UrDoggy.Website.Controllers
         [HttpPost]
         [Route("/Newsfeed/Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? taggedUsers = null)
+        public async Task<IActionResult> Create(List<IFormFile> mediaFiles, string content, string? TaggedUserIds = null)
         {
             var userId = HttpContext.Session.GetInt32("UserId");
             var currentUser = await _userService.GetById(userId.Value);
@@ -105,19 +107,22 @@ namespace UrDoggy.Website.Controllers
 
                 var post = await _postService.CreatePost(userId.Value, content, mediaItems);
                 TempData["Success"] = "Đã đăng bài viết thành công";
-                if (taggedUsers != null )
+                if (!string.IsNullOrEmpty(TaggedUserIds))
                 {
-                    List<int> tagIds = new List<int>();
-                    if (!string.IsNullOrEmpty(taggedUsers))
-                    {
-                        tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(taggedUsers);
-                    }
-                    foreach(var tagId in tagIds)
+                    var tagIds = Newtonsoft.Json.JsonConvert.DeserializeObject<List<int>>(TaggedUserIds);
+
+                    foreach (var tagId in tagIds)
                     {
                         var recevierUser = await _userService.GetById(tagId);
-                        if (recevierUser != null && userId != null)
+                        if (recevierUser != null)
                         {
-                            await _notificationService.EnsureTagNotif(userId.Value, recevierUser.Id, currentUser.DisplayName, post.Id);
+                            await _notificationService.EnsureTagNotif(
+                                userId.Value,
+                                recevierUser.Id,
+                                currentUser.DisplayName,
+                                post.Id
+                            );
+
                             post.TaggedUsers.Add(recevierUser);
                         }
                     }
@@ -131,6 +136,7 @@ namespace UrDoggy.Website.Controllers
 
             return RedirectToAction("Index");
         }
+
 
         [HttpPost]
         [Route("/Newsfeed/Delete")]
@@ -469,35 +475,16 @@ namespace UrDoggy.Website.Controllers
             if (userId == null || userId == 0)
                 return RedirectToAction("Login", "Auth");
 
-            string cookieValue = Request.Cookies[HiddenPostsCookieName] ?? "";
-            List<int> hiddenIds = cookieValue
-                .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                .Select(text => int.TryParse(text, out var v) ? v : -1)
-                .Where(id => id >= 0)
-                .ToList();
-
             try
             {
-                // Lấy danh sách posts đã xem từ cookie
-                string viewedCookieValue = Request.Cookies[ViewedPostsCookieName] ?? "";
-                HashSet<int> viewedPostIds = viewedCookieValue
-                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
-                    .Select(text => int.TryParse(text, out var v) ? v : -1)
-                    .Where(id => id >= 0)
-                    .ToHashSet();
-
                 // Lấy bài viết recommended và loại bỏ những post đã xem
                 bool isPersonalized = ViewBag.IsPersonalized is true;
                 List<Post> allPosts = (isPersonalized) ?
-                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, true) :
-                    await _postService.GetRecommendedPosts(userId.Value, viewedPostIds, false);
+                    await _postService.GetRecommendedPosts(userId.Value, null, true) :
+                    await _postService.GetRecommendedPosts(userId.Value, null, false);
 
                 var visiblePosts = allPosts
-                    .Where(post => !hiddenIds.Contains(post.Id))
                     .ToList();
-
-                // Cập nhật danh sách posts đã xem
-                UpdateViewedPostsCookie(viewedPostIds, visiblePosts);
 
                 // Lấy comments cho mỗi post
                 foreach (var post in visiblePosts)
@@ -516,13 +503,11 @@ namespace UrDoggy.Website.Controllers
                 ViewBag.CurrentUser = currentUser;
                 ViewBag.UnreadCount = unreadCount;
                 ViewBag.Friends = friends;
-                ViewBag.HiddenPostIds = hiddenIds;
 
                 return View("NewsfeedPage", visiblePosts);
             }
             catch (Exception ex)
             {
-                // Log lỗi và trả về view với danh sách rỗng
                 TempData["Error"] = "Có lỗi xảy ra khi tải bài viết: " + ex.Message;
                 return View("NewsfeedPage", new List<Post>());
             }

@@ -80,7 +80,7 @@ namespace UrDoggy.Website.Controllers
                 {
                     HttpContext.Session.SetInt32("UserId", user.Id);
                     HttpContext.Session.SetString("Username", user.UserName);
-                    return RedirectToAction("Index", "Newsfeed");
+                    return RedirectToAction("PersonalizedFeed", "Newsfeed");
                 }
 
                 ModelState.AddModelError(string.Empty, "Sai email hoặc mật khẩu");

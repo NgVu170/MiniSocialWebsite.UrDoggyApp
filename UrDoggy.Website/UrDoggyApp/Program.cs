@@ -10,10 +10,31 @@ using UrDoggy.Website.Hubs;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using UrDoggy.Data.Repositories.Group_Repository; // GroupRepository, GroupPostRepository, UserGroupRepositrory
 using UrDoggy.Services.Interfaces.GroupServices;  // IGroupUserService, IAdminGroupService, IModeratorService
-using UrDoggy.Services.Service.GroupServices; // GroupUserService, AdminGroupService, ModeratorService
+using UrDoggy.Services.Service.GroupServices;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Http.Features; // GroupUserService, AdminGroupService, ModeratorService
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<IISServerOptions>(options =>
+{
+    options.MaxRequestBodySize = 2_000_000_000; // 2GB
+    options.AllowSynchronousIO = true;
+});
+
+builder.Services.Configure<KestrelServerOptions>(options =>
+{
+    options.Limits.MaxRequestBodySize = 2_000_000_000; // 2GB
+    options.Limits.RequestHeadersTimeout = TimeSpan.FromMinutes(10);
+});
+
+builder.Services.Configure<FormOptions>(options =>
+{
+    options.MultipartBodyLengthLimit = 2_000_000_000; // 2GB
+    options.ValueCountLimit = 100;
+    options.MultipartHeadersLengthLimit = 1024 * 1024; // 1MB header
+});
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
@@ -48,7 +69,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader();
     });
 });
-
 
 //Authentication
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -115,6 +135,14 @@ using (var scope = app.Services.CreateScope())
             logger.LogError("Inner exception: {InnerException}", ex.InnerException.Message);
         }
     }
+}
+
+//Account seeder
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await AccountSeeder.SeedUsers(services);
+    await FriendSeeder.SeedFriends(services);
 }
 
 // Configure the HTTP request pipeline.

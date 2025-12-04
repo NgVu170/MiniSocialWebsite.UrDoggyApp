@@ -26,374 +26,554 @@
         : Url.Content(Model.ProfilePicture);
 
     var posts = ViewBag.Posts as List<UrDoggy.Core.Models.Post>
-                ?? new List<UrDoggy.Core.Models.Post>();
+                                ?? new List<UrDoggy.Core.Models.Post>();
+
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
 <style>
-    /* Profile Header */
-    .text-center.mb-4 {
-        background: linear-gradient(135deg, rgba(37, 211, 102, 0.1) 0%, rgba(9, 132, 227, 0.1) 100%);
-        padding: 2rem;
+    :root {
+        --primary-color: #00b894;
+        --hover-color: #55efc4;
+        --text-dark: #2d3436;
+        --bg-glass: rgba(255, 255, 255, 0.95);
+        --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Hide Scrollbar */
+    ::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* --- Profile Header Card --- */
+    .profile-header-card {
+        background: var(--bg-theme);
         border-radius: 1.5rem;
-        margin: 2rem auto;
-        max-width: 800px;
-        box-shadow: var(--shadow);
-    }
-
-    .rounded-circle[style*="240px"] {
-        border: 4px solid var(--secondary);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
-
-        .rounded-circle[style*="240px"]:hover {
-            transform: scale(1.02) rotate(2deg);
-            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
-        }
-
-    .btn-outline-danger,
-    .btn-outline-primary,
-    .btn-primary {
-        transition: all 0.2s ease;
+        padding: 3rem 1.5rem;
+        text-align: center;
+        box-shadow: var(--shadow-soft);
+        margin-bottom: 2rem;
+        border: 1px solid rgba(0,0,0,0.03);
         position: relative;
         overflow: hidden;
     }
 
-        .btn-primary:not(:disabled):hover {
-            background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+
+    .profile-avatar-lg {
+        width: 160px;
+        height: 160px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        position: relative;
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+        .profile-avatar-lg:hover {
+            transform: rotate(15deg) scale(1.15);
+            box-shadow: 0 12px 32px white;
+        }
+
+    .profile-info {
+        position: relative;
+        z-index: 1;
+        margin-top: 1rem;
+    }
+
+    .profile-name {
+        font-weight: 700;
+        color: white;
+        margin-bottom: 0.5rem;
+    }
+
+    .profile-bio {
+        color: white;
+        max-width: 600px;
+        margin: 0 auto 1.5rem auto;
+        font-size: 0.95rem;
+    }
+
+    /* Action Buttons */
+    .btn-profile-action {
+        border-radius: 2rem;
+        padding: 0.5rem 1.5rem;
+        font-weight: 600;
+        transition: all 0.2s;
+        margin: 0 5px;
+    }
+
+        .btn-profile-action:hover {
             transform: translateY(-2px);
         }
 
-        .btn-outline-danger:hover {
-            background: #dc3545;
-            color: white !important;
-        }
-
-    /* Post Cards */
+    /* --- Post Card Styles (Matched with Newsfeed) --- */
     .post-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border: 1px solid rgba(0, 0, 0, 0.05);
+        background: #fff;
+        border-radius: 1.5rem;
+        border: 1px solid rgba(0,0,0,0.03);
+        box-shadow: var(--shadow-soft);
+        transition: transform 0.3s ease;
+        overflow: hidden;
     }
 
         .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transform: translateY(-4px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        }
+
+    .post-header {
+        padding: 1rem 1.5rem;
+    }
+
+    .user-avatar-sm {
+        width: 45px;
+        height: 45px;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+
+    .post-content {
+        padding: 0 1.5rem 1rem 1.5rem;
+        color: var(--text-dark);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+        .post-content p {
+            margin-bottom: 0; /* Remove default margin for the paragraph inside post-content */
+            overflow-wrap: break-word;
+        }
+
+    /* New: Limits the height of the post content container */
+    .post-content-truncated {
+        max-height: 90px; /* Example height: approx. 3-4 lines of text */
+        overflow: hidden;
+        position: relative;
+        /* Optional: Fading effect for truncation */
+        mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    }
+
+    .read-more-toggle {
+        display: block;
+        cursor: pointer;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary-color);
+        padding-top: 5px;
+    }
+
+    /* Media Display */
+    .media-container {
+        margin-top: 10px;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+        .media-container img, .media-container video {
+            width: 100%;
+            display: block;
+            margin-bottom: 5px;
+            border-radius: 0.5rem;
+        }
+
+    /* Action Bar */
+    .action-bar {
+        padding: 0.75rem 1.5rem;
+        border-top: 1px solid #f1f2f6;
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+    }
+
+    .btn-action {
+        border-radius: 2rem;
+        padding: 0.4rem 1rem;
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+        transition: all 0.2s;
+        background-color: transparent;
+    }
+
+        .btn-action:hover {
+            transform: scale(1.05);
         }
 
     /* Comment Section */
-    .bg-light.rounded.p-2 {
-        background: rgba(0, 184, 148, 0.05) !important;
-        border-left: 3px solid var(--accent);
+    .comment-section {
+        background: #f9f9f9;
+        padding: 1rem 1.5rem;
+        border-top: 1px solid #eee;
     }
 
-    textarea.form-control {
+    .comment-box {
+        background: white;
         border-radius: 1rem;
-        border: 1px solid rgba(0, 0, 0, 0.1);
-        transition: border-color 0.3s ease;
+        padding: 0.6rem 0.8rem;
+        border: 1px solid #eee;
+        font-size: 0.9rem;
+        line-height: 1.3;
     }
 
-        textarea.form-control:focus {
-            border-color: var(--secondary);
-            box-shadow: 0 0 0 3px rgba(9, 132, 227, 0.1);
-        }
+    .comment-input-area textarea {
+        border-radius: 1.5rem;
+        resize: none;
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+    }
 
-    /* Voting Buttons */
-    .btn-outline-success, .btn-outline-danger {
-        min-width: 80px;
+    .comment-input-area .btn {
+        white-space: nowrap;
+    }
+
+    /* Custom Post Menu Styling */
+    .post-options {
         position: relative;
     }
 
-        .btn-outline-success:hover::after,
-        .btn-outline-danger:hover::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-    @@media (max-width: 768px) {
-        .rounded-circle[style*="240px"] {
-            width: 180px !important;
-            height: 180px !important;
-        }
-
-        .d-flex.gap-2 {
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            margin: 4px;
-            flex-grow: 1;
-        }
+    .post-menu {
+        position: absolute;
+        top: 100%;
+        right: 0;
+        z-index: 1000;
+        display: none; /* Controlled by JS */
+        float: left;
+        min-width: 10rem;
+        padding: 0.5rem 0;
+        margin: 0.125rem 0 0;
+        font-size: 1rem;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0,0,0,.15);
+        border-radius: 0.5rem;
+        box-shadow: 0 0.5rem 1rem rgba(0,0,0,.175);
     }
 
-    /* Loading States */
-    button:disabled {
-        opacity: 0.7;
-        position: relative;
-    }
-
-        button:disabled::after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #fff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 0.8s linear infinite;
-            transform: translate(-50%, -50%);
+        .post-menu.show {
+            display: block;
         }
 
-    @@keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
 </style>
 
-<div class="text-center mb-4">
-    <img src="@profileUserAvatarUrl"
-    class="rounded-circle"
-    style="width:240px;height:240px;" />
-    <h2 class="mt-2">@Model.DisplayName</h2>
-    <p class="text-muted">@Model.Bio</p>
+<div class="profile-header-card">
+    <img src="@profileUserAvatarUrl" class="profile-avatar-lg" alt="@Model.DisplayName" />
 
-    @if (isOwnProfile)
-    {
-        <a asp-controller="Profile"
-        asp-action="Edit"
-        class="btn btn-secondary">Edit Profile</a>
-    }
-    else if (isFriend)
-    {
-        <form asp-controller="Friends"
-        asp-action="Unfriend"
-        method="post"
-        class="d-inline">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="friendId" value="@Model.Id" />
-            <button type="submit" class="btn btn-outline-danger">Unfriend</button>
-        </form>
-    }
-    else if (hasSentRequest)
-    {
-        <button class="btn btn-outline-primary" disabled>Request Sent</button>
-    }
-    else if (hasReceived)
-    {
-        <form asp-controller="Friends"
-        asp-action="Respond"
-        method="post"
-        class="d-inline">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="requestId" value="@(ViewBag.RequestId)" />
-            <button name="accept" value="true" class="btn btn-sm btn-success">Accept</button>
-            <button name="accept" value="false" class="btn btn-sm btn-danger">Reject</button>
-        </form>
-    }
-    else if (canSendRequest)
-    {
-        <form asp-controller="Friends"
-        asp-action="SendRequest"
-        method="post"
-        class="d-inline">
-            @Html.AntiForgeryToken()
-            <input type="hidden" name="friendId" value="@Model.Id" />
-            <button type="submit" class="btn btn-primary">Add Friend</button>
-        </form>
-    }
+    <div class="profile-info">
+        <h2 class="profile-name">@Model.DisplayName</h2>
+        <p class="profile-bio">@(string.IsNullOrEmpty(Model.Bio) ? "No bio yet." : Model.Bio)</p>
 
-    @if (!isOwnProfile)
-    {
-        <a asp-controller="Messages"
-        asp-action="Index"
-        asp-route-otherUserId="@Model.Id"
-        class="btn btn-primary ms-2">
-            <i class="fas fa-comment-dots"></i> Message
-        </a>
-    }
-</div>
-
-<h4>@Model.UserName’s Posts</h4>
-
-@if (!posts.Any())
-{
-    <p class="text-muted">No posts yet.</p>
-}
-else
-{
-    @foreach (var post in posts)
-    {
-        bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
-        string editPostDivId = "edit-post-" + post.Id;
-        <div class="post-card mb-4 p-3 bg-white rounded shadow-sm">
-
-            <div class="d-flex justify-content-between mb-2">
-                <div>
-                    <a asp-controller="Profile"
-                    asp-action="Index"
-                    asp-route-id="@post.UserId"
-                    class="text-dark">
-                        @{
-                            var userFind = await UserService.GetById(post.UserId);
-                            if (userFind != null)
-                            {
-                                <strong>@userFind.UserName</strong>
-                            }
-                        }
-                    </a>
-                    <small class="text-muted ms-2">@post.CreatedAt:g</small>
-                </div>
-
-                @if (isOwnPost)
-                {
-                    <form asp-controller="Newsfeed"
-                          asp-action="Delete"
-                          method="post"
-                          class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="postId" value="@post.Id" />
-                        <button class="btn btn-sm btn-light text-danger">Delete</button>
-                    </form>
-                }
-                else
-                {
-                    <form asp-controller="Newsfeed"
-                          asp-action="Unhide"
-                          method="post"
-                          class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="postId" value="@post.Id" />
-                        <button type="submit" class="btn btn-sm btn-outline-success">Unhide</button>
-                    </form>
-                }
-            </div>
-
-            <p>@post.Content</p>
-
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <form asp-controller="Newsfeed"
-                      asp-action="Vote"
-                      method="post"
-                      class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="postId" value="@post.Id" />
-                    <button name="isUpvote" value="true" class="btn btn-sm btn-outline-success">
-                        ⬆️ @post.UpVotes
-                    </button>
-                </form>
-
-                <form asp-controller="Newsfeed"
-                      asp-action="Vote"
-                      method="post"
-                      class="d-inline">
-                    @Html.AntiForgeryToken()
-                    <input type="hidden" name="postId" value="@post.Id" />
-                    <button name="isUpvote" value="false" class="btn btn-sm btn-outline-danger">
-                        ⬇️ @post.DownVotes
-                    </button>
-                </form>
-
-                <button type="button"
-                        class="btn btn-sm btn-outline-secondary"
-                        onclick="copyShareLink(@post.Id)">
-                    🔗 Share
-                </button>
-
-                @if (!isOwnPost)
-                {
-                    <form asp-controller="Newsfeed"
-                          asp-action="Report"
-                          method="post"
-                          class="d-inline">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="postId" value="@post.Id" />
-                        <input type="hidden" name="reason" value="Inappropriate content" />
-                        <button class="btn btn-sm btn-outline-warning">🚩 Report</button>
-                    </form>
-                }
-            </div>
-
-            <form asp-controller="Newsfeed"
-                  asp-action="AddComment"
-                  method="post"
-                  class="mb-3">
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="postId" value="@post.Id" />
-                <div class="d-flex">
-                    <img src="@currentUserAvatarUrl"
-                         class="rounded-circle"
-                         style="width:40px;height:40px;" />
-                    <textarea name="content"
-                              class="form-control ms-2"
-                              rows="2"
-                              placeholder="Write a comment..."
-                              required></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary btn-sm mt-1">Comment</button>
-            </form>
-
-            @foreach (var comment in post.Comments)
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            @if (isOwnProfile)
             {
-                bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
-                string commenterAvatarUrl = string.IsNullOrWhiteSpace(comment.User.ProfilePicture)
-                ? Url.Content("~/images/default-avatar.png")
-                : Url.Content(comment.User.ProfilePicture);
+                <a asp-controller="Profile" asp-action="Edit" class="btn btn-secondary btn-profile-action">
+                    <i class="fas fa-pen me-1"></i> Edit Profile
+                </a>
+            }
+            else if (isFriend)
+            {
+                <form asp-controller="Friends" asp-action="Unfriend" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="friendId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-outline-danger btn-profile-action">
+                        <i class="fas fa-user-minus me-1"></i> Unfriend
+                    </button>
+                </form>
+            }
+            else if (hasSentRequest)
+            {
+                <button class="btn btn-outline-secondary btn-profile-action" disabled>
+                    <i class="fas fa-clock me-1"></i> Request Sent
+                </button>
+            }
+            else if (hasReceived)
+            {
+                <form asp-controller="Friends" asp-action="Respond" method="post" class="d-inline d-flex gap-2">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="requestId" value="@(ViewBag.RequestId)" />
+                    <button name="accept" value="true" class="btn btn-success btn-profile-action">Accept</button>
+                    <button name="accept" value="false" class="btn btn-outline-danger btn-profile-action">Reject</button>
+                </form>
+            }
+            else if (canSendRequest)
+            {
+                <form asp-controller="Friends" asp-action="SendRequest" method="post" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="friendId" value="@Model.Id" />
+                    <button type="submit" class="btn btn-primary btn-profile-action">
+                        <i class="fas fa-user-plus me-1"></i> Add Friend
+                    </button>
+                </form>
+            }
 
-                <div class="d-flex mb-2 ms-4">
-                    <img src="@commenterAvatarUrl"
-                         class="rounded-circle"
-                         style="width:40px;height:40px;" />
-                    <div class="flex-grow-1 ms-2 bg-light rounded p-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <a asp-controller="Profile"
-                                   asp-action="Index"
-                                   asp-route-id="@comment.UserId">
-                                    @{
-                                        var userFind = await UserService.GetById(post.UserId);
-                                        if (userFind != null)
-                                        {
-                                            <strong>@userFind.UserName</strong>
-                                        }
-                                    }
-                                </a>
-                                <span class="ms-1">@comment.Content</span>
-                            </div>
-                            @if (isOwnComment)
-                            {
-                                <form asp-controller="Newsfeed"
-                                      asp-action="DeleteComment"
-                                      method="post"
-                                      class="m-0">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="commentId" value="@comment.Id" />
-                                    <input type="hidden" name="postId" value="@post.Id" />
-                                    <button type="submit" class="btn btn-sm btn-link text-danger p-0">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            }
-                        </div>
-                        <div class="text-muted small">@comment.CreatedAt:g</div>
-                    </div>
-                </div>
+            @if (!isOwnProfile)
+            {
+                <a asp-controller="Messages" asp-action="Index" asp-route-otherUserId="@Model.Id"
+                   class="btn btn-primary btn-profile-action">
+                    <i class="fas fa-comment-dots me-1"></i> Message
+                </a>
             }
         </div>
-    }
+    </div>
+</div>
+
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
 }
+
+@section RightSidebar {
+    <partial name="~/Views/Shared/Partials/RightSidebar/_RightSidebar.cshtml" />
+}
+
+<div class="profile-posts">
+    @if (!posts.Any())
+    {
+        <div class="text-center py-5 text-muted">
+            <i class="fas fa-camera fa-3x mb-3" style="color:#ced4da;"></i>
+            <p>No posts available to show for **@Model.DisplayName**.</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var post in posts)
+        {
+            bool isOwnPost = sessionUserId.HasValue && sessionUserId.Value == post.UserId;
+            var postUser = await UserService.GetById(post.UserId);
+
+            <div class="post-card mb-4">
+                <div class="post-header d-flex justify-content-between align-items-center">
+                    <div class="d-flex align-items-center">
+                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId">
+                            <img src="@profileUserAvatarUrl" class="user-avatar-sm" alt="Profile Avatar" />
+                        </a>
+                        <div class="ms-3">
+                            <a asp-controller="Profile" asp-action="Index" asp-route-id="@post.UserId" class="text-dark text-decoration-none fw-bold">
+                                @(postUser?.UserName ?? "Unknown")
+                            </a>
+                            <div class="text-muted small">@post.CreatedAt.ToString("g")</div>
+                        </div>
+                    </div>
+
+                    <div class="post-options">
+                        <button class="btn btn-sm btn-light rounded-circle post-menu-toggle" type="button" data-post-id="@post.Id" aria-expanded="false">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <ul class="post-menu" id="postMenu_@post.Id">
+                            @if (isOwnPost)
+                            {
+                                <li>
+                                    <form asp-controller="Newsfeed" asp-action="Delete" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="postId" value="@post.Id" />
+                                        <button class="dropdown-item text-danger">
+                                            <i class="fas fa-trash-alt me-2"></i> Delete Post
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <form asp-controller="Newsfeed" asp-action="Unhide" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="postId" value="@post.Id" />
+                                        <button class="dropdown-item">
+                                            <i class="fas fa-eye me-2"></i> Unhide Post
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="post-content">
+                    <div id="postContent_@post.Id" class="post-text-container post-content-truncated">
+                        <p>@post.Content</p>
+                    </div>
+
+                    @if (post.Content.Length > 200) // Use a reasonable character count as a proxy for length
+                    {
+                        <a href="javascript:void(0)" class="read-more-toggle" data-post-id="@post.Id" onclick="togglePostContent(@post.Id)">
+                            ...more
+                        </a>
+                    }
+
+                    @if (post.MediaItems != null && post.MediaItems.Any())
+                    {
+                        <div class="media-container">
+                            @foreach (var item in post.MediaItems)
+                            {
+                                if (item.MediaType == "image")
+                                {
+                                    <img src="@Url.Content(item.Path)" alt="Post image" class="img-fluid" />
+                                }
+                                else if (item.MediaType == "video")
+                                {
+                                    <video controls class="img-fluid">
+                                        <source src="@Url.Content(item.Path)" type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                }
+                            }
+                        </div>
+                    }
+                </div>
+
+                <div class="action-bar">
+                    <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button name="isUpvote" value="true" class="btn btn-action btn-outline-success">
+                            <i class="fas fa-arrow-up"></i> @post.UpVotes
+                        </button>
+                    </form>
+
+                    <form asp-controller="Newsfeed" asp-action="Vote" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <button name="isUpvote" value="false" class="btn btn-action btn-outline-danger">
+                            <i class="fas fa-arrow-down"></i> @post.DownVotes
+                        </button>
+                    </form>
+
+                    <button type="button" class="btn btn-action btn-outline-secondary" onclick="copyShareLink(@post.Id)">
+                        <i class="fas fa-share-alt"></i> Share
+                    </button>
+
+                    @if (!isOwnPost)
+                    {
+                        <form asp-controller="Report" asp-action="Create" method="post" class="d-inline ms-auto">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="postId" value="@post.Id" />
+                            <input type="hidden" name="reason" value="Inappropriate content" />
+                            <button class="btn btn-action btn-sm text-warning btn-light">
+                                <i class="fas fa-flag"></i> Report
+                            </button>
+                        </form>
+                    }
+                </div>
+
+                <div class="comment-section">
+                    <form asp-controller="Newsfeed" asp-action="AddComment" method="post" class="mb-3 d-flex align-items-start comment-input-area">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="postId" value="@post.Id" />
+                        <img src="@currentUserAvatarUrl" class="rounded-circle me-2" style="width:35px;height:35px; object-fit:cover;" alt="Current User Avatar" />
+                        <textarea name="content" class="form-control" rows="1" placeholder="Write a comment..." required></textarea>
+                        <button type="submit" class="btn btn-primary btn-sm ms-2 mt-1 rounded-pill px-3">Send</button>
+                    </form>
+
+                    @foreach (var comment in post.Comments.OrderByDescending(c => c.CreatedAt))
+                    {
+                        bool isOwnComment = sessionUserId.HasValue && sessionUserId.Value == comment.UserId;
+                        string commenterAvatarUrl = string.IsNullOrWhiteSpace(comment.User.ProfilePicture)
+                        ? Url.Content("~/images/default-avatar.png")
+                        : Url.Content(comment.User.ProfilePicture);
+
+                        <div class="d-flex mb-3">
+                            <img src="@commenterAvatarUrl" class="rounded-circle me-2" style="width:35px;height:35px; object-fit:cover; margin-top:3px;" alt="Commenter Avatar" />
+                            <div class="w-100">
+                                <div class="comment-box">
+                                    <div class="d-flex align-items-center mb-1">
+                                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@comment.UserId" class="text-dark fw-bold text-decoration-none me-2">
+                                            @comment.User.UserName
+                                        </a>
+                                        <small class="text-muted" style="font-size: 0.7rem;">@comment.CreatedAt.ToString("g")</small>
+                                    </div>
+                                    <span class="text-break">@comment.Content</span>
+                                </div>
+
+                                @if (isOwnComment)
+                                {
+                                    <div class="mt-1 ms-1">
+                                        <form asp-controller="Newsfeed" asp-action="DeleteComment" method="post" class="d-inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="commentId" value="@comment.Id" />
+                                            <input type="hidden" name="postId" value="@post.Id" />
+                                            <button type="submit" class="btn btn-sm btn-link text-danger p-0 text-decoration-none" style="font-size: 0.8rem;">
+                                                Delete
+                                            </button>
+                                        </form>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    }
+</div>
 
 @section Scripts {
     <script>
         function copyShareLink(postId) {
-            const url = `${window.location.origin}/Post/Details/${postId}`;
-            navigator.clipboard.writeText(url).then(() => alert('Link copied to clipboard'));
+            const url = `${window.location.origin}/Newsfeed/Details/${postId}`;
+            navigator.clipboard.writeText(url)
+                .then(() => alert('Link copied to clipboard! 📋'))
+                .catch(() => alert('Failed to copy URL'));
         }
+
+        // --- NEW: Toggle Post Content Function ---
+        function togglePostContent(postId) {
+            const contentContainer = document.getElementById(`postContent_${postId}`);
+            const toggleButton = document.querySelector(`.read-more-toggle[data-post-id="${postId}"]`);
+
+            if (contentContainer.classList.contains('post-content-truncated')) {
+                // Show full content
+                contentContainer.classList.remove('post-content-truncated');
+                toggleButton.textContent = '...less';
+            } else {
+                // Truncate content
+                contentContainer.classList.add('post-content-truncated');
+                toggleButton.textContent = '...more';
+            }
+        }
+        // --- End Toggle Post Content Function ---
+
+        // --- Custom Dropdown Logic (Unchanged) ---
+        document.addEventListener('click', function(event) {
+            const toggleButton = event.target.closest('.post-menu-toggle');
+
+            // 1. Handle toggle button click
+            if (toggleButton) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const postId = toggleButton.getAttribute('data-post-id');
+                const menu = document.getElementById(`postMenu_${postId}`);
+
+                // Close all other menus first
+                document.querySelectorAll('.post-menu.show').forEach(openMenu => {
+                    if (openMenu !== menu) {
+                        openMenu.classList.remove('show');
+                    }
+                });
+
+                // Toggle the clicked menu
+                menu.classList.toggle('show');
+            }
+            // 2. Handle clicks outside the menu to close it
+            else if (!event.target.closest('.post-menu')) {
+                document.querySelectorAll('.post-menu.show').forEach(menu => {
+                    menu.classList.remove('show');
+                });
+            }
+        });
+
+        // Prevent menu closure when clicking inside a form element within the menu
+        document.querySelectorAll('.post-menu form').forEach(form => {
+            form.addEventListener('click', function(event) {
+                if (event.target.type !== 'submit') {
+                    event.stopPropagation();
+                }
+            });
+        });
     </script>
 }

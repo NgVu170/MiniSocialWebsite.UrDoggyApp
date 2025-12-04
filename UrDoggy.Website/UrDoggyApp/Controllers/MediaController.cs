@@ -24,8 +24,13 @@ namespace UrDoggy.Website.Controllers
         }
 
         [HttpPost("upload")]
+        [RequestSizeLimit(2_000_000_000)]
+        [RequestFormLimits(MultipartBodyLengthLimit = 2_000_000_000)]
         public async Task<IActionResult> UploadMedia([FromForm] IFormFile file)
         {
+            if (file == null || file.Length == 0)
+                return BadRequest("No file uploaded");
+
             if (!await _mediaService.IsValidMediaFile(file))
             {
                 return BadRequest("Invalid file type or size");

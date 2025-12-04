@@ -7,6 +7,149 @@
     var modGroups = ViewBag.ModGroups as HashSet<int> ?? new HashSet<int>();
     var userId = ViewBag.UserId as int?;
     var userGroupIds = userInGroups.Select(g => g.GroupId).ToHashSet();
+
+    <link rel="stylesheet" href="~/css/layout.css" />
+}
+
+<style>
+    /* Container Animation */
+    .container.mt-4 {
+        animation: fadeIn 0.4s ease-out;
+    }
+
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Group Cards */
+    .card {
+        border: none;
+        border-radius: 1.5rem;
+        overflow: hidden;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        background: var(--card-bg);
+        box-shadow: var(--shadow);
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.1);
+        }
+
+    .card-img-top {
+        height: 180px;
+        object-fit: cover;
+        border-radius: 1.5rem 1.5rem 0 0;
+        transition: transform 0.3s ease;
+    }
+
+    .card:hover .card-img-top {
+        transform: scale(1.05);
+    }
+
+    /* Avatar Styles */
+    .rounded-circle[style*="40px"] {
+        border: 2px solid var(--secondary);
+        box-shadow: 0 4px 12px rgba(9, 132, 227, 0.15);
+    }
+
+    /* Action Buttons */
+    .btn-outline-primary,
+    .btn-outline-secondary,
+    .btn-primary {
+        transition: all 0.2s ease;
+        border-radius: 1rem;
+        padding: 0.4rem 1rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        border: none;
+    }
+
+    .btn-outline-primary:hover {
+        background: rgba(9, 132, 227, 0.1);
+    }
+
+    .btn-outline-secondary:hover {
+        background: rgba(108, 117, 125, 0.1);
+    }
+
+    .btn-warning {
+        background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+        border: none;
+        color: white;
+    }
+
+    /* Loading State */
+    button[type="submit"]:disabled {
+        opacity: 0.7;
+        position: relative;
+    }
+
+        button[type="submit"]:disabled::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+    /* Empty State */
+    .alert-info {
+        border-radius: 1rem;
+        background: rgba(9, 132, 227, 0.1);
+        border: none;
+        color: var(--text);
+    }
+
+    /* Mobile Optimization */
+    @@media (max-width: 768px) {
+        .card-img-top {
+            height: 120px;
+        }
+
+        .d-flex.justify-content-between {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .btn-success {
+            width: 100%;
+        }
+    }
+
+    @@keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+</style>
+
+
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
 }
 
 <div class="container mt-4">

@@ -1,5 +1,6 @@
 ﻿@using UrDoggy.Core.Models
 @using UrDoggy.Core.Models.GroupModels
+@inject UrDoggy.Services.Interfaces.IUserService UserService
 @model IEnumerable<Post>
 
 @{
@@ -8,150 +9,599 @@
     var role = ViewBag.Role as GroupRole?;
     var userId = ViewBag.UserId as int?;
     ViewData["Title"] = group != null ? $"Bài viết - {group.GroupName}" : "Bài viết trong nhóm";
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
-<div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="d-flex align-items-center">
-            <img src="@(group?.Avatar ?? "/images/default-avatar.png")" class="rounded-circle me-2" style="width:48px;height:48px;object-fit:cover;" onerror="this.src='/images/default-avatar.png';" />
-            <div>
-                <h3 class="mb-0">@group?.GroupName</h3>
-                <small class="text-muted">@group?.Description</small>
-            </div>
+@section LeftSidebar {
+    <partial name="~/Views/Shared/Partials/LeftSidebar/_LeftSidebar.cshtml" />
+}
+
+<style>
+    /* Global Variables & Reset */
+    :root {
+        --primary-gradient: linear-gradient(135deg, #25D366 0%, #0984e3 100%);
+        --surface-color: #ffffff;
+        --text-primary: #1c1e21;
+        --text-secondary: #65676b;
+        --radius-lg: 16px;
+        --radius-md: 12px;
+        --radius-sm: 8px;
+        --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.1);
+        --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+        --danger-soft: #fff5f5;
+        --danger-text: #e02424;
+    }
+
+    body {
+        background-color: var(--bg-color);
+        color: var(--text-primary);
+    }
+
+    /* Animation */
+
+    .animate-feed {
+        animation: fadeInUp 0.5s ease-out forwards;
+    }
+
+    /* Custom Card Style */
+    .ur-card {
+        background: var(--surface-color);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 1.5rem;
+        border: none;
+        overflow: hidden;
+        transition: box-shadow 0.2s ease;
+    }
+
+        .ur-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+    /* Group Header Banner */
+    /* --- NEW HEADER DESIGN --- */
+
+    /* The main container for the header */
+    .group-header-card {
+        background: var(--surface-color);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-sm);
+        margin-bottom: 2rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* The Background Cover Area (Tall & Wide) */
+    .group-cover-area {
+        height: 220px; /* Adjustable height */
+        background-color: #e4e6eb; /* Fallback color */
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+        position: relative;
+    }
+
+        /* Optional: Dark gradient at bottom of cover so text/white avatar pops */
+        .group-cover-area::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+        }
+
+    /* The container below the cover */
+    .group-info-bar {
+        padding: 0 2rem 1.5rem 2rem;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+    }
+
+    /* The Avatar - Overlapping the cover line */
+    .group-avatar-wrapper {
+        margin-top: -60px; /* This pulls the avatar UP into the cover */
+        z-index: 5;
+        position: relative;
+        width: 140px;
+        height: 140px;
+    }
+
+    .group-avatar-img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%; /* Circle shape */
+        border: 5px solid var(--surface-color); /* White border creates separation */
+        box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        object-fit: cover;
+        background-color: white;
+    }
+
+    /* Text & Buttons Layout */
+    .group-details-flex {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-top: 0.5rem;
+    }
+
+    .group-name {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-primary);
+        margin-bottom: 0.2rem;
+        line-height: 1.2;
+    }
+
+    /* Post Creator */
+    .create-post-area {
+        background: #f8f9fa;
+        border-radius: var(--radius-md);
+        padding: 1rem;
+    }
+
+    .create-post-textarea {
+        border: none;
+        background: transparent;
+        resize: none;
+        font-size: 1.1rem;
+        width: 100%;
+    }
+
+        .create-post-textarea:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: inset 0 0 0 1px #e4e6eb;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+        }
+
+    /* Post Feed Items */
+    .post-header-info h6 {
+        margin: 0;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+
+    .post-meta {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+
+    .post-content-text {
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--text-primary);
+        white-space: pre-wrap;
+    }
+
+    /* Media Grid */
+    .post-media-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 8px;
+        margin-top: 1rem;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+    }
+
+    .post-media-item {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: var(--radius-sm);
+        transition: transform 0.2s;
+        cursor: pointer;
+    }
+
+        .post-media-item:hover {
+            transform: scale(1.02);
+        }
+
+    /* Action Buttons */
+    .action-btn-group {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .btn-pill {
+        border-radius: 20px;
+        font-size: 0.8rem;
+        padding: 0.4rem 1rem;
+        font-weight: 500;
+        transition: all 0.2s;
+    }
+
+    .btn-action-ghost {
+        background: transparent;
+        color: var(--text-secondary);
+        border: 1px solid transparent;
+    }
+
+        .btn-action-ghost:hover {
+            background: #f0f2f5;
+            color: var(--text-primary);
+        }
+
+    .btn-action-danger {
+        color: var(--danger-text);
+        background: var(--danger-soft);
+        border: none;
+    }
+
+        .btn-action-danger:hover {
+            background: #fee2e2;
+        }
+
+    /* Report Form */
+    .report-box {
+        background: var(--danger-soft);
+        border: 1px solid #fed7d7;
+        border-radius: var(--radius-md);
+        padding: 1rem;
+        margin-top: 1rem;
+    }
+
+    /* Moderator Section */
+    .mod-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        font-size: 0.7rem;
+        padding: 0.2rem 0.6rem;
+        border-radius: 10px;
+    }
+
+    /* Utilities */
+    .custom-file-upload {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        background: #e4e6eb;
+        border-radius: var(--radius-sm);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+        .custom-file-upload:hover {
+            background: #d8dadf;
+        }
+
+    /* Loading Spinner override */
+    button[type="submit"]:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+
+    /* Hides the ugly default browser file input */
+    .hidden-file-input {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
+
+    /* The new custom button style */
+    .custom-upload-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background-color: #f0f2f5;
+        color: #65676b;
+        border-radius: 20px; /* Pill shape */
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: all 0.2s ease;
+        border: 1px solid transparent;
+        user-select: none;
+    }
+
+        /* Hover effect */
+        .custom-upload-label:hover {
+            background-color: #e4e6eb;
+            color: #25D366; /* Green highlight like WhatsApp/Social */
+        }
+
+        /* Active/Click effect */
+        .custom-upload-label:active {
+            transform: scale(0.98);
+            background-color: #d8dadf;
+        }
+
+    /* Icon styling */
+    .upload-icon {
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Preview Grid Styles */
+    #preview-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .preview-image-wrapper {
+        position: relative;
+        width: 100px;
+        height: 100px;
+    }
+
+    .preview-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #e4e6eb;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+</style>
+
+<div class="container mt-0 pb-5">
+    <div class="group-header-card animate-feed">
+
+        <div class="group-cover-area"
+             style="background-image: url('/images/default-bg-login.jpg');">
         </div>
-        <div class="d-flex gap-2">
-            <a class="btn btn-outline-secondary" href="~/Group/Index">← Danh sách nhóm</a>
-            @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
-            {
-                <a class="btn btn-warning" href="~/Group/GroupManagement?groupId=@group?.Id">Quản trị nhóm</a>
-            }
+
+        <div class="group-info-bar">
+
+            <div class="group-avatar-wrapper">
+                <img src="@(group?.Avatar ?? "/images/default-avatar.png")"
+                     class="group-avatar-img"
+                     onerror="this.src='/images/default-avatar.png';" />
+            </div>
+
+            <div class="group-details-flex w-100">
+                <div>
+                    <h1 class="group-name">@group?.GroupName</h1>
+                    <div class="text-secondary d-flex align-items-center gap-2">
+                        <i class="bi bi-globe-americas"></i>
+                        <span>Nhóm Công khai</span>
+                        <span class="mx-1">•</span>
+                        <span>@group?.Description</span>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2 mt-3 mt-md-0">
+                    <a class="btn btn-light btn-pill border fw-bold" href="~/Group/Index">
+                        ← Quay lại
+                    </a>
+                    @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
+                    {
+                        <a class="btn btn-primary btn-pill fw-bold px-4" href="~/Group/GroupManagement?groupId=@group?.Id">
+                            <i class="bi bi-gear-fill me-1"></i> Quản trị
+                        </a>
+                    }
+                </div>
+            </div>
         </div>
     </div>
 
     @if (TempData["Error"] != null)
     {
-        <div class="alert alert-danger">@TempData["Error"]</div>
+        <div class="alert alert-danger rounded-3 shadow-sm border-0 mb-4 animate-feed">
+            <i class="bi bi-exclamation-circle me-2"></i> @TempData["Error"]
+        </div>
     }
     @if (TempData["Success"] != null)
     {
-        <div class="alert alert-success">@TempData["Success"]</div>
+        <div class="alert alert-success rounded-3 shadow-sm border-0 mb-4 animate-feed">
+            <i class="bi bi-check-circle me-2"></i> @TempData["Success"]
+        </div>
     }
 
-    <div class="card mb-4">
-        <div class="card-header">
-            <strong>Tạo bài trong nhóm</strong>
-        </div>
-        <div class="card-body">
-            @using (Html.BeginForm("CreatePost", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
-            {
-                @Html.AntiForgeryToken()
-                <input type="hidden" name="groupId" value="@group?.Id" />
+    <div class="row">
+        <div class="col-lg-8">
 
-                <div class="mb-3">
-                    <textarea class="form-control" name="content" rows="3" placeholder="Bạn đang nghĩ gì?" required></textarea>
+            <div class="ur-card p-3 animate-feed">
+                <div class="d-flex align-items-center mb-3 pb-3 border-bottom">
+                    <h5 class="mb-0 fw-bold text-primary">Tạo bài viết mới</h5>
                 </div>
+                @using (Html.BeginForm("CreatePost", "Group", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="groupId" value="@group?.Id" />
 
-                <div class="mb-3">
-                    <label class="form-label">Ảnh (tùy chọn)</label>
-                    <input type="file" class="form-control" name="media" multiple accept=".png,.jpg,.jpeg,.webp,.gif" />
-                    <small class="text-muted">Bạn có thể chọn nhiều ảnh.</small>
-                </div>
+                    <div class="create-post-area mb-3">
+                        <textarea class="create-post-textarea" name="content" rows="3" placeholder="Chia sẻ với nhóm @group?.GroupName..." required></textarea>
 
-                <button type="submit" class="btn btn-primary">Đăng bài</button>
-            }
-        </div>
-    </div>
+                        <div id="preview-container"></div>
+                    </div>
 
-    @if (!Model?.Any() ?? true)
-    {
-        <div class="alert alert-info">Chưa có bài viết nào trong nhóm.</div>
-    }
-    else
-    {
-        <div class="vstack gap-3">
-            @foreach (var p in Model)
-            {
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="d-flex align-items-center">
-                                <strong>Post #@p.Id</strong>
-                                <span class="text-muted ms-2">(@p.CreatedAt.ToLocalTime().ToString("dd/MM/yyyy HH:mm"))</span>
-                                <span class="badge bg-light text-dark ms-3">Tác giả: #@p.UserId</span>
-                            </div>
+                    <div class="d-flex justify-content-between align-items-center pt-2">
+                        <div>
+                            <input type="file" name="media" id="media-upload" class="hidden-file-input" multiple accept=".png,.jpg,.jpeg,.webp,.gif" onchange="previewImages(this)" />
 
-                            <div class="d-flex gap-2">
-                                <!-- Báo cáo bài -->
-                                <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#report-@p.Id">Báo cáo</button>
-
-                                <!-- Xóa bởi chủ bài (chỉ hiện nếu là tác giả) -->
-                                @if (userId.HasValue && p.UserId == userId.Value)
-                                {
-                                    @using (Html.BeginForm("DeletePostByOwner", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài của bạn?');" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="groupId" value="@group?.Id" />
-                                        <input type="hidden" name="postId" value="@p.Id" />
-                                        <button type="submit" class="btn btn-outline-secondary btn-sm">Xóa bài (chủ bài)</button>
-                                    }
-                                }
-
-                                <!-- Xóa bởi Mod/Admin -->
-                                @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
-                                {
-                                    @using (Html.BeginForm("DeletePostByModerator", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài này với quyền moderator?');" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <input type="hidden" name="groupId" value="@group?.Id" />
-                                        <input type="hidden" name="postId" value="@p.Id" />
-                                        <button type="submit" class="btn btn-danger btn-sm">Xóa (Mod)</button>
-                                    }
-                                }
-                            </div>
+                            <label for="media-upload" class="custom-upload-label">
+                                <span class="upload-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M15 12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h1.172a3 3 0 0 0 2.12-.879l.83-.828A1 1 0 0 1 6.827 3h2.344a1 1 0 0 1 .707.293l.828.828A3 3 0 0 0 12.828 5H14a1 1 0 0 1 1 1v6zM2 4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-1.172a2 2 0 0 1-1.414-.586l-.828-.828A2 2 0 0 0 9.172 2H6.828a2 2 0 0 0-1.414.586l-.828.828A2 2 0 0 1 3.172 4H2z" />
+                                        <path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm0 1a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM3 6.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0z" />
+                                    </svg>
+                                </span>
+                                <span>Ảnh/Video</span>
+                            </label>
                         </div>
 
-                        <p class="mt-2 mb-0">@p.Content</p>
+                        <button type="submit" class="btn btn-primary btn-pill px-4">Đăng ngay</button>
+                    </div>
+                }
+            </div>
 
-                        <!-- Form báo cáo thu gọn -->
-                        <div id="report-@p.Id" class="collapse mt-3">
-                            <div class="card card-body border-danger">
-                                @using (Html.BeginForm("ReportPost", "Group", FormMethod.Post, new { @class = "vstack gap-2" }))
+            <script>
+                function previewImages(input) {
+                    var container = document.getElementById("preview-container");
+                    container.innerHTML = ""; // Clear existing previews
+
+                    if (input.files) {
+                        var files = Array.from(input.files);
+
+                        files.forEach(function(file) {
+                            // Ensure it's an image
+                            if (file.type.match('image.*')) {
+                                var reader = new FileReader();
+
+                                reader.onload = function(e) {
+                                    var wrapper = document.createElement("div");
+                                    wrapper.className = "preview-image-wrapper animate-feed";
+
+                                    var img = document.createElement("img");
+                                    img.src = e.target.result;
+                                    img.className = "preview-image";
+
+                                    wrapper.appendChild(img);
+                                    container.appendChild(wrapper);
+                                }
+
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+                }
+            </script>
+
+            @if (!Model?.Any() ?? true)
+            {
+                <div class="text-center py-5 text-muted animate-feed">
+                    <img src="/images/empty-state.svg" style="width:100px; opacity:0.5; display:block; margin:0 auto 1rem;" onerror="this.style.display='none'" />
+                    <h5>Chưa có bài viết nào</h5>
+                    <p>Hãy là người đầu tiên chia sẻ câu chuyện!</p>
+                </div>
+            }
+            else
+            {
+                <div class="vstack gap-0">
+                    @foreach (var p in Model)
+                    {
+                        <div class="ur-card p-3 animate-feed">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="d-flex gap-2 align-items-center">
+                                    <div class="bg-light rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                        <span class="fw-bold text-primary">@p.UserId.ToString().Substring(0, 1)</span>
+                                    </div>
+                                    <div class="post-header-info">
+                                        <h6>@await UserService.GetByIdTracked(@p.UserId)</h6>
+                                        <div class="post-meta">
+                                            <span>@p.CreatedAt.ToLocalTime().ToString("dd 'thg' MM 'lúc' HH:mm")</span>
+                                            <span class="mx-1">•</span>
+                                            <span>#@p.Id</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="action-btn-group">
+                                    <button class="btn btn-action-ghost btn-pill btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#report-@p.Id">
+                                        Báo cáo
+                                    </button>
+
+                                    @if (userId.HasValue && p.UserId == userId.Value)
+                                    {
+                                        @using (Html.BeginForm("DeletePostByOwner", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài của bạn?');" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="groupId" value="@group?.Id" />
+                                            <input type="hidden" name="postId" value="@p.Id" />
+                                            <button type="submit" class="btn btn-action-ghost btn-pill btn-sm text-danger">Xóa</button>
+                                        }
+                                    }
+
+                                    @if (role.HasValue && (role == GroupRole.Admin || role == GroupRole.Moderator))
+                                    {
+                                        @using (Html.BeginForm("DeletePostByModerator", "Group", FormMethod.Post, new { @class = "d-inline", onsubmit = "return confirm('Xóa bài này với quyền moderator?');" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden" name="groupId" value="@group?.Id" />
+                                            <input type="hidden" name="postId" value="@p.Id" />
+                                            <button type="submit" class="btn btn-action-danger btn-pill btn-sm">Xóa (Mod)</button>
+                                        }
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="post-content mb-3">
+                                <p class="post-content-text">@p.Content</p>
+
+                                @if (p.MediaItems != null && p.MediaItems.Any())
                                 {
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="groupId" value="@group?.Id" />
-                                    <input type="hidden" name="postId" value="@p.Id" />
-                                    <label class="form-label">Lý do báo cáo</label>
-                                    <input class="form-control" name="reason" placeholder="Nội dung phản cảm, spam, vi phạm nội quy..." required />
-                                    <div class="d-flex justify-content-end">
-                                        <button class="btn btn-outline-danger btn-sm" type="submit">Gửi báo cáo</button>
+                                    <div class="post-media-grid">
+                                        @foreach (var media in p.MediaItems)
+                                        {
+                                            @if (!string.IsNullOrEmpty(media.Path))
+                                            {
+                                                <img src="@Url.Content(media.Path)" class="post-media-item shadow-sm" />
+                                            }
+                                        }
                                     </div>
                                 }
                             </div>
-                        </div>
 
-                    </div>
+                            <div id="report-@p.Id" class="collapse">
+                                <div class="report-box">
+                                    @using (Html.BeginForm("ReportPost", "Group", FormMethod.Post, new { @class = "d-flex flex-column gap-2" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="groupId" value="@group?.Id" />
+                                        <input type="hidden" name="postId" value="@p.Id" />
+
+                                        <h6 class="text-danger mb-0">Báo cáo vi phạm</h6>
+                                        <input class="form-control form-control-sm" name="reason" placeholder="Nhập lý do báo cáo..." required style="background: white;" />
+
+                                        <div class="text-end">
+                                            <button class="btn btn-danger btn-sm btn-pill" type="submit">Gửi báo cáo</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
             }
         </div>
-    }
 
-    <div class="mt-5">
-        <h5>Moderator</h5>
-        @if (!modList.Any())
-        {
-            <p class="text-muted">Chưa có moderator.</p>
-        }
-        else
-        {
-            <ul class="list-group">
-                @foreach (var m in modList)
+        <div class="col-lg-4">
+            <div class="ur-card p-3 animate-feed sticky-top" style="top: 20px; z-index: 100;">
+                <h6 class="fw-bold mb-3 text-secondary text-uppercase" style="font-size: 0.8rem; letter-spacing: 1px;">Ban Quản Trị</h6>
+
+                @if (!modList.Any())
                 {
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span>User #@m.UserId</span>
-                        <span class="badge bg-secondary">Moderator</span>
-                    </li>
+                    <p class="text-muted small">Nhóm này chưa có moderator.</p>
                 }
-            </ul>
-        }
+                else
+                {
+                    <div class="vstack gap-2">
+                        @foreach (var m in modList)
+                        {
+                            <div class="d-flex justify-content-between align-items-center p-2 rounded hover-bg-light">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="rounded-circle bg-secondary bg-opacity-10 d-flex justify-content-center align-items-center" style="width:32px; height:32px;">
+                                        <i class="bi bi-shield-check text-primary"></i>
+                                    </div>
+                                    <span class="small fw-semibold">@await UserService.GetByIdTracked(@m.UserId)</span>
+                                </div>
+                                <span class="mod-badge">MOD</span>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <hr class="my-3 text-secondary opacity-25" />
+                <div class="small text-muted">
+                    Quy tắc nhóm: Hãy lịch sự và tôn trọng lẫn nhau.
+                </div>
+            </div>
+        </div>
     </div>
 </div>

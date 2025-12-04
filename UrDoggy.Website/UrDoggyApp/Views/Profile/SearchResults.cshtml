@@ -3,11 +3,15 @@
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var me = Context.Session.GetInt32("UserId");
+    // Using Context.Session.GetInt32 is synchronous. Make sure session is configured for this.
+    // Use GetInt32 as it returns an int?
+    int? me = Context.Session.GetInt32("UserId");
     var defaultAvatar = Url.Content("~/images/default-avatar.png");
+    <link rel="stylesheet" href="~/css/layout.css" />
 }
 
 <style>
+    /* ... (CSS is retained as provided) ... */
     .list-group {
         border-radius: 1rem;
         overflow: hidden;
@@ -144,46 +148,90 @@
             margin-top: 0.5rem;
         }
     }
+
+    ::-webkit-scrollbar {
+        display: none;
+    }
 </style>
 
-<h3>Search Results</h3>
+<div class="container py-4">
+    <h3 class="display-6 fw-bold mb-4">Search Results</h3>
 
-@if (!Model.Any())
-{
-    <p>No users found.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var user in Model)
-        {
-            var u = await UserService.GetById(user.Id);
-            var avatarUrl = string.IsNullOrWhiteSpace(u?.ProfilePicture)
-            ? defaultAvatar
-            : Url.Content(u.ProfilePicture);
+    @if (!Model.Any())
+    {
+        <p>No users found matching your criteria. Try a different search.</p>
+    }
+    else
+    {
+        <ul class="list-group">
+            @foreach (var user in Model)
+            {
+                // CHANGE 1: Use the user object directly.
+                // It is assumed the `User` model passed to the view contains all necessary properties (Id, UserName, ProfilePicture).
+                // If it doesn't, the Controller/Service layer should project the necessary data before passing it.
+                // This avoids N+1 database queries, which is a massive performance bottleneck.
 
-            <li class="list-group-item d-flex align-items-center justify-content-between">
-                <div class="d-flex align-items-center">
-                    <img src="@avatarUrl"
-                         class="rounded-circle me-3"
-                         style="width:40px;height:40px;" />
-                    <a href="/Profile/@u.Id">@u.UserName</a>
-                </div>
+                var avatarUrl = string.IsNullOrWhiteSpace(user.ProfilePicture)
+                ? defaultAvatar
+                : Url.Content(user.ProfilePicture);
 
-                @if (me.HasValue && me.Value != u.Id)
-                {
-                    <form asp-controller="Friends"
-                          asp-action="SendRequest"
-                          method="post"
-                          class="m-0">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="friendId" value="@u.Id" />
-                        <button type="submit" class="btn btn-sm btn-primary">
-                            Add Friend
-                        </button>
-                    </form>
-                }
-            </li>
-        }
-    </ul>
+                <li class="list-group-item d-flex align-items-center justify-content-between">
+
+                    <div class="d-flex align-items-center">
+                        <img src="@avatarUrl"
+                             class="rounded-circle me-3"
+                             alt="@user.UserName Avatar"
+                             style="width:40px;height:40px;" />
+
+                        @* CHANGE 2: Link to profile using the user object directly. *@
+                        <a asp-controller="Profile" asp-action="Index" asp-route-id="@user.Id">
+                            @user.UserName
+                        </a>
+                    </div>
+
+                    @* Ensure the user isn't trying to add themselves *@
+                    @if (me.HasValue && me.Value != user.Id)
+                    {
+                        @* CHANGE 3: Add `data-user-id` for future AJAX/JavaScript interaction *@
+                        <form asp-controller="Friends"
+                              asp-action="SendRequest"
+                              method="post"
+                              class="m-0 add-friend-form"
+                              data-user-id="@user.Id">
+
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="friendId" value="@user.Id" />
+
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="fas fa-user-plus me-1"></i> Add Friend
+                            </button>
+                        </form>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>
+
+@* CHANGE 4: Add simple script for future AJAX update (optional, but good practice) *@
+@section Scripts {
+    <script>
+        // Placeholder for future AJAX/JavaScript logic
+        document.querySelectorAll('.add-friend-form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                // To prevent the page reload, you would uncomment e.preventDefault()
+                // and replace the default submit with an AJAX call.
+                // e.preventDefault();
+
+                const button = this.querySelector('button');
+
+                // Show loading spinner/disable button
+                button.disabled = true;
+                button.innerHTML = '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Sending...';
+
+                // In a real implementation, the success callback of the AJAX
+                // would change the button text to 'Request Sent' or 'Friends'.
+            });
+        });
+    </script>
 }

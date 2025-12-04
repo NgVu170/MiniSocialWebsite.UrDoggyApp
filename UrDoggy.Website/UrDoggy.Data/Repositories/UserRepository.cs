@@ -51,6 +51,11 @@ namespace UrDoggy.Data.Repositories
         {
             return await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == id);
         }
+        public async Task<string?> GetByIdTracked(int id)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+            return user?.DisplayName;
+        }
 
         public async Task<User?> GetByUsername(string username)
         {

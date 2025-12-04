@@ -45,8 +45,6 @@ namespace UrDoggy.Services.Service
                 UserId = userId,
                 Content = content,
                 CreatedAt = DateTime.UtcNow,
-                UpVotes = 0,
-                DownVotes = 0
             };
 
             await _postRepository.CreatePost(post, mediaItems);
@@ -139,20 +137,10 @@ namespace UrDoggy.Services.Service
                 if (allPosts == null || !allPosts.Any())
                     return new List<Post>();
 
-                var filteredPosts = allPosts.Where(p => p.UserId != userId).ToList();
-
-                // Loại bỏ posts đã xem nếu có
-                if (excludedPostIds != null && excludedPostIds.Any())
-                {
-                    filteredPosts = filteredPosts.Where(p => !excludedPostIds.Contains(p.Id)).ToList();
-                }
-                if (!filteredPosts.Any())
-                    return new List<Post>();
-
                 // Tính điểm recommendation cho mỗi bài viết
                 var postScores = new List<(Post Post, float Score)>();
 
-                foreach (var post in filteredPosts)
+                foreach (var post in allPosts)
                 {
                     var score = (isPersonalized) ? 
                         await _postRepository.CalculatePersonalizedScore(userId, post):
